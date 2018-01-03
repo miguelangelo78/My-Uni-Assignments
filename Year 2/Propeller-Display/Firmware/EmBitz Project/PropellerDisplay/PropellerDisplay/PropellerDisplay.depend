@@ -1,0 +1,985 @@
+# depslib dependency file v1.0
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\misc.c
+	"misc.h"
+
+1455566032 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\misc.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\inc\stm32f4xx.h
+	"core_cm4.h"
+	"system_stm32f4xx.h"
+	<stdint.h>
+	"stm32f4xx_conf.h"
+
+1455566033 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\cmsis\core_cm4.h
+	<stdint.h>
+	<core_cmInstr.h>
+	<core_cmFunc.h>
+	<core_cm4_simd.h>
+
+1455566033 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\cmsis\core_cminstr.h
+	<cmsis_iar.h>
+
+1455566033 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\cmsis\core_cmfunc.h
+	<cmsis_iar.h>
+
+1455566033 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\cmsis\core_cm4_simd.h
+	<cmsis_iar.h>
+
+1455566032 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\inc\system_stm32f4xx.h
+
+1455566032 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\inc\stm32f4xx_conf.h
+	"stm32f4xx_adc.h"
+	"stm32f4xx_can.h"
+	"stm32f4xx_crc.h"
+	"stm32f4xx_cryp.h"
+	"stm32f4xx_dac.h"
+	"stm32f4xx_dbgmcu.h"
+	"stm32f4xx_dcmi.h"
+	"stm32f4xx_dma.h"
+	"stm32f4xx_exti.h"
+	"stm32f4xx_flash.h"
+	"stm32f4xx_fsmc.h"
+	"stm32f4xx_hash.h"
+	"stm32f4xx_gpio.h"
+	"stm32f4xx_i2c.h"
+	"stm32f4xx_iwdg.h"
+	"stm32f4xx_pwr.h"
+	"stm32f4xx_rcc.h"
+	"stm32f4xx_rng.h"
+	"stm32f4xx_rtc.h"
+	"stm32f4xx_sdio.h"
+	"stm32f4xx_spi.h"
+	"stm32f4xx_syscfg.h"
+	"stm32f4xx_tim.h"
+	"stm32f4xx_usart.h"
+	"stm32f4xx_wwdg.h"
+	"misc.h"
+
+1455566032 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_adc.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_can.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_crc.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_cryp.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_dac.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_dbgmcu.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_dcmi.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_dma.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_exti.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_flash.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_fsmc.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_hash.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_gpio.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_i2c.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_iwdg.h
+	"stm32f4xx.h"
+
+1455566033 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_pwr.h
+	"stm32f4xx.h"
+
+1455566033 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_rcc.h
+	"stm32f4xx.h"
+
+1455566033 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_rng.h
+	"stm32f4xx.h"
+
+1455566033 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_rtc.h
+	"stm32f4xx.h"
+
+1455566033 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_sdio.h
+	"stm32f4xx.h"
+
+1455566033 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_spi.h
+	"stm32f4xx.h"
+
+1455566033 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_syscfg.h
+	"stm32f4xx.h"
+
+1455566033 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_tim.h
+	"stm32f4xx.h"
+
+1455566033 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_usart.h
+	"stm32f4xx.h"
+
+1455566033 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_wwdg.h
+	"stm32f4xx.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_adc.c
+	"stm32f4xx_adc.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_can.c
+	"stm32f4xx_can.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_crc.c
+	"stm32f4xx_crc.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_cryp.c
+	"stm32f4xx_cryp.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_cryp_aes.c
+	"stm32f4xx_cryp.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_cryp_des.c
+	"stm32f4xx_cryp.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_cryp_tdes.c
+	"stm32f4xx_cryp.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_dac.c
+	"stm32f4xx_dac.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_dbgmcu.c
+	"stm32f4xx_dbgmcu.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_dcmi.c
+	"stm32f4xx_dcmi.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_dma.c
+	"stm32f4xx_dma.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_exti.c
+	"stm32f4xx_exti.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_flash.c
+	"stm32f4xx_flash.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_fsmc.c
+	"stm32f4xx_fsmc.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_gpio.c
+	"stm32f4xx_gpio.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_hash.c
+	"stm32f4xx_hash.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_hash_md5.c
+	"stm32f4xx_hash.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_hash_sha1.c
+	"stm32f4xx_hash.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_i2c.c
+	"stm32f4xx_i2c.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_iwdg.c
+	"stm32f4xx_iwdg.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_pwr.c
+	"stm32f4xx_pwr.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_rcc.c
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_rng.c
+	"stm32f4xx_rng.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_rtc.c
+	"stm32f4xx_rtc.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_sdio.c
+	"stm32f4xx_sdio.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_spi.c
+	"stm32f4xx_spi.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_syscfg.c
+	"stm32f4xx_syscfg.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_tim.c
+	"stm32f4xx_tim.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_usart.c
+	"stm32f4xx_usart.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_wwdg.c
+	"stm32f4xx_wwdg.h"
+	"stm32f4xx_rcc.h"
+
+1455566888 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\src\main.c
+	"stm32f4xx_conf.h"
+
+1455566032 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\src\startup_stm32f4xx.s
+
+1455566032 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\src\system_stm32f4xx.c
+	"stm32f4xx.h"
+
+1455567652 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\src\main.cpp
+	"stm32f4xx_conf.h"
+	"tlcrgb.h"
+
+1448299098 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\src\tlcrgb.h
+	"tlc5941.h"
+	<stdlib.h>
+
+1448299098 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\src\tlc5941.h
+	"stm32f4xx.h"
+	"stm32f4xx_gpio.h"
+	"stm32f4xx_rcc.h"
+	<stdint.h>
+
+1455567709 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\src\tlc5941.cpp
+	"tlc5941.h"
+	"port.h"
+	<string.h>
+
+1448299098 c:\users\miguel\desktop\propellerdisplay\propellerdisplay\src\port.h
+
+1448299098 source:c:\users\miguel\desktop\propellerdisplay\propellerdisplay\src\tlcrgb.cpp
+	"tlcrgb.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\misc.c
+	"misc.h"
+
+1455566032 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\misc.h
+	"stm32f4xx.h"
+
+1456262899 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\inc\stm32f4xx.h
+	"core_cm4.h"
+	"system_stm32f4xx.h"
+	<stdint.h>
+	"stm32f4xx_conf.h"
+
+1455566033 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\cmsis\core_cm4.h
+	<stdint.h>
+	<core_cmInstr.h>
+	<core_cmFunc.h>
+	<core_cm4_simd.h>
+
+1455566033 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\cmsis\core_cminstr.h
+	<cmsis_iar.h>
+
+1455566033 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\cmsis\core_cmfunc.h
+	<cmsis_iar.h>
+
+1455566033 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\cmsis\core_cm4_simd.h
+	<cmsis_iar.h>
+
+1455566032 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\inc\system_stm32f4xx.h
+
+1455566032 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\inc\stm32f4xx_conf.h
+	"stm32f4xx_adc.h"
+	"stm32f4xx_can.h"
+	"stm32f4xx_crc.h"
+	"stm32f4xx_cryp.h"
+	"stm32f4xx_dac.h"
+	"stm32f4xx_dbgmcu.h"
+	"stm32f4xx_dcmi.h"
+	"stm32f4xx_dma.h"
+	"stm32f4xx_exti.h"
+	"stm32f4xx_flash.h"
+	"stm32f4xx_fsmc.h"
+	"stm32f4xx_hash.h"
+	"stm32f4xx_gpio.h"
+	"stm32f4xx_i2c.h"
+	"stm32f4xx_iwdg.h"
+	"stm32f4xx_pwr.h"
+	"stm32f4xx_rcc.h"
+	"stm32f4xx_rng.h"
+	"stm32f4xx_rtc.h"
+	"stm32f4xx_sdio.h"
+	"stm32f4xx_spi.h"
+	"stm32f4xx_syscfg.h"
+	"stm32f4xx_tim.h"
+	"stm32f4xx_usart.h"
+	"stm32f4xx_wwdg.h"
+	"misc.h"
+
+1455566032 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_adc.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_can.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_crc.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_cryp.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_dac.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_dbgmcu.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_dcmi.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_dma.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_exti.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_flash.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_fsmc.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_hash.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_gpio.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_i2c.h
+	"stm32f4xx.h"
+
+1455566032 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_iwdg.h
+	"stm32f4xx.h"
+
+1455566033 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_pwr.h
+	"stm32f4xx.h"
+
+1455566033 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_rcc.h
+	"stm32f4xx.h"
+
+1455566033 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_rng.h
+	"stm32f4xx.h"
+
+1455566033 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_rtc.h
+	"stm32f4xx.h"
+
+1455566033 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_sdio.h
+	"stm32f4xx.h"
+
+1455566033 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_spi.h
+	"stm32f4xx.h"
+
+1455566033 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_syscfg.h
+	"stm32f4xx.h"
+
+1455566033 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_tim.h
+	"stm32f4xx.h"
+
+1455566033 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_usart.h
+	"stm32f4xx.h"
+
+1455566033 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\inc\stm32f4xx_wwdg.h
+	"stm32f4xx.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_adc.c
+	"stm32f4xx_adc.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_can.c
+	"stm32f4xx_can.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_crc.c
+	"stm32f4xx_crc.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_cryp.c
+	"stm32f4xx_cryp.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_cryp_aes.c
+	"stm32f4xx_cryp.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_cryp_des.c
+	"stm32f4xx_cryp.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_cryp_tdes.c
+	"stm32f4xx_cryp.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_dac.c
+	"stm32f4xx_dac.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_dbgmcu.c
+	"stm32f4xx_dbgmcu.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_dcmi.c
+	"stm32f4xx_dcmi.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_dma.c
+	"stm32f4xx_dma.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_exti.c
+	"stm32f4xx_exti.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_flash.c
+	"stm32f4xx_flash.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_fsmc.c
+	"stm32f4xx_fsmc.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_gpio.c
+	"stm32f4xx_gpio.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_hash.c
+	"stm32f4xx_hash.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_hash_md5.c
+	"stm32f4xx_hash.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_hash_sha1.c
+	"stm32f4xx_hash.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_i2c.c
+	"stm32f4xx_i2c.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_iwdg.c
+	"stm32f4xx_iwdg.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_pwr.c
+	"stm32f4xx_pwr.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_rcc.c
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_rng.c
+	"stm32f4xx_rng.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_rtc.c
+	"stm32f4xx_rtc.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_sdio.c
+	"stm32f4xx_sdio.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_spi.c
+	"stm32f4xx_spi.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_syscfg.c
+	"stm32f4xx_syscfg.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_tim.c
+	"stm32f4xx_tim.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_usart.c
+	"stm32f4xx_usart.h"
+	"stm32f4xx_rcc.h"
+
+1455566033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\spl\src\stm32f4xx_wwdg.c
+	"stm32f4xx_wwdg.h"
+	"stm32f4xx_rcc.h"
+
+1456751532 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\main.cpp
+	"PropellerManager.hpp"
+
+1456260726 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\tlcrgb.h
+	"tlc5941.h"
+	<stdlib.h>
+
+1456259852 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\tlc5941.h
+	"stm32f4xx.h"
+	"stm32f4xx_gpio.h"
+	"stm32f4xx_rcc.h"
+	<stdint.h>
+
+1455566032 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\startup_stm32f4xx.s
+
+1456262666 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\system_stm32f4xx.c
+	"stm32f4xx.h"
+
+1456260730 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\tlcrgb.cpp
+	"tlcrgb.h"
+
+1456259854 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\tlc5941.cpp
+	"tlc5941.h"
+	"port.h"
+	<string.h>
+
+1456262010 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\port.h
+
+1456713330 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\hc06\hc06.c
+	<string.h>
+	<stdarg.h>
+	"stm32f4xx_rcc.h"
+	"stm32f4xx_usart.h"
+	"stm32f4xx_gpio.h"
+	"misc.h"
+	"stm32f4xx.h"
+	"hc06.h"
+
+1456718764 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\hc06\hc06.h
+	<stdio.h>
+	"BT_DataType.h"
+
+1449079586 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\debug.h
+
+1415545608 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\ccsbcs.c
+	"../ff.h"
+
+1447722953 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\fatfs\ff.h
+	"integer.h"
+	"ffconf.h"
+
+1447722953 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\fatfs\integer.h
+	<windows.h>
+	<tchar.h>
+
+1447722953 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\fatfs\ffconf.h
+
+1447722953 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\fatfs\diskio.c
+	"diskio.h"
+	"ff.h"
+	"fatfs_usb.h"
+	"fatfs_sdram.h"
+	"fatfs_spi_flash.h"
+	"fatfs_sd_sdio.h"
+	"fatfs_sd.h"
+
+1447722953 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\fatfs\diskio.h
+	"integer.h"
+	"defines.h"
+	"attributes.h"
+
+1448475111 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\defines.h
+
+1447722977 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\attributes.h
+
+1447722953 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\fatfs\drivers\fatfs_spi_flash.h
+	"stm32f4xx.h"
+	"defines.h"
+	"diskio.h"
+
+1447722953 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\fatfs\drivers\fatfs_sd.h
+	"diskio.h"
+	"integer.h"
+	"stm32f4xx.h"
+	"stm32f4xx_rcc.h"
+	"stm32f4xx_gpio.h"
+	"misc.h"
+	"defines.h"
+	"tm_stm32f4_spi.h"
+	"tm_stm32f4_delay.h"
+	"tm_stm32f4_gpio.h"
+	"tm_stm32f4_fatfs.h"
+
+1456278722 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\tm_stm32f4_spi.h
+	"stm32f4xx.h"
+	"stm32f4xx_rcc.h"
+	"stm32f4xx_gpio.h"
+	"stm32f4xx_spi.h"
+	"defines.h"
+	"attributes.h"
+	"tm_stm32f4_gpio.h"
+
+1448478921 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\tm_stm32f4_gpio.h
+	"stm32f4xx.h"
+	"stm32f4xx_gpio.h"
+	"defines.h"
+
+1447722985 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\tm_stm32f4_delay.h
+	"stm32f4xx.h"
+	"stm32f4xx_rcc.h"
+	"defines.h"
+	"attributes.h"
+	"misc.h"
+	"stm32f4xx_tim.h"
+	"tm_stm32f4_timer_properties.h"
+	"stdlib.h"
+
+1447722985 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\tm_stm32f4_timer_properties.h
+	"stm32f4xx.h"
+	"stm32f4xx_rcc.h"
+	"stm32f4xx_tim.h"
+	"defines.h"
+
+1447722953 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\tm_stm32f4_fatfs.h
+	"stm32f4xx.h"
+	"stm32f4xx_rcc.h"
+	"stm32f4xx_gpio.h"
+	"defines.h"
+	"tm_stm32f4_gpio.h"
+	"ff.h"
+	"diskio.h"
+	"string.h"
+	"stdlib.h"
+	"stdio.h"
+
+1447722953 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\fatfs\drivers\fatfs_sd.c
+	"diskio.h"
+	"fatfs_sd.h"
+
+1447722953 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\fatfs\drivers\fatfs_spi_flash.c
+	"fatfs_spi_flash.h"
+
+1447722953 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\fatfs\ff.c
+	"ff.h"
+	"diskio.h"
+	<stdarg.h>
+
+1430922596 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\syscall.c
+	"../ff.h"
+	"stdlib.h"
+
+1447722985 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\tm_stm32f4_delay.c
+	"tm_stm32f4_delay.h"
+
+1447722953 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\tm_stm32f4_fatfs.c
+	"tm_stm32f4_fatfs.h"
+
+1447722993 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\tm_stm32f4_gpio.c
+	"tm_stm32f4_gpio.h"
+
+1447722961 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\tm_stm32f4_spi.c
+	"tm_stm32f4_spi.h"
+
+1447722985 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\sdcard\tm_stm32f4_timer_properties.c
+	"tm_stm32f4_timer_properties.h"
+
+1456261798 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\tlc5941\tlc5941.cpp
+	"tlc5941.h"
+	"port.h"
+	<string.h>
+
+1456259852 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\tlc5941\tlc5941.h
+	"stm32f4xx.h"
+	"stm32f4xx_gpio.h"
+	"stm32f4xx_rcc.h"
+	<stdint.h>
+
+1456261983 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\tlc5941\tlcrgb.cpp
+	"tlcrgb.h"
+
+1456261909 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\tlc5941\tlcrgb.h
+	"tlc5941.h"
+	<stdlib.h>
+
+1448478894 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\sdcard_inc.h
+	"defines.h"
+	"tm_stm32f4_delay.h"
+	"tm_stm32f4_fatfs.h"
+
+1448494783 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\cpufreq.h
+
+1456262696 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\debughelpers.hpp
+	<stdio.h>
+
+1456755991 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\defines.h
+
+1455827165 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\attributes.h
+
+1456758228 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\comm\bluetooth.cpp
+	"Bluetooth.hpp"
+	"DebugHelpers.hpp"
+	"stm32f4xx_usart.h"
+	"tm_stm32f4_usart.h"
+	<string.h>
+
+1456758239 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\comm\bluetooth.hpp
+	<cstdint>
+	<string.h>
+	<array>
+
+1456082012 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\tlc5941\tm_stm32f4_usart.h
+	"misc.h"
+	"stm32f4xx.h"
+	"stm32f4xx_rcc.h"
+	"stm32f4xx_gpio.h"
+	"stm32f4xx_usart.h"
+	"attributes.h"
+	"defines.h"
+	"tm_stm32f4_gpio.h"
+
+1456260644 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\comm\bluetooth.hpp
+	<cstdint>
+	"tm_stm32f4_usart.h"
+	<array>
+
+1456025007 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\graphics\colourt.hpp
+
+1456262696 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\graphics\displaybuffers.hpp
+	<array>
+	<cstdint>
+	<cstddef>
+	<climits>
+	<algorithm>
+
+1456099528 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\graphics\fonts\clockfonts.cpp
+
+1456262078 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\graphics\fonts\clockfonts.hpp
+
+1456101672 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\graphics\fonts\messagefonts.hpp
+
+1456286422 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\graphics\messagemanager.cpp
+	"MessageManager.hpp"
+	"PropellerManager.hpp"
+	<utility>
+
+1456289033 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\graphics\messagemanager.hpp
+	<array>
+	<cstdint>
+	"ColourT.hpp"
+
+1456288820 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\graphics\displaybuffers.hpp
+	<array>
+	<cstdint>
+	<cstddef>
+	<climits>
+	<algorithm>
+	"ColourT.hpp"
+
+1456290021 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\tlc5941\leddriver.hpp
+	<cstdint>
+	<climits>
+	<array>
+	<algorithm>
+	"stm32f4xx.h"
+	"defines.h"
+	"tm_stm32f4_delay.h"
+	"tm_stm32f4_spi.h"
+	"tm_stm32f4_spi_dma.h"
+	"tm_stm32f4_gpio.h"
+	"FrameTimeManager.h"
+	"ClockManager.hpp"
+	"DebugHelpers.hpp"
+	"Bluetooth.hpp"
+	"MessageManager.hpp"
+	"ImageBuffer.hpp"
+	"DotT.hpp"
+
+1455827164 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\tlc5941\tm_stm32f4_spi_dma.h
+	"stm32f4xx.h"
+	"stm32f4xx_dma.h"
+	"defines.h"
+	"tm_stm32f4_dma.h"
+	"tm_stm32f4_spi.h"
+	"stdlib.h"
+
+1455827164 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\tlc5941\tm_stm32f4_dma.h
+	"stm32f4xx.h"
+	"tm_stm32f4_dma.h"
+	"defines.h"
+	"attributes.h"
+
+1456286815 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\propeller\frametimemanager.h
+	"stm32f4xx.h"
+
+1456289066 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\time\clockmanager.hpp
+	"tm_stm32f4_rtc.h"
+	<cstring>
+	"ColourT.hpp"
+
+1456743558 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\debughelpers.hpp
+	<stdio.h>
+
+1456109909 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\graphics\messagemanager.hpp
+	<array>
+	<cstdint>
+	"DisplayBuffers.hpp"
+
+1456760796 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\tlc5941\leddriver.cpp
+	"PropellerManager.hpp"
+	"DebugHelpers.hpp"
+
+1456285071 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\tlc5941\tm_stm32f4_spi.h
+	"stm32f4xx.h"
+	"stm32f4xx_rcc.h"
+	"stm32f4xx_gpio.h"
+	"stm32f4xx_spi.h"
+	"defines.h"
+	"attributes.h"
+	"tm_stm32f4_gpio.h"
+
+1456016186 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\rtc\tm_stm32f4_rtc.h
+	"stm32f4xx.h"
+	"stm32f4xx_rcc.h"
+	"stm32f4xx_rtc.h"
+	"stm32f4xx_pwr.h"
+	"stm32f4xx_exti.h"
+	"misc.h"
+	"defines.h"
+	"attributes.h"
+
+1456262078 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\tlc5941\leddriver.hpp
+	<cstdint>
+	<climits>
+	<array>
+	<algorithm>
+	"stm32f4xx.h"
+	"defines.h"
+	"tm_stm32f4_delay.h"
+	"tm_stm32f4_spi.h"
+	"tm_stm32f4_spi_dma.h"
+	"tm_stm32f4_gpio.h"
+	"FrameTimeManager.h"
+	"DisplayBuffers.hpp"
+	"ClockManager.hpp"
+	"DebugHelpers.hpp"
+	"Bluetooth.hpp"
+	"MessageManager.hpp"
+
+1455827166 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\tlc5941\tm_stm32f4_dma.c
+	"tm_stm32f4_dma.h"
+
+1455827166 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\tlc5941\tm_stm32f4_spi.c
+	"tm_stm32f4_spi.h"
+
+1455827164 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\tlc5941\tm_stm32f4_spi_dma.c
+	"tm_stm32f4_spi_dma.h"
+
+1455566032 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\system\startup_stm32f4xx.s
+
+1456756238 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\system\system_stm32f4xx.c
+	"stm32f4xx.h"
+
+1456286422 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\time\clockmanager.cpp
+	"ClockManager.hpp"
+	"PropellerManager.hpp"
+	"ClockFonts.hpp"
+
+1456262078 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\graphics\fonts\clockfonts.hpp
+
+1456256434 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\time\clockmanager.hpp
+	"tm_stm32f4_rtc.h"
+	"DisplayBuffers.hpp"
+	<cstring>
+
+1456753874 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\comm\tm_stm32f4_usart.c
+	"tm_stm32f4_usart.h"
+	<stdarg.h>
+
+1449311451 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\rtc\tm_stm32f4_rtc.c
+	"tm_stm32f4_rtc.h"
+
+1456292390 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\propeller\frametimemanager.cpp
+	"FrameTimeManager.h"
+	"PropellerManager.hpp"
+	"ClockManager.hpp"
+
+1456289146 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\graphics\colourt.hpp
+	<cstdint>
+
+1456294126 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\graphics\imagebuffer.hpp
+
+1456288613 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\propeller\propellermanager.hpp
+	"LedDriver.hpp"
+
+1456757329 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\propeller\propellermanager.cpp
+	"PropellerManager.hpp"
+
+1456288965 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\tlc5941\dotdef.hpp
+	<array>
+	<cstdint>
+	<cstddef>
+	<climits>
+	<algorithm>
+	"ColourT.hpp"
+
+1456291414 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\propeller\clockmanager.hpp
+	"tm_stm32f4_rtc.h"
+	<cstring>
+	"ColourT.hpp"
+
+1456289033 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\propeller\messagemanager.hpp
+	<array>
+	<cstdint>
+	"ColourT.hpp"
+
+1456289066 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\propeller\clockmanager.hpp
+	"tm_stm32f4_rtc.h"
+	<cstring>
+	"ColourT.hpp"
+
+1456286422 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\propeller\messagemanager.cpp
+	"MessageManager.hpp"
+	"PropellerManager.hpp"
+	<utility>
+
+1456289033 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\propeller\messagemanager.hpp
+	<array>
+	<cstdint>
+	"ColourT.hpp"
+
+1456758243 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\propeller\clockmanager.cpp
+	"ClockManager.hpp"
+	"PropellerManager.hpp"
+	"ClockFonts.hpp"
+
+1456288965 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\tlc5941\dott.hpp
+	<array>
+	<cstdint>
+	<cstddef>
+	<climits>
+	<algorithm>
+	"ColourT.hpp"
+
+1456738559 source:c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\drivers\hc06\hc06.cpp
+	<string.h>
+	<stdarg.h>
+	"stm32f4xx_rcc.h"
+	"stm32f4xx_usart.h"
+	"stm32f4xx_gpio.h"
+	"misc.h"
+	"stm32f4xx.h"
+	"hc06.h"
+	"DebugHelpers.hpp"
+
+1456715644 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\comm\bt_datatype.h
+	<cstdint>
+	<array>
+
+1456753862 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\comm\tm_stm32f4_usart.h
+	"misc.h"
+	"stm32f4xx.h"
+	"stm32f4xx_rcc.h"
+	"stm32f4xx_gpio.h"
+	"stm32f4xx_usart.h"
+	"attributes.h"
+	"defines.h"
+	"tm_stm32f4_gpio.h"
+
+1456710768 c:\users\miguel\documents\github\propeller-display\firmware\embitz project\propellerdisplay\propellerdisplay\src\system\cpufreq.h
+

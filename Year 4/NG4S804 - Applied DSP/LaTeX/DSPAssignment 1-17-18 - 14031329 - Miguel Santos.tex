@@ -1,0 +1,195 @@
+\documentclass[12pt, a4paper]{report}
+\usepackage{pdfpages}
+\usepackage[backend=bibtex, citestyle=verbose]{biblatex}
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{lastpage}
+\usepackage{listings}
+\usepackage[toc,page]{appendix}
+\usepackage[utf8]{inputenc}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{forloop}
+\usepackage{subfiles}
+\usepackage{accsupp}
+\usepackage{fnpct}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{tikz, pgfplots}
+\usepackage{xcolor,colortbl}
+\usepackage{color}
+\pdfmapfile{+zi4.map}
+\usepackage{zi4}
+
+\addbibresource{references/references.bib}
+\AdaptNoteOpt\footcite\multfootcite
+
+\newcommand{\imagespath}{res/img/}
+\newcommand{\images}[1]{\images#1}
+\newcommand{\plotspath}{res/plots/}
+\newcommand{\plots}[1]{\plotspath#1}
+\newcommand{\programspath}{../Visual-Studio-Project/NG4S804_Assignment1/NG4S804_Assignment1/}
+\newcommand{\programs}[1]{../Visual-Studio-Project/NG4S804_Assignment1/NG4S804_Assignment1/#1}
+
+\graphicspath{{\imagespath}{\plotspath}{\programspath}}
+
+% Margins
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+\linespread{1.1} % Line spacing
+
+% Header and footer
+\pagestyle{fancy}
+\lhead{14031329} % Top left header
+\chead{NG4S804\ Applied Digital Signal Processing: Assignment 1} % Top center head
+\rhead{\firstxmark} % Top right header
+\lfoot{\lastxmark} % Bottom left footer
+\cfoot{} % Bottom center footer
+\rfoot{Page\ \thepage\ of\ \protect\pageref{LastPage}} % Bottom right footer
+\renewcommand\headrulewidth{1.4pt} % Size of the header rule
+\renewcommand\footrulewidth{0.4pt} % Size of the footer rule
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs
+
+\title{
+	{DFT and Frequency Analysis}\\
+	{\large University of South Wales}\\
+	{\includegraphics[width=0.4\textwidth]{uni_usw_logo.jpg}}\\
+	{\large NG4S804 - Applied Digital Signal Processing}\\
+	{\large Assignment 1}
+}
+\author{14031329\\Miguel Santos}
+\date{15 December 2017\\2017/2018}
+
+\newcommand{\newsubsection}[1]{
+\newpage
+\addcontentsline{toc}{section}{#1}
+\subsection*{#1}
+}
+
+\newcommand{\newchapter}[2]{
+\newpage
+\addcontentsline{toc}{chapter}{#1}
+\chapter*{#1}
+\subfile{chapter/#2}
+}
+
+\newcommand{\newprogram}[1]{
+\newpage
+\section{#1}
+}
+
+\newcommand{\showplot}[2]{
+\begin{figure}[!h]
+\centerline{\resizebox{!}{9cm}{\input{\plots{#1}}}}
+\label{fig:#2}
+\caption{\scriptsize #2}
+\end{figure}
+}
+
+\newcommand{\showplotsmall}[2]{
+\begin{figure}[!h]
+\centerline{\resizebox{!}{5cm}{\input{\plots{#1}}}}
+\label{fig:#2}
+\caption{\scriptsize #2}
+\end{figure}
+}
+
+\newcommand{\showplotsidebyside}[4]{
+\begin{figure}[!h]
+\centering
+\begin{minipage}[b]{0.4\textwidth}
+	\centerline{\resizebox{!}{5cm}{\input{\plots{#1}}}}
+	\label{fig:#2}
+	\caption{\scriptsize #2}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.4\textwidth}
+	\centerline{\resizebox{!}{5cm}{\input{\plots{#3}}}}
+	\label{fig:#4}
+	\caption{\scriptsize #4}
+\end{minipage}
+\end{figure}
+}
+
+\pgfplotsset{
+	% Global Styles
+	axis lines = middle,
+	x label style={at={(axis description cs:0.5,-0.1)},anchor=north},
+	y label style={at={(axis description cs:-0.1,.5)},rotate=90,anchor=south},
+	xlabel = $y$,
+	ylabel = $x$,
+	no markers,
+	samples = 50,
+	grid = both,
+	trig format plots = rad,
+	enlargelimits = false,
+	axis line style = {line width=0.5pt},
+	every axis plot/.append style={
+		line width = 1.25pt,
+		smooth,
+	}
+}
+
+\lstset{ %
+  backgroundcolor=\color{white},  % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
+  basicstyle=\tiny\fontfamily{zi4}\selectfont, % the size and type of the fonts that are used for the code
+  breakatwhitespace=false,  % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                % sets automatic line breaking
+  captionpos=b,                   % sets the caption-position to bottom
+  commentstyle=\color[rgb]{0,0.6,0}, % comment style            
+  escapeinside={\%*}{*)},          
+  extendedchars=true,              
+  frame=lines,	                     % adds a frame around the code
+  keepspaces=true,                % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue}, % keyword style
+  language=C,   
+  numbers=left,                       % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=10pt,                 % how far the line-numbers are from the code
+  numberstyle=\tiny\fontfamily{zi4}\selectfont\color[rgb]{0.5,0.5,0.5}\noncopynumber, % the style that is used for the line-numbers
+  rulecolor=\color{black}, 
+  showstringspaces=false,
+  showtabs=false,        
+  stringstyle=\color[rgb]{0.58,0,0.82}, % string literal style
+  tabsize=4,                           % sets default tabsize to 4 spaces
+  columns=flexible,
+  upquote=true
+}
+
+\renewcommand{\lstlistingname}{\scriptsize Code}
+
+\newcommand{\noncopynumber}[1]{
+    \BeginAccSupp{method=escape,ActualText={}}
+    #1
+    \EndAccSupp{}
+}
+
+\begin{document}
+
+	\includepdf[pages=-]{chapter/cover.pdf}
+
+	\maketitle
+	\tableofcontents
+	\listoffigures
+	\listoftables
+	\lstlistoflistings
+
+	\newchapter{Introduction}{introduction}
+	\newchapter{Part 1}{part1}
+	\newchapter{Part 2}{part2}
+	\newchapter{Conclusion}{conclusion}
+	\addcontentsline{toc}{chapter}{References}
+	\renewcommand{\bibname}{References}
+	\printbibliography
+
+	\newpage
+	\begin{appendices}
+		\chapter{Code}
+		\subfile{chapter/appendix_a_code}
+	\end{appendices}
+
+\end{document}

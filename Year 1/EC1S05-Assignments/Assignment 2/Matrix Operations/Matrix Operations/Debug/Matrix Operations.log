@@ -1,0 +1,31 @@
+﻿Build started 18/02/2015 22:40:23.
+     1>Project "C:\Users\Miguel\Documents\GitHub\EC1S05-Assignments\Assignment 2\Matrix Operations\Matrix Operations\Matrix Operations.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt matrices.c
+         matrices.c
+     1>c:\users\miguel\documents\github\ec1s05-assignments\assignment 2\matrix operations\matrix operations\matrices.c(149): warning C4996: 'getch': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _getch. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\conio.h(131) : see declaration of 'getch'
+     1>c:\users\miguel\documents\github\ec1s05-assignments\assignment 2\matrix operations\matrix operations\matrices.c(160): warning C4090: 'function' : different 'const' qualifiers
+     1>c:\users\miguel\documents\github\ec1s05-assignments\assignment 2\matrix operations\matrix operations\matrices.c(184): warning C4090: 'function' : different 'const' qualifiers
+     1>c:\users\miguel\documents\github\ec1s05-assignments\assignment 2\matrix operations\matrix operations\matrices.c(208): warning C4090: 'function' : different 'const' qualifiers
+     1>c:\users\miguel\documents\github\ec1s05-assignments\assignment 2\matrix operations\matrix operations\matrices.c(306): warning C4090: 'function' : different 'const' qualifiers
+     1>c:\users\miguel\documents\github\ec1s05-assignments\assignment 2\matrix operations\matrix operations\matrices.c(345): warning C4090: 'function' : different 'const' qualifiers
+     1>c:\users\miguel\documents\github\ec1s05-assignments\assignment 2\matrix operations\matrix operations\matrices.c(360): warning C4090: 'function' : different 'const' qualifiers
+     1>c:\users\miguel\documents\github\ec1s05-assignments\assignment 2\matrix operations\matrix operations\matrices.c(363): warning C4090: 'function' : different 'const' qualifiers
+     1>c:\users\miguel\documents\github\ec1s05-assignments\assignment 2\matrix operations\matrix operations\matrices.c(368): warning C4090: 'function' : different 'const' qualifiers
+     1>c:\users\miguel\documents\github\ec1s05-assignments\assignment 2\matrix operations\matrix operations\matrices.c(371): warning C4090: 'function' : different 'const' qualifiers
+     1>c:\users\miguel\documents\github\ec1s05-assignments\assignment 2\matrix operations\matrix operations\matrices.c(376): warning C4090: 'function' : different 'const' qualifiers
+     1>c:\users\miguel\documents\github\ec1s05-assignments\assignment 2\matrix operations\matrix operations\matrices.c(377): warning C4090: 'function' : different 'const' qualifiers
+     1>c:\users\miguel\documents\github\ec1s05-assignments\assignment 2\matrix operations\matrix operations\matrices.c(383): warning C4090: 'function' : different 'const' qualifiers
+     1>c:\users\miguel\documents\github\ec1s05-assignments\assignment 2\matrix operations\matrix operations\matrices.c(385): warning C4090: 'function' : different 'const' qualifiers
+     1>c:\users\miguel\documents\github\ec1s05-assignments\assignment 2\matrix operations\matrix operations\matrices.c(386): warning C4090: 'function' : different 'const' qualifiers
+     1>c:\users\miguel\documents\github\ec1s05-assignments\assignment 2\matrix operations\matrix operations\matrices.c(469): warning C4996: 'getch': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _getch. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\conio.h(131) : see declaration of 'getch'
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Miguel\Documents\GitHub\EC1S05-Assignments\Assignment 2\Matrix Operations\Debug\Matrix Operations.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Miguel\Documents\GitHub\EC1S05-Assignments\Assignment 2\Matrix Operations\Debug\Matrix Operations.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Miguel\Documents\GitHub\EC1S05-Assignments\Assignment 2\Matrix Operations\Debug\Matrix Operations.lib" /MACHINE:X86 Debug\matrices.obj
+         Matrix Operations.vcxproj -> C:\Users\Miguel\Documents\GitHub\EC1S05-Assignments\Assignment 2\Matrix Operations\Debug\Matrix Operations.exe
+     1>Done Building Project "C:\Users\Miguel\Documents\GitHub\EC1S05-Assignments\Assignment 2\Matrix Operations\Matrix Operations\Matrix Operations.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.86

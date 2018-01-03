@@ -1,0 +1,423 @@
+ (routes 
+  (resolution mm 100000)
+  (parser
+  )
+  (parser
+  )
+  (structure_out
+   (layer TOP (type signal)
+   )
+   (layer I1 (type signal)
+   )
+   (layer I2 (type signal)
+   )
+   (layer I3 (type signal)
+   )
+   (layer I4 (type signal)
+   )
+   (layer I5 (type signal)
+   )
+   (layer I6 (type signal)
+   )
+   (layer I7 (type signal)
+   )
+   (layer I8 (type signal)
+   )
+   (layer I9 (type signal)
+   )
+   (layer I10 (type signal)
+   )
+   (layer I11 (type signal)
+   )
+   (layer I12 (type signal)
+   )
+   (layer I13 (type signal)
+   )
+   (layer I14 (type signal)
+   )
+   (layer BOT (type signal)
+   )
+  )
+  (library_out
+  (padstack $VIA_POWER
+   (shape (circ TOP 76200 0 0))
+   (shape (circ I1 76200 0 0))
+   (shape (circ I2 76200 0 0))
+   (shape (circ I3 76200 0 0))
+   (shape (circ I4 76200 0 0))
+   (shape (circ I5 76200 0 0))
+   (shape (circ I6 76200 0 0))
+   (shape (circ I7 76200 0 0))
+   (shape (circ I8 76200 0 0))
+   (shape (circ I9 76200 0 0))
+   (shape (circ I10 76200 0 0))
+   (shape (circ I11 76200 0 0))
+   (shape (circ I12 76200 0 0))
+   (shape (circ I13 76200 0 0))
+   (shape (circ I14 76200 0 0))
+   (shape (circ BOT 76200 0 0))
+  )
+  (padstack $VIA_SIGNAL
+   (shape (circ TOP 76200 0 0))
+   (shape (circ I1 76200 0 0))
+   (shape (circ I2 76200 0 0))
+   (shape (circ I3 76200 0 0))
+   (shape (circ I4 76200 0 0))
+   (shape (circ I5 76200 0 0))
+   (shape (circ I6 76200 0 0))
+   (shape (circ I7 76200 0 0))
+   (shape (circ I8 76200 0 0))
+   (shape (circ I9 76200 0 0))
+   (shape (circ I10 76200 0 0))
+   (shape (circ I11 76200 0 0))
+   (shape (circ I12 76200 0 0))
+   (shape (circ I13 76200 0 0))
+   (shape (circ I14 76200 0 0))
+   (shape (circ BOT 76200 0 0))
+  )
+  (padstack PS5
+   (shape (circ TOP 127000 0 0))
+   (shape (circ I1 127000 0 0))
+   (shape (circ I2 127000 0 0))
+   (shape (circ I3 127000 0 0))
+   (shape (circ I4 127000 0 0))
+   (shape (circ I5 127000 0 0))
+   (shape (circ I6 127000 0 0))
+   (shape (circ I7 127000 0 0))
+   (shape (circ I8 127000 0 0))
+   (shape (circ I9 127000 0 0))
+   (shape (circ I10 127000 0 0))
+   (shape (circ I11 127000 0 0))
+   (shape (circ I12 127000 0 0))
+   (shape (circ I13 127000 0 0))
+   (shape (circ I14 127000 0 0))
+   (shape (circ BOT 127000 0 0))
+  )
+  (padstack PS6
+   (shape (circ TOP 152400 0 0))
+   (shape (circ I1 152400 0 0))
+   (shape (circ I2 152400 0 0))
+   (shape (circ I3 152400 0 0))
+   (shape (circ I4 152400 0 0))
+   (shape (circ I5 152400 0 0))
+   (shape (circ I6 152400 0 0))
+   (shape (circ I7 152400 0 0))
+   (shape (circ I8 152400 0 0))
+   (shape (circ I9 152400 0 0))
+   (shape (circ I10 152400 0 0))
+   (shape (circ I11 152400 0 0))
+   (shape (circ I12 152400 0 0))
+   (shape (circ I13 152400 0 0))
+   (shape (circ I14 152400 0 0))
+   (shape (circ BOT 152400 0 0))
+  )
+  )
+  (network_out
+   (Net #00009 
+   (rule
+   )
+   (wire (path BOT 25400  -5206000 850000 -5206000 2094971 -5092700 2094971
+     -5092700 2527300 -6108700 2527300 -6108700 1669444 -8954000 1669444
+     -8954000 1400000)
+    (connect (terminal pin ATMEGA32-11) (terminal pin C2-1))
+   )
+   (wire (path BOT 25400  -8954000 1400000 -8954000 1168400 -8827000 1168400
+     -8827000 762000 -9182100 762000 -9182100 2133600 -8695753 2133600
+     -8695753 2095500 -7124700 2095500 -7124700 2476500 -7378700 2476500
+     -7378700 2197100 -8496300 2197100 -8496300 2500000 -8900000 2500000)
+    (connect (terminal pin C2-1) (terminal pin X1-0))
+   )
+   )
+   (Net #00010 
+   (rule
+   )
+   (wire (path BOT 25400  -8900000 1992000 -6870700 1992000 -6870700 2578100
+     -4838700 2578100 -4838700 1701800 -4952000 1701800 -4952000 850000)
+    (connect (terminal pin X1-1) (terminal pin ATMEGA32-12))
+   )
+   (wire (path BOT 25400  -8900000 1992000 -8900000 1739900 -9093200 1739900
+     -9093200 900000 -8954000 900000)
+    (connect (terminal pin X1-1) (terminal pin C1-1))
+   )
+   )
+   (Net #00011 
+   (rule
+   )
+   (wire (path BOT 25400  -4689495 560288 -4689495 841495 -4698000 850000)
+    (connect (terminal via) (terminal pin ATMEGA32-13))
+    (type protect)
+   )
+   (wire (path BOT 25400  -5134000 -150000 -5134000 -373331 -5125657 -381674
+     -5121991 -381674)
+    (connect (terminal pin "MICRO OSCILLOSCOPE"-4) (terminal via))
+    (type protect)
+   )
+   (wire (path TOP 25400  -5121991 -381674 -3837332 -381674 -3714546 -258888
+     -3714546 214546 -4060288 560288 -4689495 560288)
+    (connect (terminal via) (terminal via))
+    (type protect)
+   )
+   (via PS5 -4689495 560288)
+   (via PS5 -5121991 -381674)
+   )
+   (Net #00012 
+   (rule
+   )
+   (wire (path BOT 25400  -4880000 -150000 -4880000 -482600 -3009900 -482600
+     -3009900 2527300 -4076700 2527300 -4076700 1727200 -4444000 1727200
+     -4444000 850000)
+    (connect (terminal pin "MICRO OSCILLOSCOPE"-5) (terminal pin ATMEGA32-14))
+   )
+   )
+   (Net #00013 
+   (rule
+   )
+   (wire (path BOT 25400  -4626000 -150000 -4626000 -431800 -3060700 -431800
+     -3060700 2476500 -3822700 2476500 -3822700 1104900 -4190000 1104900
+     -4190000 850000)
+    (connect (terminal pin "MICRO OSCILLOSCOPE"-6) (terminal pin ATMEGA32-15))
+   )
+   )
+   (Net #00019 
+   (rule
+   )
+   (wire (path BOT 25400  -4372000 -150000 -4372000 -381000 -3314700 -381000
+     -3314700 2159000 -3428000 2159000 -3428000 2374000)
+    (connect (terminal pin "MICRO OSCILLOSCOPE"-7) (terminal pin ATMEGA32-21))
+   )
+   )
+   (Net #00020 
+   (rule
+   )
+   (wire (path BOT 25400  -4118000 -150000 -4118000 -330200 -3568700 -330200
+     -3568700 2159000 -3682000 2159000 -3682000 2374000)
+    (connect (terminal pin "MICRO OSCILLOSCOPE"-8) (terminal pin ATMEGA32-22))
+   )
+   )
+   (Net #00021 
+   (rule
+   )
+   (wire (path BOT 25400  -4118000 104000 -4118000 685800 -4318000 685800
+     -4318000 1216044 -3936000 1216044 -3936000 2374000)
+    (connect (terminal pin "MICRO OSCILLOSCOPE"-11) (terminal pin ATMEGA32-23))
+   )
+   )
+   (Net #00022 
+   (rule
+   )
+   (wire (path BOT 25400  -4372000 104000 -4372000 498445 -4572000 498445
+     -4572000 1838508 -4190000 1838508 -4190000 2374000)
+    (connect (terminal pin "MICRO OSCILLOSCOPE"-12) (terminal pin ATMEGA32-24))
+   )
+   )
+   (Net #00023 
+   (rule
+   )
+   (wire (path BOT 25400  -4626000 104000 -4626000 308792 -4799600 308792
+     -4799600 1099526 -4635500 1099526 -4635500 2094722 -4444000 2094722
+     -4444000 2374000)
+    (connect (terminal pin "MICRO OSCILLOSCOPE"-13) (terminal pin ATMEGA32-25))
+   )
+   )
+   (Net #00024 
+   (rule
+   )
+   (wire (path BOT 25400  -4880000 104000 -4880000 331498 -4850400 331498
+     -4850400 1341622 -4698000 1341622 -4698000 2374000)
+    (connect (terminal pin "MICRO OSCILLOSCOPE"-14) (terminal pin ATMEGA32-26))
+   )
+   )
+   (Net #00025 
+   (rule
+   )
+   (wire (path BOT 25400  -5134000 104000 -5134000 386024 -5092700 386024
+     -5092700 1808116 -4952000 1808116 -4952000 2374000)
+    (connect (terminal pin "MICRO OSCILLOSCOPE"-15) (terminal pin ATMEGA32-27))
+   )
+   )
+   (Net #00026 
+   (rule
+   )
+   (wire (path BOT 25400  -5388000 104000 -5388000 482600 -5346700 482600
+     -5346700 2159000 -5206000 2159000 -5206000 2374000)
+    (connect (terminal pin "MICRO OSCILLOSCOPE"-16) (terminal pin ATMEGA32-28))
+   )
+   )
+   (Net #00033 
+   (rule
+   )
+   (wire (path BOT 25400  -7746000 2374000 -7746000 2628900 -2232082 2628900
+     -2232082 1632001 -1958000 1632001)
+    (connect (terminal pin ATMEGA32-38) (terminal pin "741 OP AMP"-5))
+   )
+   (wire (path BOT 25400  -1800000 700000 -1800000 838200 -1689100 838200
+     -1689100 1632001 -1958000 1632001)
+    (connect (terminal pin R2-1) (terminal pin "741 OP AMP"-5))
+   )
+   )
+   (Net #00044 
+   (rule
+   )
+   (wire (path BOT 25400  -2836000 1070000 -2836000 1886000 -2720000 1886000)
+    (connect (terminal pin R1-1) (terminal pin "741 OP AMP"-1))
+   )
+   (wire (path BOT 25400  -2816000 700000 -2816000 838200 -2836000 838200
+     -2836000 1070000)
+    (connect (terminal pin R2-0) (terminal pin R1-1))
+   )
+   )
+   (Net #00051 
+   (rule
+   )
+   (wire (path BOT 25400  -10100000 1046000 -9906000 1046000 -9906000 1892300
+     -10100000 1892300 -10100000 2146000)
+    (connect (terminal pin VOLTAGE-1) (terminal pin TIME-1))
+   )
+   )
+   (Net #00060 
+   (rule
+   )
+   (wire (path BOT 25400  -10240000 90000 -10240000 228600 -10200000 228600
+     -10200000 500000)
+    (connect (terminal pin R3-0) (terminal pin POWER_ON-1))
+   )
+   )
+   (Net D_T 
+   (rule
+   )
+   (wire (path BOT 25400  -10100000 2400000 -9334500 2400000 -9334500 2641600
+     -8358893 2641600 -8358893 2247900 -7492000 2247900 -7492000 2374000)
+    (connect (terminal pin TIME-2) (terminal pin ATMEGA32-37))
+   )
+   )
+   (Net D_V 
+   (rule
+   )
+   (wire (path BOT 25400  -10100000 1300000 -10274300 1300000 -10274300 850900
+     -9490674 850900 -9490674 2184400 -8636000 2184400 -8636000 2146300
+     -7238000 2146300 -7238000 2374000)
+    (connect (terminal pin VOLTAGE-2) (terminal pin ATMEGA32-36))
+   )
+   )
+   (Net GND 
+   (rule
+   )
+   (wire (path BOT 25400  -5642000 -150000 -5642000 -533400 -2565400 -533400
+     -2565400 1632000 -2720000 1632000)
+    (connect (terminal pin "MICRO OSCILLOSCOPE"-2) (terminal pin "741 OP AMP"-2))
+   )
+   (wire (path BOT 25400  -5714000 2374000 -5714000 1400000 -8700000 1400000)
+    (connect (terminal pin ATMEGA32-30) (terminal pin C2-0))
+   )
+   (wire (path BOT 25400  -6509855 -142928 -6509855 393758 -5460000 393758
+     -5460000 850000)
+    (connect (terminal via) (terminal pin ATMEGA32-10))
+   )
+   (wire (path BOT 25400  -6509855 -440000 -7887607 -440000 -7887607 -300000
+     -9346000 -300000)
+    (connect (terminal via) (terminal pin POWER-1))
+   )
+   (wire (path BOT 25400  -10325100 647700 -10401300 647700 -10401300 -152400
+     -10046000 -152400 -10046000 -300000)
+    (connect (terminal wire) (terminal pin IN-1))
+   )
+   (wire (path BOT 25400  -10274300 1554000 -10274300 1422400 -10325100 1422400
+     -10325100 647700)
+    (connect (terminal wire) (terminal wire))
+   )
+   (wire (path BOT 25400  -8700000 900000 -8700000 647700 -9232900 647700)
+    (connect (terminal pin C1-0) (terminal wire))
+   )
+   (wire (path BOT 25400  -9224000 90000 -9224000 330200 -9232900 330200
+     -9232900 647700)
+    (connect (terminal pin R3-1) (terminal wire))
+   )
+   (wire (path BOT 25400  -10100000 2654000 -10274300 2654000 -10274300 1554000)
+    (connect (terminal pin TIME-0) (terminal wire))
+   )
+   (wire (path BOT 25400  -10274300 1554000 -10100000 1554000)
+    (connect (terminal wire) (terminal pin VOLTAGE-0))
+   )
+   (wire (path BOT 25400  -10325100 647700 -9232900 647700)
+    (connect (terminal wire) (terminal wire))
+   )
+   (wire (path BOT 25400  -10046000 -300000 -9804400 -300000 -9804400 -444500
+     -9346000 -444500 -9346000 -300000)
+    (connect (terminal pin IN-1) (terminal pin POWER-1))
+   )
+   (wire (path BOT 25400  -8700000 900000 -8700000 1400000)
+    (connect (terminal pin C1-0) (terminal pin C2-0))
+   )
+   (wire (path BOT 25400  -6350000 -150000 -6150000 -150000)
+    (connect (terminal wire) (terminal pin "MICRO OSCILLOSCOPE"-0))
+   )
+   (wire (path BOT 25400  -6371159 -342900 -5692800 -342900 -5692800 -150000
+     -5642000 -150000)
+    (connect (terminal wire) (terminal pin "MICRO OSCILLOSCOPE"-2))
+   )
+   (wire (path BOT 25400  -6371159 -342900 -6509855 -440000)
+    (connect (terminal wire) (terminal via))
+    (type protect)
+   )
+   (wire (path BOT 25400  -6509855 -142928 -6513536 -146609 -6510145 -150000
+     -6350000 -150000)
+    (connect (terminal via) (terminal wire))
+    (type protect)
+   )
+   (wire (path TOP 25400  -6509855 -440000 -6509855 -474232 -6509855 -142928)
+    (connect (terminal via) (terminal via))
+    (type protect)
+   )
+   (via PS6 -6509855 -440000)
+   (via PS6 -6509855 -142928)
+   )
+   (Net SIGNAL_IN 
+   (rule
+   )
+   (wire (path BOT 25400  -8000000 2374000 -7886700 2374000 -7886700 2679700
+     -1638300 2679700 -1638300 520700 -1943100 520700 -1943100 889000
+     -1820000 889000 -1820000 1070000)
+    (connect (terminal pin ATMEGA32-39) (terminal pin R1-0))
+   )
+   (wire (path BOT 25400  -10300000 -300000 -10452100 -300000 -10452100 2794000
+     -8204200 2794000 -8204200 2374000 -8000000 2374000)
+    (connect (terminal pin IN-0) (terminal pin ATMEGA32-39))
+   )
+   )
+   (Net VCC/VDD 
+   (rule
+   )
+   (wire (path BOT 25400  -6743700 -139700 -6743700 642111 -5968000 642111
+     -5968000 850000)
+    (connect (terminal wire) (terminal pin ATMEGA32-8))
+   )
+   (wire (path BOT 25400  -6743700 -139700 -6743700 -292100 -5896000 -292100
+     -5896000 -150000)
+    (connect (terminal wire) (terminal pin "MICRO OSCILLOSCOPE"-1))
+   )
+   (wire (path BOT 25400  -5714000 850000 -5714000 1153743 -5460000 1153743
+     -5460000 2374000)
+    (connect (terminal pin ATMEGA32-9) (terminal pin ATMEGA32-29))
+   )
+   (wire (path BOT 25400  -9600000 -139700 -9946000 -139700 -9946000 500000)
+    (connect (terminal wire) (terminal pin POWER_ON-0))
+   )
+   (wire (path BOT 25400  -6794500 -139700 -6743700 -139700)
+    (connect (terminal wire) (terminal wire))
+   )
+   (wire (path BOT 25400  -9600000 -139700 -6794500 -139700)
+    (connect (terminal wire) (terminal wire))
+   )
+   (wire (path BOT 25400  -5460000 2374000 -5460000 2476500 -5968000 2476500
+     -5968000 2374000)
+    (connect (terminal pin ATMEGA32-29) (terminal pin ATMEGA32-31))
+   )
+   (wire (path BOT 25400  -5968000 850000 -5714000 850000)
+    (connect (terminal pin ATMEGA32-8) (terminal pin ATMEGA32-9))
+   )
+   (wire (path BOT 25400  -9600000 -139700 -9600000 -300000)
+    (connect (terminal wire) (terminal pin POWER-0))
+   )
+   )
+  )
+ )

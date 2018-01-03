@@ -1,0 +1,184 @@
+% GNUPLOT: LaTeX picture with Postscript
+\begingroup
+  % Encoding inside the plot.  In the header of your document, this encoding
+  % should to defined, e.g., by using
+  % \usepackage[cp1252,<other encodings>]{inputenc}
+  \inputencoding{cp1252}%
+  \fontfamily{phv}%
+  \selectfont
+  \makeatletter
+  \providecommand\color[2][]{%
+    \GenericError{(gnuplot) \space\space\space\@spaces}{%
+      Package color not loaded in conjunction with
+      terminal option `colourtext'%
+    }{See the gnuplot documentation for explanation.%
+    }{Either use 'blacktext' in gnuplot or load the package
+      color.sty in LaTeX.}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\includegraphics[2][]{%
+    \GenericError{(gnuplot) \space\space\space\@spaces}{%
+      Package graphicx or graphics not loaded%
+    }{See the gnuplot documentation for explanation.%
+    }{The gnuplot epslatex terminal needs graphicx.sty or graphics.sty.}%
+    \renewcommand\includegraphics[2][]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \@ifundefined{ifGPcolor}{%
+    \newif\ifGPcolor
+    \GPcolortrue
+  }{}%
+  \@ifundefined{ifGPblacktext}{%
+    \newif\ifGPblacktext
+    \GPblacktextfalse
+  }{}%
+  % define a \g@addto@macro without @ in the name:
+  \let\gplgaddtomacro\g@addto@macro
+  % define empty templates for all commands taking text:
+  \gdef\gplbacktext{}%
+  \gdef\gplfronttext{}%
+  \makeatother
+  \ifGPblacktext
+    % no textcolor at all
+    \def\colorrgb#1{}%
+    \def\colorgray#1{}%
+  \else
+    % gray or color?
+    \ifGPcolor
+      \def\colorrgb#1{\color[rgb]{#1}}%
+      \def\colorgray#1{\color[gray]{#1}}%
+      \expandafter\def\csname LTw\endcsname{\color{white}}%
+      \expandafter\def\csname LTb\endcsname{\color{black}}%
+      \expandafter\def\csname LTa\endcsname{\color{black}}%
+      \expandafter\def\csname LT0\endcsname{\color[rgb]{1,0,0}}%
+      \expandafter\def\csname LT1\endcsname{\color[rgb]{0,1,0}}%
+      \expandafter\def\csname LT2\endcsname{\color[rgb]{0,0,1}}%
+      \expandafter\def\csname LT3\endcsname{\color[rgb]{1,0,1}}%
+      \expandafter\def\csname LT4\endcsname{\color[rgb]{0,1,1}}%
+      \expandafter\def\csname LT5\endcsname{\color[rgb]{1,1,0}}%
+      \expandafter\def\csname LT6\endcsname{\color[rgb]{0,0,0}}%
+      \expandafter\def\csname LT7\endcsname{\color[rgb]{1,0.3,0}}%
+      \expandafter\def\csname LT8\endcsname{\color[rgb]{0.5,0.5,0.5}}%
+    \else
+      % gray
+      \def\colorrgb#1{\color{black}}%
+      \def\colorgray#1{\color[gray]{#1}}%
+      \expandafter\def\csname LTw\endcsname{\color{white}}%
+      \expandafter\def\csname LTb\endcsname{\color{black}}%
+      \expandafter\def\csname LTa\endcsname{\color{black}}%
+      \expandafter\def\csname LT0\endcsname{\color{black}}%
+      \expandafter\def\csname LT1\endcsname{\color{black}}%
+      \expandafter\def\csname LT2\endcsname{\color{black}}%
+      \expandafter\def\csname LT3\endcsname{\color{black}}%
+      \expandafter\def\csname LT4\endcsname{\color{black}}%
+      \expandafter\def\csname LT5\endcsname{\color{black}}%
+      \expandafter\def\csname LT6\endcsname{\color{black}}%
+      \expandafter\def\csname LT7\endcsname{\color{black}}%
+      \expandafter\def\csname LT8\endcsname{\color{black}}%
+    \fi
+  \fi
+    \setlength{\unitlength}{0.0500bp}%
+    \ifx\gptboxheight\undefined%
+      \newlength{\gptboxheight}%
+      \newlength{\gptboxwidth}%
+      \newsavebox{\gptboxtext}%
+    \fi%
+    \setlength{\fboxrule}{0.5pt}%
+    \setlength{\fboxsep}{1pt}%
+\begin{picture}(15874.00,8502.00)%
+    \gplgaddtomacro\gplbacktext{%
+      \csname LTb\endcsname%%
+      \put(1342,704){\makebox(0,0)[r]{\strut{}\textbf{\scriptsize $0$}}}%
+      \csname LTb\endcsname%%
+      \put(1342,7621){\makebox(0,0)[r]{\strut{}\textbf{\scriptsize $4.99$}}}%
+      \csname LTb\endcsname%%
+      \put(1342,1397){\makebox(0,0)[r]{\strut{}\textbf{\scriptsize $0.5$}}}%
+      \csname LTb\endcsname%%
+      \put(1342,2090){\makebox(0,0)[r]{\strut{}\textbf{\scriptsize $1$}}}%
+      \csname LTb\endcsname%%
+      \put(1342,2783){\makebox(0,0)[r]{\strut{}\textbf{\scriptsize $1.5$}}}%
+      \csname LTb\endcsname%%
+      \put(1342,3476){\makebox(0,0)[r]{\strut{}\textbf{\scriptsize $2$}}}%
+      \csname LTb\endcsname%%
+      \put(1342,4169){\makebox(0,0)[r]{\strut{}\textbf{\scriptsize $2.5$}}}%
+      \csname LTb\endcsname%%
+      \put(1342,4862){\makebox(0,0)[r]{\strut{}\textbf{\scriptsize $3$}}}%
+      \csname LTb\endcsname%%
+      \put(1342,5555){\makebox(0,0)[r]{\strut{}\textbf{\scriptsize $3.5$}}}%
+      \csname LTb\endcsname%%
+      \put(1342,6248){\makebox(0,0)[r]{\strut{}\textbf{\scriptsize $4$}}}%
+      \csname LTb\endcsname%%
+      \put(1342,6942){\makebox(0,0)[r]{\strut{}\textbf{\scriptsize $4.5$}}}%
+      \csname LTb\endcsname%%
+      \put(1474,484){\makebox(0,0){\strut{}\textbf{\scriptsize $-7500$}}}%
+      \csname LTb\endcsname%%
+      \put(15477,484){\makebox(0,0){\strut{}\textbf{\scriptsize $7470$}}}%
+      \csname LTb\endcsname%%
+      \put(1942,484){\makebox(0,0){\strut{}\textbf{\scriptsize $-7000$}}}%
+      \csname LTb\endcsname%%
+      \put(2877,484){\makebox(0,0){\strut{}\textbf{\scriptsize $-6000$}}}%
+      \csname LTb\endcsname%%
+      \put(3813,484){\makebox(0,0){\strut{}\textbf{\scriptsize $-5000$}}}%
+      \csname LTb\endcsname%%
+      \put(4748,484){\makebox(0,0){\strut{}\textbf{\scriptsize $-4000$}}}%
+      \csname LTb\endcsname%%
+      \put(5683,484){\makebox(0,0){\strut{}\textbf{\scriptsize $-3000$}}}%
+      \csname LTb\endcsname%%
+      \put(6619,484){\makebox(0,0){\strut{}\textbf{\scriptsize $-2000$}}}%
+      \csname LTb\endcsname%%
+      \put(7554,484){\makebox(0,0){\strut{}\textbf{\scriptsize $-1000$}}}%
+      \csname LTb\endcsname%%
+      \put(8490,484){\makebox(0,0){\strut{}\textbf{\scriptsize $0$}}}%
+      \csname LTb\endcsname%%
+      \put(9425,484){\makebox(0,0){\strut{}\textbf{\scriptsize $1000$}}}%
+      \csname LTb\endcsname%%
+      \put(10360,484){\makebox(0,0){\strut{}\textbf{\scriptsize $2000$}}}%
+      \csname LTb\endcsname%%
+      \put(11296,484){\makebox(0,0){\strut{}\textbf{\scriptsize $3000$}}}%
+      \csname LTb\endcsname%%
+      \put(12231,484){\makebox(0,0){\strut{}\textbf{\scriptsize $4000$}}}%
+      \csname LTb\endcsname%%
+      \put(13167,484){\makebox(0,0){\strut{}\textbf{\scriptsize $5000$}}}%
+      \csname LTb\endcsname%%
+      \put(14102,484){\makebox(0,0){\strut{}\textbf{\scriptsize $6000$}}}%
+      \csname LTb\endcsname%%
+      \put(15037,484){\makebox(0,0){\strut{}\textbf{\scriptsize $7000$}}}%
+      \put(1912,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $-240$}}}%
+      \put(2461,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $-220$}}}%
+      \put(3009,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $-200$}}}%
+      \put(3557,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $-180$}}}%
+      \put(4105,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $-160$}}}%
+      \put(4653,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $-140$}}}%
+      \put(5201,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $-120$}}}%
+      \put(5749,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $-100$}}}%
+      \put(6297,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $-80$}}}%
+      \put(6845,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $-60$}}}%
+      \put(7393,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $-40$}}}%
+      \put(7941,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $-20$}}}%
+      \put(8489,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $0$}}}%
+      \put(9037,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $20$}}}%
+      \put(9585,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $40$}}}%
+      \put(10133,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $60$}}}%
+      \put(10681,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $80$}}}%
+      \put(11230,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $100$}}}%
+      \put(11778,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $120$}}}%
+      \put(12326,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $140$}}}%
+      \put(12874,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $160$}}}%
+      \put(13422,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $180$}}}%
+      \put(13970,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $200$}}}%
+      \put(14518,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $220$}}}%
+      \put(15066,7841){\makebox(0,0){\strut{}\textbf{\scriptsize $240$}}}%
+    }%
+    \gplgaddtomacro\gplfronttext{%
+      \csname LTb\endcsname%%
+      \put(330,4162){\rotatebox{-270}{\makebox(0,0){\strut{}Magnitude x[k]}}}%
+      \put(8475,154){\makebox(0,0){\strut{}Frequency (Hz)}}%
+      \put(8475,8171){\makebox(0,0){\strut{}}}%
+      \put(8475,8391){\makebox(0,0){\strut{}}}%
+      \put(8475,8171){\makebox(0,0){\strut{}k (bin)}}%
+    }%
+    \gplbacktext
+    \put(0,0){\includegraphics{res/plots/Q22C2DSB}}%
+    \gplfronttext
+  \end{picture}%
+\endgroup

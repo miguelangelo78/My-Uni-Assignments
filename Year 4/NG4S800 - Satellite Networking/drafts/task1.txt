@@ -1,0 +1,33 @@
+PAGES: 28-31, 86-95, 187-212
+
+SHSS - Single-Hop, single-satellite
+	1 - Delay:         Low
+	2 - Terminal size: Large + high power (*)
+	3 - Earth segment: No earth segment (not vulnerable) (*)
+	4 - Space segment: Limited power (cheaper)
+	5 - Complexity:    Simple, because no interconnection and no handover (no ISL) (*)
+	6 - Coverage:      Limited (*)
+
+DHSS - Double-Hop, single-satellite
+	1 - Delay:         Medium (x2)
+	2 - Terminal size: Small + low power
+	3 - Earth segment: Vulnerable, because if down entire network goes down (*)
+	4 - Space segment: Limited power | cheaper, because power is provided by earth segment (*)
+	5 - Complexity:    Simple, because no interconnection and no handover (no ISL) (*)
+	6 - Coverage:      Limited (*)
+
+MHMS - Multiple-Hop, multiple-satellite
+	1 - Delay:         High
+	2 - Terminal size: Small + low power (*)
+	3 - Earth segment: Secure (*)
+	4 - Space segment: Limited power | cheaper, because power is provided by earth segment (*)
+	5 - Complexity:    Simple, because no interconnection and no handover (no ISL) (*)
+	6 - Coverage:      Wide
+
+SHMS - Single-Hop, multiple-satellite
+	1 - Delay:         High (*)
+	2 - Terminal size: Large + high power (*)
+	3 - Earth segment: No earth segment (not vulnerable) (*)
+	4 - Space segment: Requires power (expensive) (*)
+	5 - Complexity:    Complex space segment, because requires interconnection and/or handover (has ISL)
+	6 - Coverage:      Global

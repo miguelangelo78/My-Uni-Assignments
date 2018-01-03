@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<history>
+   <processor signature="arm-none-eabi-gcc 4.8.1 mingw32 -mcpu=cortex-m4 -mthumb -Wall -ffunction-sections -g -O0 -c -DSTM32F401VC -DSTM32F4XX -DUSE_STDPERIPH_DRIVER -D__ASSEMBLY__ -I..\..\..\..\..\Users\Miguel\Documents\GitHub\Propeller-Display\Firmware\CooCox Project -I..\..\..\..\..\Users\Miguel\Documents\GitHub\Propeller-Display\Firmware\CooCox Project\PropellerDisplay\cmsis_lib -I..\..\..\..\..\Users\Miguel\Documents\GitHub\Propeller-Display\Firmware\CooCox Project\PropellerDisplay\tlc5941 -I..\..\..\..\..\Users\Miguel\Documents\GitHub\Propeller-Display\Firmware\CooCox Project\PropellerDisplay\sdcard -I..\..\..\..\..\Users\Miguel\Documents\GitHub\Propeller-Display\Firmware -I..\..\..\..\..\Users\Miguel\Documents\GitHub\Propeller-Display\Firmware\CooCox Project\PropellerDisplay\sdcard\fatfs -I..\..\..\..\..\Users\Miguel\Documents\GitHub\Propeller-Display\Firmware\CooCox Project\PropellerDisplay\cmsis_boot -I..\..\..\..\..\Users\Miguel\Documents\GitHub\Propeller-Display\Firmware\CooCox Project\PropellerDisplay\cmsis -I..\..\..\..\..\Users\Miguel\Documents\GitHub\Propeller-Display\Firmware\CooCox Project\PropellerDisplay\cmsis_lib\include -I..\..\..\..\..\Users\Miguel\Documents\GitHub\Propeller-Display\Firmware\CooCox Project\PropellerDisplay\sdcard\fatfs\drivers -I..\..\..\..\..\Users\Miguel\Documents\GitHub\Propeller-Display\Firmware\CooCox Project\PropellerDisplay\hc06 -I..\..\..\..\..\Users\Miguel\Documents\GitHub\Propeller-Display\Firmware\CooCox Project\PropellerDisplay -I..\..\..\..\..\Users\Miguel\Documents\GitHub\Propeller-Display\Firmware\CooCox Project\PropellerDisplay\semihosting">
+      <target file="stm32f4xx_gpio.o" lastModified="152e73e55ff">
+         <source file="..\..\..\cmsis_lib\source\stm32f4xx_gpio.c" lastModified="15136a9559d"/>
+      </target>
+      <target file="tm_stm32f4_fatfs.o" lastModified="152e73e4564">
+         <source file="..\..\..\sdcard\tm_stm32f4_fatfs.c" lastModified="15113032b15"/>
+      </target>
+      <target file="hc06.o" lastModified="152e73e63fd">
+         <source file="..\..\..\hc06\hc06.c" lastModified="15163decd3a"/>
+      </target>
+      <target file="diskio.o" lastModified="152e73e4907">
+         <source file="..\..\..\sdcard\fatfs\diskio.c" lastModified="15113032ac8"/>
+      </target>
+      <target file="tm_stm32f4_gpio.o" lastModified="152e73e6083">
+         <source file="..\..\..\sdcard\tm_stm32f4_gpio.c" lastModified="1511303c93a"/>
+      </target>
+      <target file="fatfs_sd.o" lastModified="152e73e5148">
+         <source file="..\..\..\sdcard\fatfs\drivers\fatfs_sd.c" lastModified="15113032ad1"/>
+      </target>
+      <target file="startup_stm32f4xx.o" lastModified="152e73e49a0">
+         <source file="..\..\..\cmsis_boot\startup\startup_stm32f4xx.c" lastModified="15136c037ee"/>
+      </target>
+      <target file="stm32f4xx_tim.o" lastModified="152e73e6306">
+         <source file="..\..\..\cmsis_lib\source\stm32f4xx_tim.c" lastModified="15136ab00a3"/>
+      </target>
+      <target file="tm_stm32f4_timer_properties.o" lastModified="152e73e6147">
+         <source file="..\..\..\sdcard\tm_stm32f4_timer_properties.c" lastModified="1511303a997"/>
+      </target>
+      <target file="printf.o" lastModified="152e73e4ee7">
+         <source file="..\..\..\stdio\printf.c" lastModified="15136b96088"/>
+      </target>
+      <target file="system_stm32f4xx.o" lastModified="152e73e56fa">
+         <source file="..\..\..\cmsis_boot\system_stm32f4xx.c" lastModified="15163aa34b9"/>
+      </target>
+      <target file="ccsbcs.o" lastModified="152e73e5862">
+         <source file="..\..\..\sdcard\ccsbcs.c" lastModified="1499517d740"/>
+      </target>
+      <target file="misc.o" lastModified="152e73e5fac">
+         <source file="..\..\..\cmsis_lib\source\misc.c" lastModified="15136ca1e49"/>
+      </target>
+      <target file="fatfs_spi_flash.o" lastModified="152e73e4dde">
+         <source file="..\..\..\sdcard\fatfs\drivers\fatfs_spi_flash.c" lastModified="15113032ae6"/>
+      </target>
+      <target file="stm32f4xx_spi.o" lastModified="152e73e5f0e">
+         <source file="..\..\..\cmsis_lib\source\stm32f4xx_spi.c" lastModified="15136a99625"/>
+      </target>
+      <target file="stm32f4xx_rcc.o" lastModified="152e73e4d19">
+         <source file="..\..\..\cmsis_lib\source\stm32f4xx_rcc.c" lastModified="15136a89e0f"/>
+      </target>
+      <target file="stm32f4xx_pwr.o" lastModified="152e73e4747">
+         <source file="..\..\..\cmsis_lib\source\stm32f4xx_pwr.c" lastModified="15136a8da7f"/>
+      </target>
+      <target file="tlcrgb.o" lastModified="152e73e5e25">
+         <source file="..\..\..\tlc5941\tlcrgb.cpp" lastModified="1514150a0c4"/>
+      </target>
+      <target file="syscalls.o" lastModified="152e73e57c2">
+         <source file="..\..\..\syscalls\syscalls.c" lastModified="15136a82dfd"/>
+      </target>
+      <target file="sh_cmd.o" lastModified="152e73e561c">
+         <source file="..\..\..\semihosting\sh_cmd.s" lastModified="15136a84094"/>
+      </target>
+      <target file="syscall.o" lastModified="152e73e53c4">
+         <source file="..\..\..\sdcard\syscall.c" lastModified="14d29a20ea0"/>
+      </target>
+      <target file="tm_stm32f4_delay.o" lastModified="152e73e5328">
+         <source file="..\..\..\sdcard\tm_stm32f4_delay.c" lastModified="1511303a99a"/>
+      </target>
+      <target file="tm_stm32f4_spi.o" lastModified="152e73e54ef">
+         <source file="..\..\..\sdcard\tm_stm32f4_spi.c" lastModified="1511303498c"/>
+      </target>
+      <target file="semihosting.o" lastModified="152e73e43f6">
+         <source file="..\..\..\semihosting\semihosting.c" lastModified="15136a84092"/>
+      </target>
+      <target file="ff.o" lastModified="152e73e5cd2">
+         <source file="..\..\..\sdcard\fatfs\ff.c" lastModified="15113032aee"/>
+      </target>
+      <target file="tlc5941.o" lastModified="152e73e5993">
+         <source file="..\..\..\tlc5941\tlc5941.cpp" lastModified="152e6f1b23c"/>
+      </target>
+      <target file="main.o" lastModified="152e73e4bfc">
+         <source file="..\..\..\main.cpp" lastModified="152e73e2f80"/>
+      </target>
+      <target file="stm32f4xx_usart.o" lastModified="152e73e4681">
+         <source file="..\..\..\cmsis_lib\source\stm32f4xx_usart.c" lastModified="15163a44054"/>
+      </target>
+   </processor>
+</history>

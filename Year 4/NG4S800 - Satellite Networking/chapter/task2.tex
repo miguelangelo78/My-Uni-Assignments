@@ -1,0 +1,46 @@
+\large\textbf{(i)} \normalsize
+From the Erlang B formula,
+\small
+$P_B \equiv E_{1,N}(\rho) = \dfrac{10^{\Big(N\log\rho-\sum_{r=1}^{N} \log_{10}r\Big)}}{1+\sum_{n=1}^{N} 10^{\Big(n\log\rho - \sum_{r=1}^{n} \log_{10}r\Big)}}$
+\normalsize
+
+the following MATLAB code was derived:
+
+\lstinputlisting[caption=MATLAB function for calculating the call blocking probability on a telephone exchange system - ErlangB.m]{\programs{ErlangB.m}}
+
+\setlength\parindent{8pt}
+For this exercise, a function named $plot\_N\_vs\_PB()$ was created to draw a set of different sub-plots. Each sub-plot is associated with an Erlang value and a trunk vector, that ranges from 1 to a maximum (arbitrary) value. The function also returns the desired $N$ value, as well as the vector $P_B$ with all of the blocking probabilities.
+\setlength\parindent{0pt}
+Below is the main code to calculate the blocking probabilities of a telephone exchange system with 120 Erlangs and a goal of 10\% grade of service:
+
+\lstinputlisting[caption=task2\_i.m]{"res/MATLAB Code/task2_i.m"}
+
+And the implementation for $plot\_N\_vs\_PB()$:
+\lstinputlisting[caption=plot\_N\_vs\_PB.m, basicstyle=\fontsize{6.25pt}{6.25pt}\fontfamily{zi4}\selectfont, numberstyle=\fontsize{6.25pt}{6.25pt}\fontfamily{zi4}\selectfont\noncopynumber]{"res/MATLAB Code/plot_N_vs_PB.m"}
+
+\newpage
+This produces the graphical output:
+\showplot{figure1.eps}{Finding \# of trunks (N) for telephone exchange with conditions: Erlangs ($\rho$) = 120 and Grade of service (PB) = 10\%}
+
+\textbf{Concluding, the answer for task 2.i is}:
+\large$\underline{\mathbf{N=115}}$\normalsize\\
+
+\large\textbf{(ii) a)} \normalsize Changing the $erlangs$ parameter in the MATLAB code to 600 shows the result:
+\showplot{figure2.eps}{Finding \# of trunks (N) for telephone exchange with conditions: Erlangs ($\rho$) = 600 and Grade of service (PB) = 10\%}
+
+\centerline{$\rightarrow$\textbf{ Answer for task 2.ii.a}: \large$\underline{\mathbf{N=549}}$}\normalsize
+
+\newpage
+\large\textbf{(ii) b)} \normalsize Finally, after resetting the $erlangs$ parameter to 120 and changing the\\
+$desired\_grade\_of\_service$ value to 0.1\% the result becomes:
+\showplot{figure3.eps}{Finding \# of trunks (N) for telephone exchange with conditions: Erlangs ($\rho$) = 120 and Grade of service (PB) = 0.1\%}
+
+\centerline{$\rightarrow$\textbf{ Answer for task 2.ii.b}: \large$\underline{\mathbf{N=151}}$}\normalsize ~\\
+
+\large\textbf{(iii)} \normalsize
+In task 2.ii.a the $erlang$ argument was increased by a factor of 5, which equals 600 calls per hour. The observed result for $N$  with this load was 549, therefore, the increase ratio is $\frac{N_2}{N_1} = \frac{549}{115} = \mathbf{4.8}$. In other words, for a telephone exchange to keep the blocking probability at 10\% with 600 calls per hour, the number of trunks need to be increased 4.8 times.
+
+If, however, the grade of service is improved by a factor of 10 (as was done in task.ii.b), the number of trunks required to withstand the same load of 120 calls per hour is $N=151$, which is an increase of only $\frac{N_3}{N_1} = \frac{151}{115} = \mathbf{1.3}$. All in all, the results indicate that the load in the telephone exchange produces a much larger impact on the value $N$ than the grade of service.\\
+
+Despite this conclusion, the decision on whether one parameter is more beneficial/profitable to the telephone company than the other depends on the cost of each of them. Clearly, increasing the number of trunks reduces the blocking probability dramatically, however, adding more trunks might be more costly than to change the grade of service to a higher but acceptable value (higher $P_B\equiv$  more blocking $\equiv$ less trunks $\equiv$ lower cost). This is a trade-off that must be carefully considered when designing a telephone exchange system.
+\newpage

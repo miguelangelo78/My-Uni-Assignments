@@ -1,0 +1,23 @@
+/* Just a couple styles for small alignments and other small adjustments */
+
+#header_title {
+	font-family: 'Roboto';
+	margin-bottom: -5px;
+	margin-top:-4px;
+}
+
+#display_table {
+	border-color: 1px solid black;
+}
+
+#login_form {
+	position: relative;
+	top: 50%;
+	transform: translateY(50%);
+}
+
+.index_btn {
+	border-radius: 5px;
+	padding: 2px 5px 2px 5px;
+	margin: 0 0 -10px 0;
+}

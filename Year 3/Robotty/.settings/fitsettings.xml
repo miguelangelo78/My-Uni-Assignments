@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<FITMODULE xmlns:ns2="com.renesas.tools.fitconfigurator.settings.SerializeData" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="">
+    <selectedModules>
+        <name>r_bsp</name>
+        <version>3.40</version>
+    </selectedModules>
+    <selectedModules>
+        <name>r_gpio_rx</name>
+        <version>2.10</version>
+    </selectedModules>
+    <selectedModules>
+        <name>r_mtu_rx</name>
+        <version>1.20</version>
+    </selectedModules>
+    <installedModules>r_bsp:3.40</installedModules>
+    <installedModules>r_gpio_rx:2.10</installedModules>
+    <installedModules>r_mtu_rx:1.20</installedModules>
+    <fitProject>true</fitProject>
+</FITMODULE>

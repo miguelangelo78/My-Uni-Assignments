@@ -1,0 +1,206 @@
+In this part 2 the three input signals' spectral leakage will be mitigated by increasing the maximum number of frequency bins ($k$) from 256 to 512 and by using windowing, specifically the Hann window.\\
+
+Finally, to conclude the report and to give more insight into the theory of DFT and Digital Signal Processing, the topic of windowing will be further developed by analysing and comparing two other windowing techniques against the Hann window.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newsubsection{2.1) 512 DFT on all three input signals}
+As was previously described in part 1, the number of points in a DFT determines the resolution of the frequency spectrum when the signal is analysed in the time domain. The higher the resolution is the lesser the spectrum leakage.
+
+\paragraph{}
+Before the results are shown for this exercise, some predictions must be made. If each DFT point is a multiple of the sampling frequency ($f_s = 15$ kHz) divided by the number of samples ($N = 256$), then each frequency bin should be associated with every multiple of the harmonic of frequency $f_k = k \times \frac{f_s}{N} = k \times \frac{15000}{256} = k\times 58.6$ Hz.\\
+
+Any measured $\delta f$ that is granular than this value will simply not be processed accurately by the DFT algorithm and will lead to spectral leakage. As a consequence, the output spectrum will contain non-zero magnitudes at frequency bins that should have no frequency content at all. Taking this into account, if we double the number of points (from 256 to 512) then the resolution should also double inversely and as a result spectral leakage should be much less impactful in our desired output. In addition, the frequency bins that should be at magnitude 0 will now be much closer to that value (as they should). So, for this new experiment, the new resolution for $N = 512$ will simply be $\frac{58.6}{2} = 29.3$ Hz, which is clearly better. (Another way to find out the resolution: $f_k = \frac{f_s}{N} = \frac{15000}{512} = 29.3$ Hz.)
+
+Despite the benefits of increasing the DFT points, there is still the issue where $k$ is rounded to the nearest integer. The error between adjacent $k$ bins will always be present (as long as $k$ is an integer).
+
+\newpage
+\paragraph{}
+With this in mind, the first input (2 kHz sine wave) shows a similar waveform as the original one with $N = 256$:
+
+\showplotsidebyside{Q1A1}{Sine wave of 256 samples}{Q1A3SSB}{256 DFT spectrum of 2 kHz sine wave (dB SSB)}
+\showplotsidebyside{Q21A1}{Sine wave of 512 samples}{Q21A3SSB}{512 DFT spectrum of 2 kHz sine wave (dB SSB)}
+
+The two plots seem to have very distinctive shapes. First, the magnitudes have reduced quite dramatically on both sides around the peak. Also, the peak has become narrower. Secondly, the measured $k$ appears to be \textbf{68}, which is equivalent to $\mathbf{f_s = \frac{68\times 15000}{512} = 1992.2}$ Hz with an error of $\mathbf{2000 - 1992.2 = \color[HTML]{FE0000}7.81}$ \textbf{Hz}. Unfortunately, this error will always exist due to the fact that $k$ is an integer.\\
+
+This change in the output may be explained by the fact that the resolution has been improved from \textbf{58.6} Hz/bin to \textbf{29.3} Hz/bin (lower is better). Now, there is less correlation between $k \neq 68$ and even more correlation on the opposite condition ($k = 68$), which means increasing the number of DFT points will give a more accurate output. Windowing is a preferable alternative to this.
+
+\newpage
+We may now compare the second signal (mix of three sine waves) with its 256 point DFT version.
+\showplotsidebyside{Q1B1}{Mixed sine wave of 256 samples}{Q1B13SSB}{256 DFT spectrum of mixed sine wave (dB SSB)}
+\showplotsidebyside{Q21B1}{Mixed sine wave of 512 samples}{Q21B3SSB}{512 DFT spectrum of mixed sine wave (dB SSB)}
+
+The results for the new frequency bins of the 512 DFT are:
+\begin{table}[!hb]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{Peak \#} & \textbf{k} & \textbf{expected k}                       & \textbf{$f_k$ (Hz)} & \textbf{expected $f_k$ (Hz)} & \textbf{error (Hz)}        \\ \hline
+1                & 17         & $k = \frac{500\times 512}{15000} = 17.07$ & $f_k = \frac{17\times 15000}{512} = 498.05$                 & 500                          & {\color[HTML]{FE0000} 1.95}   \\ \hline
+2                & 34         & 34.13                                     & 996.1               & 1000                         & {\color[HTML]{FE0000} 3.9} \\ \hline
+3                & 68         & 68.27                                     & 1992.2              & 2000                         & {\color[HTML]{FE0000} 7.8} \\ \hline
+\end{tabular}
+\caption{Peaks of the 512 DFT - Mixed sine wave}
+\label{512DFT-mixsine}
+\end{table}
+
+\newpage
+And finally, the 500 Hz square wave.
+\showplotsidebyside{Q1C1}{500 Hz square wave of 256 samples}{Q1C3SSB}{256 DFT spectrum of 500 Hz square wave (dB SSB)}
+\showplotsidebyside{Q21C1}{500 Hz square wave of 512 samples}{Q21C3SSB}{512 DFT spectrum of 500 Hz square wave (dB SSB)}
+
+\newpage
+The peaks happen at $k$ values:
+\begin{table}[!hb]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{Peak \#} & \textbf{k} & \textbf{expected k}                       & \textbf{$f_k$ (Hz)} & \textbf{expected $f_k$ (Hz)} & \textbf{error (Hz)}          \\ \hline
+1                & 17         & $k = \frac{500\times 512}{15000} = 17.07$ & $f_k = \frac{17\times 15000}{512} = 498.05$                 & 500                          & {\color[HTML]{FE0000} 1.95}     \\ \hline
+2                & 51         & 51.2                                      & 1494.14             & 1500                         & {\color[HTML]{FE0000} 5.9}   \\ \hline
+3                & 85         & 85.3                                      & 2490.23             & 2500                         & {\color[HTML]{FE0000} 9.8}   \\ \hline
+4                & 119        & 119.5                                     & 3486.33             & 3500                         & {\color[HTML]{FE0000} 13.7}  \\ \hline
+5                & 154        & 153.9                                     & 4511.72             & 4500                         & {\color[HTML]{FE0000} 11.72} \\ \hline
+6                & 188        & 187.7                                     & 5507.81             & 5500                         & {\color[HTML]{FE0000} 7.81}  \\ \hline
+7                & 222        & 221.9                                     & 6503.91             & 6500                         & {\color[HTML]{FE0000} 3.91}  \\ \hline
+\end{tabular}
+\caption{Peaks of the 512 DFT - Square wave}
+\label{512DFT-squarewave}
+\end{table}
+
+Before wrapping up, the $k$ values and their frequency errors for each signal after changing the DFT from 256 to 512 should be compared:
+
+\begin{table}[h]
+\centering\scriptsize
+\begin{tabular}{c|c|c|c|c|c|c|c|c|c|}
+\cline{2-10}
+                                                                        & \multicolumn{5}{c|}{{\underline{\textbf{256 DFT}}}}                                           & \multicolumn{4}{c|}{{\underline{\textbf{512 DFT}}}}                       \\ \cline{2-10} 
+                                                                        & \textbf{Peak \#} & \textbf{k} & \textbf{k expected} & $\mathbf{f_k}$ & \textbf{error} & \textbf{k} & \textbf{k expected} & $\mathbf{f_k}$ & \textbf{error} \\ \hline
+\multicolumn{1}{|c|}{\textbf{Sine wave}}                                & 1                & 34         & 34.13               & 1992.2         & \color[HTML]{FE0000}7.81            & 68         & 68.26               & 1992.2       & \color[HTML]{FE0000}7.81          \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{\textbf{Mix of three sine waves}}} & 1                & 9          & 8.53                & 527.34         & \color[HTML]{FE0000}27.34          & 17         & 17.07               & 498.05           & \color[HTML]{32CB00}1.95              \\ \cline{2-10} 
+\multicolumn{1}{|c|}{}                                                  & 2                & 17         & 17.1                & 996.1          & \color[HTML]{FE0000}3.9            & 34         & 34.13               & 996.1         & \color[HTML]{FE0000}3.9            \\ \cline{2-10} 
+\multicolumn{1}{|c|}{}                                                  & 3                & 34         & 34.13               & 1992.2         & \color[HTML]{FE0000}7.8            & 68         & 68.27               & 1992.2        & \color[HTML]{FE0000}7.8            \\ \hline
+\multicolumn{1}{|c|}{\multirow{7}{*}{\textbf{Square wave}}}             & 1                & 9          & 8.53                & 527.34         & \color[HTML]{FE0000}27.34          & 17         & 17.07               & 498.05           & \color[HTML]{32CB00}1.95              \\ \cline{2-10} 
+\multicolumn{1}{|c|}{}                                                  & 2                & 26         & 25.6                & 1523.44        & \color[HTML]{FE0000}23.44          & 51         & 51.2                & 1494.14       & \color[HTML]{32CB00}5.9            \\ \cline{2-10} 
+\multicolumn{1}{|c|}{}                                                  & 3                & 43         & 42.67               & 2519.53        & \color[HTML]{FE0000}19.53          & 85         & 85.3                & 2490.23       & \color[HTML]{32CB00}9.8            \\ \cline{2-10} 
+\multicolumn{1}{|c|}{}                                                  & 4                & 60         & 59.73               & 3515.63        & \color[HTML]{FE0000}15.63          & 119        & 119.5               & 3486.33       & \color[HTML]{32CB00}13.7           \\ \cline{2-10} 
+\multicolumn{1}{|c|}{}                                                  & 5                & 77         & 76.8                & 4511.72        & \color[HTML]{FE0000}11.72          & 154        & 153.6               & 4511.72       & \color[HTML]{FE0000}11.72           \\ \cline{2-10} 
+\multicolumn{1}{|c|}{}                                                  & 6                & 94         & 93.87               & 5507.81        & \color[HTML]{FE0000}7.81           & 188        & 187.7               & 5507.81       & \color[HTML]{FE0000}7.81           \\ \cline{2-10} 
+\multicolumn{1}{|c|}{}                                                  & 7                & 111        & 110.93              & 6503.91         & \color[HTML]{FE0000}3.91            & 222        & 221.9               & 6503.91       & \color[HTML]{FE0000}3.91           \\ \hline
+\end{tabular}
+\caption{256 vs 512 DFT}
+\label{256-vs-512DFT}
+\end{table}
+
+\paragraph{}
+The most obvious conclusion that can be taken from the table is that the larger error values have decreased quite dramatically. The small error values have, however, stayed the same.\\
+
+For instance, we see that the error 27.34 Hz has decreased to 1.95 Hz, whereas the error 19.53 Hz has reduced only to 9.8 Hz, which indicates that there is a relationship between the error obtained and the resolution of the DFT. (Remembering that the resolution is now 29.3 Hz/bin.)\\
+
+This means that the closer the measured error value is to that resolution, the better the result. Also, increasing the DFT point count will overall improve the error margin. For example, if the resolution is changed to 1 Hz/bin, then all the errors should be reduced to exactly 0 (given that there are no frequencies below 1), whereas 2 Hz/bin would almost give a perfect output except for odd frequencies. (e.g. harmonics $f=1, f=3, f=5...$ would not be convoluted across the data samples and thus would lead to error.)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newsubsection{2.2) 512 DFT on all three input signals with Hann window}
+
+A second method to further improve the output spectrum is by applying a window function on the input prior to the DFT. The Hann window is a very common window and as such this task will apply the window through multiplication, analyse the results and compare them with the previous output spectrums.
+
+\[w(n) = \frac{1}{2}\Bigg(1-\cos\Bigg(\frac{2\pi n}{N-1}\Bigg)\Bigg)\]
+
+\showplotsmall{HannWindow}{The Hann window}
+
+\showplotsidebyside{HannWindowDSB}{The Hann window in the frequency domain (dB Double-Sideband (DSB))}{HannWindowSSB}{The Hann window in the frequency domain (dB Single-Sideband (SSB))}
+
+\newpage
+The generation code for this type of window is simply:
+\lstinputlisting[linerange={72-83,97-100}, caption=Function: create\_window() - dsp\_functions.c]{../Visual-Studio-Project/NG4S804_Assignment1/NG4S804_Assignment1/dsp_functions.c}
+
+\paragraph{}
+The main idea behind windowing is to remove part of the input signal at the start and at the end to prevent undesired high frequencies from contributing to the convolution of the DFT. This should result in a more accurate and narrower peak at the right frequency. Note, however, that this does not mitigate the frequency error that occurs when $k$ is rounded to the nearest integer. This also means that windowing does not change the $k$ bin frequencies. It simply makes the peaks narrower and reduces spectral leakage.\footcite{book2_pp80_81}\\
+
+Below is the result of multiplying/convoluting the input signal with the Hann window.
+\showplotsidebyside{Q21A1}{Sine wave of 512 samples without Hann window}{Q22A1}{Sine wave of 512 samples with Hann window}
+
+\newpage
+Which has the following spectrum:
+\showplotsidebyside{Q21A3SSB}{512 DFT spectrum of sine wave without Hann window (dB SSB)}{Q22A3SSB}{512 DFT spectrum of sine wave with Hann window (dB SSB)}
+
+If we analyse the spectrum on the right correctly, we can see that there is indeed an improvement. The peak has grown shorter in magnitude (which is a disadvantage of windowing) but it has definitely become narrower, and this is without a doubt an improvement. 
+
+\newpage
+Applying the same window to the second input signal:
+\showplotsidebyside{Q21B1}{Mixed sine wave of 512 samples without Hann window}{Q22B1}{Mixed sine wave of 512 samples with Hann window}
+
+\showplotsidebyside{Q21B3SSB}{512 DFT spectrum of mixed sine wave without Hann window (dB SSB)}{Q22B3SSB}{512 DFT spectrum of mixed sine wave with Hann window (dB SSB)}
+
+Again, we observe an improvement over the previous spectrum. The magnitudes at frequencies between 500 and 1000 Hz (on the trough) have moved from $-31.53$ dB to $\approx -80 \text{ dB} \approx -90$ dB. Moreover, the peaks became narrower but unfortunately, they have also reduced in magnitude.\\
+
+Despite this disadvantage, they are still noticeable and it should be easy for a DSP system to retrieve the correct frequency information.
+
+\newpage
+Finally, the third and last signal:
+\showplotsidebyside{Q21C1}{500 Hz square wave of 512 samples without Hann window}{Q22C1}{500 Hz square wave of 512 samples with Hann window}
+
+\showplotsidebyside{Q21C3SSB}{512 DFT spectrum of square wave without Hann window (dB SSB)}{Q22C3SSB}{512 DFT spectrum of square wave wave with Hann window (dB SSB)}
+
+Once more, all the frequency bins are in the same place, all peaks were narrowed and the magnitudes at the peaks were reduced only slightly compared to the troughs.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newsubsection{2.3) (Research) The Welch and Gaussian windows}
+There are many windowing methods used in DSP, each of which has its own application. Some windows are good for general cases while others are adjustable for a specific use.
+
+One simple example of such window (besides the Hann window) is the Welch window\footcite{window_welch}.
+
+\[w(n) = 1 - \Bigg(\frac{n-\frac{N-1}{2}}{\frac{N-1}{2}}\Bigg)^2\]
+\showplotsidebyside{WelchWindow}{The Welch window}{WelchWindowDSB}{Welch window spectrum (dB DSB)}
+\showplotsidebyside{HannWindow}{The Hann window}{HannWindowDSB}{Hann window spectrum (dB DSB)}
+
+\newpage
+It takes a shape of a parabola, which when multiplied with the input signal gives the result:
+\showplotsidebyside{Q22B3DSBWelch}{Mix sine sine wave spectrum with Welch window (dB DSB)}{Q22B3DSB}{Mix sine wave spectrum with Hann Window (dB DSB)}
+
+One clear difference can be seen at the bottom edges of the Welch window spectrum where the curve is much smoother (figures 36 and 38). This seems to result in the input spectrum reaching zero magnitude (approximate) slightly earlier from $f = 2000$ Hz to $4500$ Hz, however, as a trade-off, there seems to exist non-zero magnitudes from $f\geq 4750$ Hz on the spectrum.
+
+\newpage
+Finally, the Gaussian window is an adjustable type of window that is simply defined by a standard Gaussian curve\footcite{SASPWEB2011}.
+\[w(n) = e^{-\frac{1}{2}\big(\frac{n-(N-1)/2}{\sigma\times (N-1)/2}\big)^2}\]
+
+Where $\sigma$ is the standard deviation which determines the width of the bell curve as shown below. 
+\showplotsidebyside{GaussianWindow}{The Gaussian window}{GaussianWindowDSB}{Gaussian window spectrum (dB DSB)}
+\showplotsidebyside{HannWindow}{The Hann window}{HannWindowDSB}{Hann window spectrum (dB DSB)}
+
+(In this case, standard deviation takes the value $\sigma = 0.27$.)
+
+\newpage
+After multiplying with the second input signal:
+\showplotsidebyside{Q22B3DSBGaussian}{Mix sine sine wave spectrum with Gaussian window (dB DSB))}{Q22B3DSB}{Mix sine wave spectrum with Hann Window (dB DSB)}
+
+The difference between the two is quite clear. Although the magnitudes at both ends have decreased from 7.92 dB to 4.52 dB for the peaks and -131.79 dB to -91.57 dB for the troughs, the shape of each peak has become longer and thinner.
+If the reduction in the peak magnitude is an undesired effect of this window, then it is still possible to change $\sigma$ to a value higher (or lower) than 0.27. A disadvantage of changing this might be when $\sigma$ goes below 0.26, where the shape of the peaks will begin to widen quite dramatically.
+
+\newpage
+All in all, we may conclude that out of the three windows the Gaussian seems to be more appropriate. The main reason for this is the fact that it can adjusted for the desired application, whereas the Hann and Welch windows are fixed windows.\\
+
+Summarising:\\
+
+\begin{table}[h]
+\centering\scriptsize
+\begin{tabular}{llccc}
+\multicolumn{1}{c}{\textbf{Window type}} & \multicolumn{1}{c}{\textbf{Expression}}                                     & \textbf{Properties}                                                                                & \textbf{Advantages}                                                                                 & \textbf{Disadvantages}                                                                                                                    \\
+\hline
+\textbf{Hann}                            & $w(n) = \frac{1}{2}\Bigg(1-\cos\Bigg(\frac{2\pi n}{N-1}\Bigg)\Bigg)$        & \begin{tabular}[c]{@{}c@{}}Sinusoidal shape;\\ Reaches 0 at both\\ ends of the window\end{tabular} & Low aliasing                                                                                        & \begin{tabular}[c]{@{}c@{}}Loss of coherence on\\ main lobe (resolution is lost);\\\\ Contains Passband ripples.\end{tabular}           \\
+\hline
+\textbf{Welch}                           & $w(n) = 1 - \Bigg(\frac{n-\frac{N-1}{2}}{\frac{N-1}{2}}\Bigg)^2$            & \begin{tabular}[c]{@{}c@{}}Parabolic shape;\\ Reaches 0 at both\\ ends of the window\end{tabular}  & No Passband ripples                                                                                 & \begin{tabular}[c]{@{}c@{}}Input's outer side lobes have a\\ higher (seemingly constant) \\ magnitude compared to \\ the Hann window;\\\\ Troughs became smoother,\\ which is undesirable.\end{tabular} \\
+\hline
+\textbf{Gaussian}                        & $w(n) = e^{-\frac{1}{2}\big(\frac{n-(N-1)/2}{\sigma\times (N-1)/2}\big)^2}$ & \begin{tabular}[c]{@{}c@{}}Bell shape;\\ Reaches 0 at both\\ ends of the window\end{tabular}       & \begin{tabular}[c]{@{}c@{}}Adjustable\\ (Can be targeted\\ for a specific application)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Peak magnitudes have\\ reduced by a great amount\\ compared to the Hann and\\ Welch windows;\\\\ Peaks become too wide\\ when $\sigma < 0.26$. 
+\end{tabular}\\                   
+\hline
+\end{tabular}
+
+\caption{Window comparison: Hann vs Welch vs Gaussian}
+\label{hann-vs-welch-vs-gaussian}
+\end{table}

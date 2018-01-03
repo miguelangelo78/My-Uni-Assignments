@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<history>
+   <processor signature="4.9.3 -mcpu=cortex-m4 -mthumb -g -nostartfiles -Map=PropellerDisplay.map -O0 --gc-sections -LC:\CooCox\CoIDE\configuration\ProgramData\PropellerDisplay -TC:\CooCox\CoIDE\configuration\ProgramData\PropellerDisplay/arm-gcc-link.ld -g">
+      <target file="PropellerDisplay.elf" lastModified="152e73e6659">
+         <source file="..\obj\semihosting.o" lastModified="152e73e43f6"/>
+         <source file="..\obj\tm_stm32f4_fatfs.o" lastModified="152e73e4564"/>
+         <source file="..\obj\stm32f4xx_usart.o" lastModified="152e73e4681"/>
+         <source file="..\obj\stm32f4xx_pwr.o" lastModified="152e73e4747"/>
+         <source file="..\obj\diskio.o" lastModified="152e73e4907"/>
+         <source file="..\obj\startup_stm32f4xx.o" lastModified="152e73e49a0"/>
+         <source file="..\obj\main.o" lastModified="152e73e4bfc"/>
+         <source file="..\obj\stm32f4xx_rcc.o" lastModified="152e73e4d19"/>
+         <source file="..\obj\fatfs_spi_flash.o" lastModified="152e73e4dde"/>
+         <source file="..\obj\printf.o" lastModified="152e73e4ee7"/>
+         <source file="..\obj\fatfs_sd.o" lastModified="152e73e5148"/>
+         <source file="..\obj\tm_stm32f4_delay.o" lastModified="152e73e5328"/>
+         <source file="..\obj\syscall.o" lastModified="152e73e53c4"/>
+         <source file="..\obj\tm_stm32f4_spi.o" lastModified="152e73e54ef"/>
+         <source file="..\obj\stm32f4xx_gpio.o" lastModified="152e73e55ff"/>
+         <source file="..\obj\sh_cmd.o" lastModified="152e73e561c"/>
+         <source file="..\obj\system_stm32f4xx.o" lastModified="152e73e56fa"/>
+         <source file="..\obj\syscalls.o" lastModified="152e73e57c2"/>
+         <source file="..\obj\ccsbcs.o" lastModified="152e73e5862"/>
+         <source file="..\obj\tlc5941.o" lastModified="152e73e5993"/>
+         <source file="..\obj\ff.o" lastModified="152e73e5cd2"/>
+         <source file="..\obj\tlcrgb.o" lastModified="152e73e5e25"/>
+         <source file="..\obj\stm32f4xx_spi.o" lastModified="152e73e5f0e"/>
+         <source file="..\obj\misc.o" lastModified="152e73e5fac"/>
+         <source file="..\obj\tm_stm32f4_gpio.o" lastModified="152e73e6083"/>
+         <source file="..\obj\tm_stm32f4_timer_properties.o" lastModified="152e73e6147"/>
+         <source file="..\obj\stm32f4xx_tim.o" lastModified="152e73e6306"/>
+         <source file="..\obj\hc06.o" lastModified="152e73e63fd"/>
+      </target>
+   </processor>
+</history>
