@@ -31,9 +31,9 @@ for rho = increment_rho_by:increment_rho_by:max_rho
 
     % Set the title for all subplots and the labels for the xy axis (only once)
     if plot_index == 1
-        title('N (# of trunks) vs PB (Blocking Probability (%))');
+        title('N (# of trunks) vs Grade of Service (PB [%])');
         xlabel('N (# of trunks)');
-        ylabel('PB (Blocking Probability (%))');
+        ylabel('Grade of Service (PB [%])');
 
         grid on;
         hold on;
@@ -44,7 +44,8 @@ for rho = increment_rho_by:increment_rho_by:max_rho
     
     % Place the rho value on the current subplot at position y = 10^-1
     N = find(PB <= 10^-1);
-    line_legend_text = text(N(1) + 4 + legend_x_offset, 10^-1, ['\rho = ' num2str(rho)], 'Rotation', -80 - legend_x_offset / 1.2 + plot_index * 1.5, 'FontSize', 12);
+    line_legend_text = text(N(1) + 4 + legend_x_offset, 10^-1, ['\rho = ' num2str(rho)], 'Rotation', -80 - legend_x_offset / 1.2 + ...
+		plot_index * 1.5, 'FontSize', 12);
 
     % Process the rho value in question in a special way
     if rho == desired_rho
