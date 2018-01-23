@@ -1,0 +1,51 @@
+.root {
+	-fx-border-color: #b7b7b7;
+	-fx-border-width: 1px;
+	-fx-border-radius: 4px;
+	-fx-background-radius: 4px;
+}
+
+.split-pane *.split-pane-divider {
+	-fx-padding: 0 0 0 0;
+}
+
+#toolbar-favicon {
+	-fx-background-color: #757575;
+}
+
+#titlepane {
+	-fx-font: 25px "Yu Gothic UI Light";
+	-fx-background-color: #6581ce;
+	-fx-border-color: #b7b7b7;
+	-fx-border-width: 0 0 1px 0;
+}
+
+#titlepane-label {
+	-fx-fill: white; 
+}
+
+.toolbar-title-button {
+	-fx-padding: 0;
+	-fx-background-radius: 5em;
+	-fx-min-width: 15px;
+	-fx-min-height: 15px;
+	-fx-max-width: 15px;
+	-fx-max-height: 15px;
+	-fx-border-width: 1px;
+	-fx-border-radius: 10em;
+}
+
+#buttonClose {
+	-fx-base: #ff5d56;
+	-fx-border-color: #e05650;
+}
+
+#buttonMaximize {
+	-fx-base: #ffbd35;
+	-fx-border-color: e0a62f;
+}
+
+#buttonMinimize {
+	-fx-base: #00cc4b;
+	-fx-border-color: #049e3d;
+}

@@ -1,0 +1,475 @@
+[Header]
+Description=Flash Development Toolkit Configuration File (Generic Generation)
+File Type=1.2
+[Device Info]
+Protocol=2 ;Protocol C: 0.18um devices.
+Device Code=7003
+Product Code=RX600 Series
+BOOT Mode Auto Erase=True
+SupportsIDWrite=FALSE
+EVB Clock MHz=12.50
+FLASH ROM Size=262144
+User Boot Area Size=16384
+Supports32LockBit=TRUE
+SupportsUserLocking=TRUE
+SupportsDataLocking=FALSE
+Data Area Size=32768
+Memory Area Count=3
+Erase Block Count=39
+SupportsLocking=TRUE
+[Kernel Info]
+Base Device=Generic BOOT Device
+Compiler=GENERIC
+Short Base Device Name=Generic BOOT Device
+Compiler Version=GENERIC
+Kernel Version=GENERIC
+Protocol=C
+USBDirect=No
+E8Direct=No
+E8aDirect=No
+E1Direct=No
+E20Direct=No
+[Valid Clock Modes]
+Clock Modes=0
+[Clock Mode 0]
+CKM=1|2|4|8
+CKP=1|2|4|8
+Crystal Frequency Range=8.00|100.00
+[Memory Area 0]
+Block Name=UA0
+Start Address=4294705152
+Start (Hex)=0xFFFC0000
+Block Size=262144
+Size (Hex)=0x00040000
+Area Type=User Flash
+Overlay=0
+[Memory Area 1]
+Block Name=UB0
+Start Address=4286562304
+Start (Hex)=0xFF7FC000
+Block Size=16384
+Size (Hex)=0x00004000
+Area Type=User Boot Flash
+Overlay=1
+[Memory Area 2]
+Block Name=DA0
+Start Address=1048576
+Start (Hex)=0x00100000
+Block Size=32768
+Size (Hex)=0x00008000
+Area Type=Data Flash
+Overlay=0
+[Erase Block 0]
+Block Name=EB0
+Start Address=4294963200
+Start (Hex)=0xFFFFF000
+Block Size=4096
+Size (Hex)=0x00001000
+EBR0=1
+EBR1=0
+EBR2=0
+Overlay=0
+Lockable=TRUE
+[Erase Block 1]
+Block Name=EB1
+Start Address=4294959104
+Start (Hex)=0xFFFFE000
+Block Size=4096
+Size (Hex)=0x00001000
+EBR0=2
+EBR1=0
+EBR2=0
+Overlay=0
+Lockable=TRUE
+[Erase Block 2]
+Block Name=EB2
+Start Address=4294955008
+Start (Hex)=0xFFFFD000
+Block Size=4096
+Size (Hex)=0x00001000
+EBR0=4
+EBR1=0
+EBR2=0
+Overlay=0
+Lockable=TRUE
+[Erase Block 3]
+Block Name=EB3
+Start Address=4294950912
+Start (Hex)=0xFFFFC000
+Block Size=4096
+Size (Hex)=0x00001000
+EBR0=8
+EBR1=0
+EBR2=0
+Overlay=0
+Lockable=TRUE
+[Erase Block 4]
+Block Name=EB4
+Start Address=4294946816
+Start (Hex)=0xFFFFB000
+Block Size=4096
+Size (Hex)=0x00001000
+EBR0=16
+EBR1=0
+EBR2=0
+Overlay=0
+Lockable=TRUE
+[Erase Block 5]
+Block Name=EB5
+Start Address=4294942720
+Start (Hex)=0xFFFFA000
+Block Size=4096
+Size (Hex)=0x00001000
+EBR0=32
+EBR1=0
+EBR2=0
+Overlay=0
+Lockable=TRUE
+[Erase Block 6]
+Block Name=EB6
+Start Address=4294938624
+Start (Hex)=0xFFFF9000
+Block Size=4096
+Size (Hex)=0x00001000
+EBR0=64
+EBR1=0
+EBR2=0
+Overlay=0
+Lockable=TRUE
+[Erase Block 7]
+Block Name=EB7
+Start Address=4294934528
+Start (Hex)=0xFFFF8000
+Block Size=4096
+Size (Hex)=0x00001000
+EBR0=128
+EBR1=0
+EBR2=0
+Overlay=0
+Lockable=TRUE
+[Erase Block 8]
+Block Name=EB8
+Start Address=4294918144
+Start (Hex)=0xFFFF4000
+Block Size=16384
+Size (Hex)=0x00004000
+EBR0=0
+EBR1=1
+EBR2=0
+Overlay=0
+Lockable=TRUE
+[Erase Block 9]
+Block Name=EB9
+Start Address=4294901760
+Start (Hex)=0xFFFF0000
+Block Size=16384
+Size (Hex)=0x00004000
+EBR0=0
+EBR1=2
+EBR2=0
+Overlay=0
+Lockable=TRUE
+[Erase Block 10]
+Block Name=EB10
+Start Address=4294885376
+Start (Hex)=0xFFFEC000
+Block Size=16384
+Size (Hex)=0x00004000
+EBR0=0
+EBR1=4
+EBR2=0
+Overlay=0
+Lockable=TRUE
+[Erase Block 11]
+Block Name=EB11
+Start Address=4294868992
+Start (Hex)=0xFFFE8000
+Block Size=16384
+Size (Hex)=0x00004000
+EBR0=0
+EBR1=8
+EBR2=0
+Overlay=0
+Lockable=TRUE
+[Erase Block 12]
+Block Name=EB12
+Start Address=4294852608
+Start (Hex)=0xFFFE4000
+Block Size=16384
+Size (Hex)=0x00004000
+EBR0=0
+EBR1=16
+EBR2=0
+Overlay=0
+Lockable=TRUE
+[Erase Block 13]
+Block Name=EB13
+Start Address=4294836224
+Start (Hex)=0xFFFE0000
+Block Size=16384
+Size (Hex)=0x00004000
+EBR0=0
+EBR1=32
+EBR2=0
+Overlay=0
+Lockable=TRUE
+[Erase Block 14]
+Block Name=EB14
+Start Address=4294819840
+Start (Hex)=0xFFFDC000
+Block Size=16384
+Size (Hex)=0x00004000
+EBR0=0
+EBR1=64
+EBR2=0
+Overlay=0
+Lockable=TRUE
+[Erase Block 15]
+Block Name=EB15
+Start Address=4294803456
+Start (Hex)=0xFFFD8000
+Block Size=16384
+Size (Hex)=0x00004000
+EBR0=0
+EBR1=128
+EBR2=0
+Overlay=0
+Lockable=TRUE
+[Erase Block 16]
+Block Name=EB16
+Start Address=4294787072
+Start (Hex)=0xFFFD4000
+Block Size=16384
+Size (Hex)=0x00004000
+EBR0=0
+EBR1=0
+EBR2=1
+Overlay=0
+Lockable=TRUE
+[Erase Block 17]
+Block Name=EB17
+Start Address=4294770688
+Start (Hex)=0xFFFD0000
+Block Size=16384
+Size (Hex)=0x00004000
+EBR0=0
+EBR1=0
+EBR2=2
+Overlay=0
+Lockable=TRUE
+[Erase Block 18]
+Block Name=EB18
+Start Address=4294754304
+Start (Hex)=0xFFFCC000
+Block Size=16384
+Size (Hex)=0x00004000
+EBR0=0
+EBR1=0
+EBR2=4
+Overlay=0
+Lockable=TRUE
+[Erase Block 19]
+Block Name=EB19
+Start Address=4294737920
+Start (Hex)=0xFFFC8000
+Block Size=16384
+Size (Hex)=0x00004000
+EBR0=0
+EBR1=0
+EBR2=8
+Overlay=0
+Lockable=TRUE
+[Erase Block 20]
+Block Name=EB20
+Start Address=4294721536
+Start (Hex)=0xFFFC4000
+Block Size=16384
+Size (Hex)=0x00004000
+EBR0=0
+EBR1=0
+EBR2=16
+Overlay=0
+Lockable=TRUE
+[Erase Block 21]
+Block Name=EB21
+Start Address=4294705152
+Start (Hex)=0xFFFC0000
+Block Size=16384
+Size (Hex)=0x00004000
+EBR0=0
+EBR1=0
+EBR2=32
+Overlay=0
+Lockable=TRUE
+[Erase Block 22]
+Block Name=EB22
+Start Address=1079296
+Start (Hex)=0x00107800
+Block Size=2048
+Size (Hex)=0x00000800
+EBR0=0
+EBR1=0
+EBR2=64
+Overlay=0
+[Erase Block 23]
+Block Name=EB23
+Start Address=1077248
+Start (Hex)=0x00107000
+Block Size=2048
+Size (Hex)=0x00000800
+EBR0=0
+EBR1=0
+EBR2=128
+Overlay=0
+[Erase Block 24]
+Block Name=EB24
+Start Address=1075200
+Start (Hex)=0x00106800
+Block Size=2048
+Size (Hex)=0x00000800
+EBR0=0
+EBR1=0
+EBR2=1
+Overlay=0
+[Erase Block 25]
+Block Name=EB25
+Start Address=1073152
+Start (Hex)=0x00106000
+Block Size=2048
+Size (Hex)=0x00000800
+EBR0=0
+EBR1=0
+EBR2=2
+Overlay=0
+[Erase Block 26]
+Block Name=EB26
+Start Address=1071104
+Start (Hex)=0x00105800
+Block Size=2048
+Size (Hex)=0x00000800
+EBR0=0
+EBR1=0
+EBR2=4
+Overlay=0
+[Erase Block 27]
+Block Name=EB27
+Start Address=1069056
+Start (Hex)=0x00105000
+Block Size=2048
+Size (Hex)=0x00000800
+EBR0=0
+EBR1=0
+EBR2=8
+Overlay=0
+[Erase Block 28]
+Block Name=EB28
+Start Address=1067008
+Start (Hex)=0x00104800
+Block Size=2048
+Size (Hex)=0x00000800
+EBR0=0
+EBR1=0
+EBR2=16
+Overlay=0
+[Erase Block 29]
+Block Name=EB29
+Start Address=1064960
+Start (Hex)=0x00104000
+Block Size=2048
+Size (Hex)=0x00000800
+EBR0=0
+EBR1=0
+EBR2=32
+Overlay=0
+[Erase Block 30]
+Block Name=EB30
+Start Address=1062912
+Start (Hex)=0x00103800
+Block Size=2048
+Size (Hex)=0x00000800
+EBR0=0
+EBR1=0
+EBR2=64
+Overlay=0
+[Erase Block 31]
+Block Name=EB31
+Start Address=1060864
+Start (Hex)=0x00103000
+Block Size=2048
+Size (Hex)=0x00000800
+EBR0=0
+EBR1=0
+EBR2=128
+Overlay=0
+[Erase Block 32]
+Block Name=EB32
+Start Address=1058816
+Start (Hex)=0x00102800
+Block Size=2048
+Size (Hex)=0x00000800
+EBR0=0
+EBR1=0
+EBR2=1
+Overlay=0
+[Erase Block 33]
+Block Name=EB33
+Start Address=1056768
+Start (Hex)=0x00102000
+Block Size=2048
+Size (Hex)=0x00000800
+EBR0=0
+EBR1=0
+EBR2=2
+Overlay=0
+[Erase Block 34]
+Block Name=EB34
+Start Address=1054720
+Start (Hex)=0x00101800
+Block Size=2048
+Size (Hex)=0x00000800
+EBR0=0
+EBR1=0
+EBR2=4
+Overlay=0
+[Erase Block 35]
+Block Name=EB35
+Start Address=1052672
+Start (Hex)=0x00101000
+Block Size=2048
+Size (Hex)=0x00000800
+EBR0=0
+EBR1=0
+EBR2=8
+Overlay=0
+[Erase Block 36]
+Block Name=EB36
+Start Address=1050624
+Start (Hex)=0x00100800
+Block Size=2048
+Size (Hex)=0x00000800
+EBR0=0
+EBR1=0
+EBR2=16
+Overlay=0
+[Erase Block 37]
+Block Name=EB37
+Start Address=1048576
+Start (Hex)=0x00100000
+Block Size=2048
+Size (Hex)=0x00000800
+EBR0=0
+EBR1=0
+EBR2=32
+Overlay=0
+[Checksum]
+Checksum=
+[Erase Block 38]
+Block Name=EB38
+Start Address=4286562304
+Start (Hex)=0xFF7FC000
+Block Size=16384
+Size (Hex)=0x00004000
+EBR0=0
+EBR1=0
+EBR2=0
+Overlay=1

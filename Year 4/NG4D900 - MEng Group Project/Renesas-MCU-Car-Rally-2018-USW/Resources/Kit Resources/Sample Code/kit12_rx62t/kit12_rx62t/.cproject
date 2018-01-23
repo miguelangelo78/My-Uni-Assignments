@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?fileVersion 4.0.0?>
+
+<cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
+	<storageModule moduleId="org.eclipse.cdt.core.settings">
+		<cconfiguration id="com.renesas.cdt.rxc.debug.win32.configuration.Id.513337421">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.renesas.cdt.rxc.debug.win32.configuration.Id.513337421" moduleId="org.eclipse.cdt.core.settings" name="Debug">
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.PE" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="com.renesas.cdt.core.errorParsers.KPITGASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="com.renesas.cdt.core.KPITGCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="com.renesas.cdt.core.errorParsers.KPITMakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="com.renesas.cdt.core.KPITVCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="com.renesas.cdt.core.errorParsers.KPITGCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="com.renesas.cdt.core.KPITGASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="com.renesas.cdt.core.KPITMakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="com.renesas.cdt.core.KPITGLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="com.renesas.cdt.core.errorParsers.KPITGLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.pathentry"/>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactName="kit12_rx62t" buildArtefactType="com.renesas.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug,org.eclipse.cdt.build.core.buildArtefactType=com.renesas.cdt.build.core.buildArtefactType.exe" cleanCommand="rm -rf *.lst *.lis *.lpp *.map *.x *.lbp src/*.src src/*.p src/*.pp *.bls *.libelf *.lbk *.abs" description="Debug using GDB simulator" errorParsers="com.renesas.cdt.core.KPITMakeErrorParser;com.renesas.cdt.core.KPITGCCErrorParser;com.renesas.cdt.core.KPITGASErrorParser;com.renesas.cdt.core.KPITGLDErrorParser;com.renesas.cdt.core.KPITVCErrorParser" id="com.renesas.cdt.rxc.debug.win32.configuration.Id.513337421" name="Debug" parent="com.renesas.cdt.rxc.debug.win32.configuration.Id">
+					<folderInfo id="com.renesas.cdt.rxc.debug.win32.configuration.Id.513337421." name="/" resourcePath="">
+						<toolChain id="com.renesas.cdt.rxc.debug.win32.toolChain.Id.213472149" name="Renesas RXC Toolchain" superClass="com.renesas.cdt.rxc.debug.win32.toolChain.Id">
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.PE" id="com.renesas.cdt.rxc.debug.win32.targetPlatform.Id.558894629" isAbstract="false" osList="win32" superClass="com.renesas.cdt.rxc.debug.win32.targetPlatform.Id"/>
+							<builder buildPath="${workspace_loc:/kit12_rx62t/Debug}" id="com.renesas.cdt.rxc.debug.win32.builder.Id.666356252" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="SHC Make Builder" superClass="com.renesas.cdt.rxc.debug.win32.builder.Id"/>
+							<tool id="com.renesas.cdt.rxc.debug.win32.tool.compiler.Id.1617196746" name="Compiler" superClass="com.renesas.cdt.rxc.debug.win32.tool.compiler.Id">
+								<option id="com.renesas.cdt.renesas.Compiler.option.GenDebugInfo.108207071" superClass="com.renesas.cdt.renesas.Compiler.option.GenDebugInfo" value="true" valueType="boolean"/>
+								<option id="com.renesas.cdt.rxc.Debug.Compiler.option.cpuType.1335429671" superClass="com.renesas.cdt.rxc.Debug.Compiler.option.cpuType" value="RX600" valueType="enumerated"/>
+								<option id="com.renesas.cdt.rxc.Debug.Compiler.option.endian.465598896" superClass="com.renesas.cdt.rxc.Debug.Compiler.option.endian" value="Big-endian data" valueType="enumerated"/>
+								<option id="com.renesas.cdt.rxc.Debug.Compiler.option.roundTo.1724004619" superClass="com.renesas.cdt.rxc.Debug.Compiler.option.roundTo" value="Nearest" valueType="enumerated"/>
+								<option id="com.renesas.cdt.rxc.Debug.Compiler.option.allocLowerBit.2100330453" superClass="com.renesas.cdt.rxc.Debug.Compiler.option.allocLowerBit" value="Lower bit" valueType="enumerated"/>
+								<option id="com.renesas.cdt.rxc.Debug.Compiler.option.widthDivergence.1590206395" superClass="com.renesas.cdt.rxc.Debug.Compiler.option.widthDivergence" value="24 bit" valueType="enumerated"/>
+								<option id="com.renesas.cdt.renesas.Compiler.option.UserDef.2015714282" superClass="com.renesas.cdt.renesas.Compiler.option.UserDef" valueType="stringList">
+									<listOptionValue builtIn="false" value="-nologo"/>
+									<listOptionValue builtIn="false" value="-section=L=C"/>
+								</option>
+								<option id="com.renesas.cdt.renesas.Compiler.option.incFileDirectories.1106561035" superClass="com.renesas.cdt.renesas.Compiler.option.incFileDirectories" valueType="includePath">
+									<listOptionValue builtIn="false" value="${TCINSTALL}\include"/>
+								</option>
+								<inputType id="%Base.Compiler.Shc.C.Input.Id.1736497931" name="C Input" superClass="%Base.Compiler.Shc.C.Input.Id"/>
+							</tool>
+							<tool id="com.renesas.cdt.rxc.debug.win32.tool.assembler.Id.1796237279" name="Assembler" superClass="com.renesas.cdt.rxc.debug.win32.tool.assembler.Id">
+								<option id="com.renesas.cdt.rxc.Debug.Assembler.option.debugInformation.650470214" superClass="com.renesas.cdt.rxc.Debug.Assembler.option.debugInformation" value="true" valueType="boolean"/>
+								<option id="com.renesas.cdt.rxc.Debug.Assembler.option.endian.1341597179" superClass="com.renesas.cdt.rxc.Debug.Assembler.option.endian" value="Big-endian data" valueType="enumerated"/>
+								<option id="com.renesas.cdt.renesas.Assembler.option.userDefine.1763186697" superClass="com.renesas.cdt.renesas.Assembler.option.userDefine" valueType="stringList">
+									<listOptionValue builtIn="false" value="-nologo"/>
+								</option>
+								<inputType id="%Base.Assembler.shcInputType.Id.1995301329" name="Assembler InputType" superClass="%Base.Assembler.shcInputType.Id"/>
+							</tool>
+							<tool id="com.renesas.cdt.rxc.debug.win32.tool.linker.Id.1083137898" name="Linker" superClass="com.renesas.cdt.rxc.debug.win32.tool.linker.Id">
+								<option id="com.renesas.cdt.renesas.Linker.option.generateListFile.33185304" superClass="com.renesas.cdt.renesas.Linker.option.generateListFile" value="true" valueType="boolean"/>
+								<option id="com.renesas.cdt.renesas.Linker.option.prelinkerControl.2085539241" superClass="com.renesas.cdt.renesas.Linker.option.prelinkerControl" value="Skip prelinker" valueType="enumerated"/>
+								<option id="com.renesas.cdt.renesas.Linker.option.typeOfOutputFileOption.513575128" superClass="com.renesas.cdt.renesas.Linker.option.typeOfOutputFileOption" value="Stype via absolute" valueType="enumerated"/>
+								<option id="com.renesas.cdt.renesas.Linker.option.userDefined.1073899848" superClass="com.renesas.cdt.renesas.Linker.option.userDefined" valueType="stringList">
+									<listOptionValue builtIn="false" value="-nologo"/>
+									<listOptionValue builtIn="false" value="-nomessage"/>
+									<listOptionValue builtIn="false" value="-rom=D=R,D_1=R_1,D_2=R_2"/>
+								</option>
+								<option id="com.renesas.cdt.renesas.Linker.option.debugInformation.943276366" superClass="com.renesas.cdt.renesas.Linker.option.debugInformation" value="In output load module" valueType="enumerated"/>
+							</tool>
+							<tool command="lbgrx" id="%com.renesas.cdt.rxc.debug.win32.tool.libgen.Id.224259875" name="Standard Library" superClass="%com.renesas.cdt.rxc.debug.win32.tool.libgen.Id">
+								<option id="com.renesas.cdt.renesas.StandardLibrary.option.mathc89.423763808" superClass="com.renesas.cdt.renesas.StandardLibrary.option.mathc89" value="true" valueType="boolean"/>
+								<option id="com.renesas.cdt.renesas.StandardLibrary.option.stdioc89.1481285015" superClass="com.renesas.cdt.renesas.StandardLibrary.option.stdioc89" value="true" valueType="boolean"/>
+								<option id="com.renesas.cdt.renesas.StandardLibrary.option.stdlibc89.1673743919" superClass="com.renesas.cdt.renesas.StandardLibrary.option.stdlibc89" value="true" valueType="boolean"/>
+								<option id="com.renesas.cdt.renesas.StandardLibrary.option.stringc89.1563254140" superClass="com.renesas.cdt.renesas.StandardLibrary.option.stringc89" value="true" valueType="boolean"/>
+								<option id="com.renesas.cdt.renesas.StandardLibrary.option.rxcnewCPP.1726479397" superClass="com.renesas.cdt.renesas.StandardLibrary.option.rxcnewCPP" value="true" valueType="boolean"/>
+								<option id="com.renesas.cdt.rxc.Debug.StandardLibrary.option.endian.871538121" superClass="com.renesas.cdt.rxc.Debug.StandardLibrary.option.endian" value="Big-endian data" valueType="enumerated"/>
+								<option id="com.renesas.cdt.renesas.StandardLibrary.option.mode.1124825810" superClass="com.renesas.cdt.renesas.StandardLibrary.option.mode" value="Build the library (only when options have been changed)" valueType="enumerated"/>
+								<option id="com.renesas.cdt.renesas.StandardLibrary.option.userSpecifiedLibrary.1982664775" superClass="com.renesas.cdt.renesas.StandardLibrary.option.userSpecifiedLibrary" value="${CONFIGDIR}\kit12_rx62t.lib" valueType="string"/>
+								<option id="com.renesas.cdt.rxc.Debug.StandardLibrary.option.optimizationType.14973887" superClass="com.renesas.cdt.rxc.Debug.StandardLibrary.option.optimizationType" value="Optimize for size" valueType="enumerated"/>
+								<option id="com.renesas.cdt.renesas.StandardLibrary.option.UserDef.1363797732" superClass="com.renesas.cdt.renesas.StandardLibrary.option.UserDef" valueType="stringList">
+									<listOptionValue builtIn="false" value="-section=L=C"/>
+								</option>
+							</tool>
+							<tool id="com.renesas.cdt.rxc.debug.win32.tool.convertor.Id.1869039838" name="Converter" superClass="com.renesas.cdt.rxc.debug.win32.tool.convertor.Id"/>
+						</toolChain>
+					</folderInfo>
+					<sourceEntries>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+					</sourceEntries>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="scannerConfiguration">
+				<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+				<profile id="com.iar.cdt.v850.scanner.IAR_V850_PerProjectProfile">
+					<buildOutputProvider>
+						<openAction enabled="false" filePath=""/>
+						<parser enabled="false"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="com.iar.cdt.v850.toolchain.scannerInfoProvider1">
+						<runAction arguments="" command="" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+				<profile id="com.iar.cdt.rl78.scanner.IAR_RL78_PerProjectProfile">
+					<buildOutputProvider>
+						<openAction enabled="false" filePath=""/>
+						<parser enabled="false"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="com.iar.cdt.rl78.toolchain.scannerInfoProviderRL78">
+						<runAction arguments="" command="" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+				<profile id="com.iar.cdt.rx.scanner.IAR_RX_PerProjectProfile">
+					<buildOutputProvider>
+						<openAction enabled="false" filePath=""/>
+						<parser enabled="false"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="com.iar.cdt.rx.toolchain.scannerInfoProviderRX">
+						<runAction arguments="" command="" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+				<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
+					<buildOutputProvider>
+						<openAction enabled="true" filePath=""/>
+						<parser enabled="true"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="specsFile">
+						<runAction arguments="-E -P -v -dD ${plugin_state_location}/${specs_file}" command="gcc" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+				<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerFileProfile">
+					<buildOutputProvider>
+						<openAction enabled="true" filePath=""/>
+						<parser enabled="true"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="makefileGenerator">
+						<runAction arguments="-E -P -v -dD" command="" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+				<profile id="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfile">
+					<buildOutputProvider>
+						<openAction enabled="true" filePath=""/>
+						<parser enabled="true"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="specsFile">
+						<runAction arguments="-E -P -v -dD ${plugin_state_location}/${specs_file}" command="gcc" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+				<profile id="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP">
+					<buildOutputProvider>
+						<openAction enabled="true" filePath=""/>
+						<parser enabled="true"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="specsFile">
+						<runAction arguments="-E -P -v -dD ${plugin_state_location}/specs.cpp" command="g++" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+				<profile id="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC">
+					<buildOutputProvider>
+						<openAction enabled="true" filePath=""/>
+						<parser enabled="true"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="specsFile">
+						<runAction arguments="-E -P -v -dD ${plugin_state_location}/specs.c" command="gcc" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+				<profile id="org.eclipse.cdt.managedbuilder.core.GCCWinManagedMakePerProjectProfile">
+					<buildOutputProvider>
+						<openAction enabled="true" filePath=""/>
+						<parser enabled="true"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="specsFile">
+						<runAction arguments="-c 'gcc -E -P -v -dD &quot;${plugin_state_location}/${specs_file}&quot;'" command="sh" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+				<profile id="org.eclipse.cdt.managedbuilder.core.GCCWinManagedMakePerProjectProfileCPP">
+					<buildOutputProvider>
+						<openAction enabled="true" filePath=""/>
+						<parser enabled="true"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="specsFile">
+						<runAction arguments="-c 'g++ -E -P -v -dD &quot;${plugin_state_location}/specs.cpp&quot;'" command="sh" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+				<profile id="org.eclipse.cdt.managedbuilder.core.GCCWinManagedMakePerProjectProfileC">
+					<buildOutputProvider>
+						<openAction enabled="true" filePath=""/>
+						<parser enabled="true"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="specsFile">
+						<runAction arguments="-c 'gcc -E -P -v -dD &quot;${plugin_state_location}/specs.c&quot;'" command="sh" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+			<storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
+		</cconfiguration>
+		<cconfiguration id="com.renesas.cdt.rxc.release.win32.configuration.Id.745111372">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.renesas.cdt.rxc.release.win32.configuration.Id.745111372" moduleId="org.eclipse.cdt.core.settings" name="Release">
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.PE" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="com.renesas.cdt.core.errorParsers.KPITGASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="com.renesas.cdt.core.KPITGCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="com.renesas.cdt.core.errorParsers.KPITMakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="com.renesas.cdt.core.KPITVCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="com.renesas.cdt.core.errorParsers.KPITGCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="com.renesas.cdt.core.KPITGASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="com.renesas.cdt.core.KPITMakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="com.renesas.cdt.core.KPITGLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="com.renesas.cdt.core.errorParsers.KPITGLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.pathentry"/>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactName="kit12_rx62t" buildArtefactType="com.renesas.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug,org.eclipse.cdt.build.core.buildArtefactType=com.renesas.cdt.build.core.buildArtefactType.exe" cleanCommand="rm -rf *.lst *.lis *.lpp *.map *.x *.lbp src/*.src src/*.p src/*.pp *.bls *.libelf *.lbk *.abs" description="Release - No Debug" errorParsers="com.renesas.cdt.core.KPITMakeErrorParser;com.renesas.cdt.core.KPITGCCErrorParser;com.renesas.cdt.core.KPITGASErrorParser;com.renesas.cdt.core.KPITGLDErrorParser;com.renesas.cdt.core.KPITVCErrorParser" id="com.renesas.cdt.rxc.release.win32.configuration.Id.745111372" name="Release" parent="com.renesas.cdt.rxc.release.win32.configuration.Id">
+					<folderInfo id="com.renesas.cdt.rxc.release.win32.configuration.Id.745111372." name="/" resourcePath="">
+						<toolChain id="com.renesas.cdt.rxc.release.win32.toolChain.Id.710464960" name="Renesas RXC Toolchain" superClass="com.renesas.cdt.rxc.release.win32.toolChain.Id">
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.PE" id="com.renesas.cdt.rxc.release.win32.targetPlatform.IdId.123558355" osList="win32" superClass="com.renesas.cdt.rxc.release.win32.targetPlatform.IdId"/>
+							<builder buildPath="${workspace_loc:/kit12_rx62t/Release}" id="com.renesas.cdt.rxc.release.win32.builder.Id.290736367" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="SHC Make Builder" superClass="com.renesas.cdt.rxc.release.win32.builder.Id"/>
+							<tool id="com.renesas.cdt.rxc.release.win32.tool.compiler.Id.1733852706" name="Compiler" superClass="com.renesas.cdt.rxc.release.win32.tool.compiler.Id">
+								<option id="com.renesas.cdt.renesas.Compiler.option.GenDebugInfo.774020744" superClass="com.renesas.cdt.renesas.Compiler.option.GenDebugInfo" value="false" valueType="boolean"/>
+								<option id="com.renesas.cdt.rxc.Release.Compiler.option.cpuType.1370423994" superClass="com.renesas.cdt.rxc.Release.Compiler.option.cpuType" value="RX600" valueType="enumerated"/>
+								<option id="com.renesas.cdt.rxc.Release.Compiler.option.endian.598769361" superClass="com.renesas.cdt.rxc.Release.Compiler.option.endian" value="Big-endian data" valueType="enumerated"/>
+								<option id="com.renesas.cdt.rxc.Release.Compiler.option.roundTo.1212068652" superClass="com.renesas.cdt.rxc.Release.Compiler.option.roundTo" value="Nearest" valueType="enumerated"/>
+								<option id="com.renesas.cdt.rxc.Release.Compiler.option.allocLowerBit.1598430542" superClass="com.renesas.cdt.rxc.Release.Compiler.option.allocLowerBit" value="Lower bit" valueType="enumerated"/>
+								<option id="com.renesas.cdt.rxc.Release.Compiler.option.widthDivergence.1751795468" superClass="com.renesas.cdt.rxc.Release.Compiler.option.widthDivergence" value="24 bit" valueType="enumerated"/>
+								<option id="com.renesas.cdt.renesas.Compiler.option.UserDef.2021963948" superClass="com.renesas.cdt.renesas.Compiler.option.UserDef" valueType="stringList">
+									<listOptionValue builtIn="false" value="-nologo"/>
+									<listOptionValue builtIn="false" value="-section=L=C"/>
+								</option>
+								<option id="com.renesas.cdt.renesas.Compiler.option.incFileDirectories.1082293315" superClass="com.renesas.cdt.renesas.Compiler.option.incFileDirectories" valueType="includePath">
+									<listOptionValue builtIn="false" value="${TCINSTALL}\include"/>
+								</option>
+								<inputType id="%Base.Compiler.Shc.C.Input.Id.2049402443" name="C Input" superClass="%Base.Compiler.Shc.C.Input.Id"/>
+							</tool>
+							<tool id="%com.renesas.cdt.rxc.release.win32.tool.assembler.Id.1007726465" name="Assembler" superClass="%com.renesas.cdt.rxc.release.win32.tool.assembler.Id">
+								<option id="com.renesas.cdt.rxc.Release.Assembler.option.endian.1002054502" superClass="com.renesas.cdt.rxc.Release.Assembler.option.endian" value="Big-endian data" valueType="enumerated"/>
+								<option id="com.renesas.cdt.renesas.Assembler.option.userDefine.1215607688" superClass="com.renesas.cdt.renesas.Assembler.option.userDefine" valueType="stringList">
+									<listOptionValue builtIn="false" value="-nologo"/>
+								</option>
+								<inputType id="%Base.Assembler.shcInputType.Id.1154859649" name="Assembler InputType" superClass="%Base.Assembler.shcInputType.Id"/>
+							</tool>
+							<tool id="com.renesas.cdt.rxc.release.win32.tool.linker.Id.852523711" name="Linker" superClass="com.renesas.cdt.rxc.release.win32.tool.linker.Id">
+								<option id="com.renesas.cdt.renesas.Linker.option.generateListFile.1133187682" superClass="com.renesas.cdt.renesas.Linker.option.generateListFile" value="true" valueType="boolean"/>
+								<option id="com.renesas.cdt.renesas.Linker.option.debugInformation.107614189" superClass="com.renesas.cdt.renesas.Linker.option.debugInformation" value="None" valueType="enumerated"/>
+								<option id="com.renesas.cdt.renesas.Linker.option.typeOfOutputFileOption.863773940" superClass="com.renesas.cdt.renesas.Linker.option.typeOfOutputFileOption" value="Stype via absolute" valueType="enumerated"/>
+								<option id="com.renesas.cdt.renesas.Linker.option.userDefined.1085834300" superClass="com.renesas.cdt.renesas.Linker.option.userDefined" valueType="stringList">
+									<listOptionValue builtIn="false" value="-nologo"/>
+									<listOptionValue builtIn="false" value="-nomessage"/>
+									<listOptionValue builtIn="false" value="-rom=D=R,D_1=R_1,D_2=R_2"/>
+								</option>
+							</tool>
+							<tool command="lbgrx" id="%com.renesas.cdt.rxc.release.win32.tool.libgen.Id.1946167970" name="Standard Library" superClass="%com.renesas.cdt.rxc.release.win32.tool.libgen.Id">
+								<option id="com.renesas.cdt.renesas.StandardLibrary.option.mathc89.634785362" superClass="com.renesas.cdt.renesas.StandardLibrary.option.mathc89" value="false" valueType="boolean"/>
+								<option id="com.renesas.cdt.renesas.StandardLibrary.option.stdioc89.175757373" superClass="com.renesas.cdt.renesas.StandardLibrary.option.stdioc89" value="true" valueType="boolean"/>
+								<option id="com.renesas.cdt.renesas.StandardLibrary.option.stdlibc89.1035151703" superClass="com.renesas.cdt.renesas.StandardLibrary.option.stdlibc89" value="true" valueType="boolean"/>
+								<option id="com.renesas.cdt.renesas.StandardLibrary.option.stringc89.494971409" superClass="com.renesas.cdt.renesas.StandardLibrary.option.stringc89" value="true" valueType="boolean"/>
+								<option id="com.renesas.cdt.renesas.StandardLibrary.option.rxcnewCPP.391956734" superClass="com.renesas.cdt.renesas.StandardLibrary.option.rxcnewCPP" value="true" valueType="boolean"/>
+								<option id="com.renesas.cdt.rxc.Release.StandardLibrary.option.endian.605651948" superClass="com.renesas.cdt.rxc.Release.StandardLibrary.option.endian" value="Big-endian data" valueType="enumerated"/>
+								<option id="com.renesas.cdt.renesas.StandardLibrary.option.libConfiguration.445129830" superClass="com.renesas.cdt.renesas.StandardLibrary.option.libConfiguration" value="C(C89)" valueType="enumerated"/>
+								<option id="com.renesas.cdt.renesas.StandardLibrary.option.mode.1813399320" superClass="com.renesas.cdt.renesas.StandardLibrary.option.mode" value="Build the library (only when options have been changed)" valueType="enumerated"/>
+								<option id="com.renesas.cdt.renesas.StandardLibrary.option.UserDef.1380928943" superClass="com.renesas.cdt.renesas.StandardLibrary.option.UserDef" valueType="stringList">
+									<listOptionValue builtIn="false" value="-section=L=C"/>
+								</option>
+							</tool>
+							<tool id="com.renesas.cdt.rxc.release.win32.tool.convertor.Id.1779262614" name="Converter" superClass="com.renesas.cdt.rxc.release.win32.tool.convertor.Id"/>
+						</toolChain>
+					</folderInfo>
+					<sourceEntries>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+					</sourceEntries>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="scannerConfiguration">
+				<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+				<profile id="com.iar.cdt.v850.scanner.IAR_V850_PerProjectProfile">
+					<buildOutputProvider>
+						<openAction enabled="false" filePath=""/>
+						<parser enabled="false"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="com.iar.cdt.v850.toolchain.scannerInfoProvider1">
+						<runAction arguments="" command="" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+				<profile id="com.iar.cdt.rl78.scanner.IAR_RL78_PerProjectProfile">
+					<buildOutputProvider>
+						<openAction enabled="false" filePath=""/>
+						<parser enabled="false"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="com.iar.cdt.rl78.toolchain.scannerInfoProviderRL78">
+						<runAction arguments="" command="" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+				<profile id="com.iar.cdt.rx.scanner.IAR_RX_PerProjectProfile">
+					<buildOutputProvider>
+						<openAction enabled="false" filePath=""/>
+						<parser enabled="false"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="com.iar.cdt.rx.toolchain.scannerInfoProviderRX">
+						<runAction arguments="" command="" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+				<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
+					<buildOutputProvider>
+						<openAction enabled="true" filePath=""/>
+						<parser enabled="true"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="specsFile">
+						<runAction arguments="-E -P -v -dD ${plugin_state_location}/${specs_file}" command="gcc" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+				<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerFileProfile">
+					<buildOutputProvider>
+						<openAction enabled="true" filePath=""/>
+						<parser enabled="true"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="makefileGenerator">
+						<runAction arguments="-E -P -v -dD" command="" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+				<profile id="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfile">
+					<buildOutputProvider>
+						<openAction enabled="true" filePath=""/>
+						<parser enabled="true"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="specsFile">
+						<runAction arguments="-E -P -v -dD ${plugin_state_location}/${specs_file}" command="gcc" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+				<profile id="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP">
+					<buildOutputProvider>
+						<openAction enabled="true" filePath=""/>
+						<parser enabled="true"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="specsFile">
+						<runAction arguments="-E -P -v -dD ${plugin_state_location}/specs.cpp" command="g++" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+				<profile id="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC">
+					<buildOutputProvider>
+						<openAction enabled="true" filePath=""/>
+						<parser enabled="true"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="specsFile">
+						<runAction arguments="-E -P -v -dD ${plugin_state_location}/specs.c" command="gcc" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+				<profile id="org.eclipse.cdt.managedbuilder.core.GCCWinManagedMakePerProjectProfile">
+					<buildOutputProvider>
+						<openAction enabled="true" filePath=""/>
+						<parser enabled="true"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="specsFile">
+						<runAction arguments="-c 'gcc -E -P -v -dD &quot;${plugin_state_location}/${specs_file}&quot;'" command="sh" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+				<profile id="org.eclipse.cdt.managedbuilder.core.GCCWinManagedMakePerProjectProfileCPP">
+					<buildOutputProvider>
+						<openAction enabled="true" filePath=""/>
+						<parser enabled="true"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="specsFile">
+						<runAction arguments="-c 'g++ -E -P -v -dD &quot;${plugin_state_location}/specs.cpp&quot;'" command="sh" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+				<profile id="org.eclipse.cdt.managedbuilder.core.GCCWinManagedMakePerProjectProfileC">
+					<buildOutputProvider>
+						<openAction enabled="true" filePath=""/>
+						<parser enabled="true"/>
+					</buildOutputProvider>
+					<scannerInfoProvider id="specsFile">
+						<runAction arguments="-c 'gcc -E -P -v -dD &quot;${plugin_state_location}/specs.c&quot;'" command="sh" useDefault="true"/>
+						<parser enabled="true"/>
+					</scannerInfoProvider>
+				</profile>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
+	</storageModule>
+	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+		<project id="kit12_rx62t.com.renesas.cdt.rxc.projectType.win32.Id.714087473" name="RenesasRXC" projectType="com.renesas.cdt.rxc.projectType.win32.Id"/>
+	</storageModule>
+</cproject>

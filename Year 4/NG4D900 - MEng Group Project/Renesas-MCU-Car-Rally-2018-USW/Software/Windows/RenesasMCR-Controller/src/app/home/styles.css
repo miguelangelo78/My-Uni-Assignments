@@ -1,0 +1,16 @@
+#buttonDisconnect {
+	-fx-base: #fff7ef;
+}
+
+#textAreaConsole {
+	-fx-font-family: Consolas;
+    -fx-text-fill: #ffffff;
+}
+
+#textAreaConsole .content {
+    -fx-background-color: #202123;
+}
+
+#lostConnectionPane {
+	-fx-text-fill: #f45342;
+}

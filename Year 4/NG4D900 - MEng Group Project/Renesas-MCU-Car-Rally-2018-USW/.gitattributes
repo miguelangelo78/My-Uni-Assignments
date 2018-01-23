@@ -1,0 +1,2 @@
+*.exe filter=lfs diff=lfs merge=lfs -text
+Resources/Kit[[:space:]]Resources/MCR[[:space:]]Kit[[:space:]]Software[[:space:]]Tools[[:space:]]&[[:space:]]Drivers/Renesas[[:space:]]e2studio/setup.exe filter=lfs diff=lfs merge=lfs -text
