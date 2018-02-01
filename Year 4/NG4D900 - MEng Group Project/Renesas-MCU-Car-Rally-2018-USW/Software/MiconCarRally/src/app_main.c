@@ -42,6 +42,8 @@ pid_t * pid_controller_current   = NULL; /* What current PID controller are we u
 /* Check if we have recovered by avoiding the right edge */
 #define check_right_boundary_recovery(sensor_data) (sensor_data == b00000110 || sensor_data == b00000111)
 
+#define is_in_template_generation_mode() (uint8_t)((dipswitch_read() & 0x8) >> 3)
+
 void change_to_new_mode(enum MODE new_mode, enum MODE next_mode) {
 	track.last_mode = track.mode;
 	track.mode      = new_mode;
@@ -62,7 +64,10 @@ bool handle_linetape_detection(uint8_t sensor_data) {
 #if ENABLE_TEMPLATE_GENERATION == 1
 		template_generator_begin();
 #else
-		change_to_new_mode(MODE_TURNING_CORNER, MODE_FOLLOW_NORMAL_TRACE);
+		if(is_in_template_generation_mode())
+			template_generator_begin();
+		else
+			change_to_new_mode(MODE_TURNING_CORNER, MODE_FOLLOW_NORMAL_TRACE);
 #endif
 	}
 
@@ -71,7 +76,10 @@ bool handle_linetape_detection(uint8_t sensor_data) {
 #if ENABLE_TEMPLATE_GENERATION == 1
 		template_generator_begin();
 #else
-		change_to_new_mode(MODE_FOUND_RIGHT_TAPE, MODE_NULL);
+		if(is_in_template_generation_mode())
+			template_generator_begin();
+		else
+			change_to_new_mode(MODE_FOUND_RIGHT_TAPE, MODE_NULL);
 #endif
 	}
 
@@ -80,7 +88,10 @@ bool handle_linetape_detection(uint8_t sensor_data) {
 #if ENABLE_TEMPLATE_GENERATION == 1
 		template_generator_begin();
 #else
-		change_to_new_mode(MODE_FOUND_LEFT_TAPE, MODE_NULL);
+		if(is_in_template_generation_mode())
+			template_generator_begin();
+		else
+			change_to_new_mode(MODE_FOUND_LEFT_TAPE, MODE_NULL);
 #endif
 	}
 
@@ -94,6 +105,9 @@ bool handle_linetape_detection(uint8_t sensor_data) {
 
 #if ENABLE_TEMPLATE_GENERATION == 1
 	template_generator_update(sensor_data);
+#else
+	if(is_in_template_generation_mode())
+		template_generator_update(sensor_data);
 #endif
 
 	return ret;
@@ -206,7 +220,7 @@ void car_control_poll() {
 	////////////////////////////////////////////////////
 
 	/* Switch to the correct PID controller, which depends on whether or not we are breaking/slowing down */
-	pid_controller_current = (module_left_wheel->is_braking || module_right_wheel ->is_braking) ? pid_controller_crankmode : pid_controller_normal;
+	pid_controller_current = (module_left_wheel->is_braking || module_right_wheel->is_braking) ? pid_controller_crankmode : pid_controller_normal;
 
 	/* Recalculate the PID controller values */
 	float pid_output = pid_control(pid_controller_current);
@@ -270,7 +284,12 @@ void status_logger_task(void * args) {
 #if ENABLE_TEMPLATE_GENERATION == 1
 		if(template_generator_is_finished())
 			template_generator_dump();
+#else
+		if(is_in_template_generation_mode() && template_generator_is_finished())
+			template_generator_dump();
 #endif
+
+	DEBUG("RPM: %.2f | %.2f, %.2f | %.2f", module_left_wheel->rpm_measured, module_left_wheel->acceleration, module_right_wheel->rpm_measured, module_right_wheel->acceleration);
 
 #if ENABLE_STARTSWITCH == 1 && ENABLE_MOTOR_CTRL_LEDS == 1
 		if(start_switch_read()) {
@@ -306,10 +325,6 @@ void status_logger_task(void * args) {
 void poller() {
 	suart_poll();       /* Update Software UART                    */
 	car_control_poll(); /* Update the control algorithm of the car */
-
-	/* Poll the RPM sensors of both motors */
-	motor_rpm_sensor_poll(module_left_wheel);
-	motor_rpm_sensor_poll(module_right_wheel);
 
 #if ENABLE_DEBUG_LEDS == 1
 	/* Update debug LEDs with Software PWM */

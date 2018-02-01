@@ -23,10 +23,10 @@
 #define SUART_ENABLE_NEWLINE_TERMINATOR (1)    /* If 1, the reception of bytes terminates when a new line is found. This means the FIFO buffer won't NEED to be full for it to be re-flushed             */
 #define SUART_NEWLINE_CHARACTER         ('\n') /* Which character is considered new line (could be '\r\n' or '\r' for example)                                                                           */
 
-#define SUART_TX_DIR PORTB.DDR.BIT.B1
-#define SUART_TX     PORTB.DR.BIT.B1
-#define SUART_RX_DIR PORTB.DDR.BIT.B0
-#define SUART_RX     PORTB.PORT.BIT.B0
+#define SUART_TX_DIR PORT9.DDR.BIT.B5
+#define SUART_TX     PORT9.DR.BIT.B5
+#define SUART_RX_DIR PORT9.DDR.BIT.B4
+#define SUART_RX     PORT9.PORT.BIT.B4
 
 enum SUART_ERRCODE {
 	SUART_OK,

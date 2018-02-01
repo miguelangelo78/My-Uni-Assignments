@@ -31,7 +31,7 @@
 /****************************************************************************************************************/
 
 /********* PID CONTROLLER DEFINITIONS ***************************/
-#define HANDLE_KP       2.1   /* Normal operation P coefficient */
+#define HANDLE_KP       5 //2.1 /* Normal operation P coefficient */
 #define HANDLE_KI       0.066 /* Normal operation I coefficient */
 #define HANDLE_KD       37    /* Normal operation D coefficient */
 

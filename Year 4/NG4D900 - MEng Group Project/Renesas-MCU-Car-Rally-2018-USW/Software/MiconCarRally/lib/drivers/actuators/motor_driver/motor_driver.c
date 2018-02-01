@@ -26,9 +26,10 @@ motor_t * motor_init(enum MOTOR_CHANNEL channel) {
 	ret->speed_old       = 0.0f;
 	ret->speed_safe_old  = 0.0f;
 	ret->rpm_measured    = 0.0f;
-	ret->rpm_counter     = 0;
-	ret->rpm_counter_old = 0;
-	ret->is_safemode     = false;
+	ret->rpm_timestamp_triggered = false;
+	ret->rpm_timestamp     = 0;
+	ret->rpm_timestamp_old = 0;
+	ret->is_safemode       = false;
 
 	/* Initialize channel controls */
 
@@ -88,13 +89,14 @@ enum MOTOR_ERRCODE motor_reset(motor_t * handle) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
-	handle->speed           = 0.0f;
-	handle->speed_old       = 0.0f;
-	handle->speed_safe_old  = 0.0f;
-	handle->rpm_measured    = 0.0f;
-	handle->rpm_counter     = 0;
-	handle->rpm_counter_old = 0;
-	handle->is_braking      = false;
+	handle->speed             = 0.0f;
+	handle->speed_old         = 0.0f;
+	handle->speed_safe_old    = 0.0f;
+	handle->rpm_measured      = 0.0f;
+	handle->rpm_timestamp     = 0;
+	handle->rpm_timestamp_old = 0;
+	handle->rpm_timestamp_triggered = false;
+	handle->is_braking        = false;
 
 	if(handle->side == MOTOR_CHANNEL_LEFT) {
 		MTU4.TGRA = 0;
@@ -110,6 +112,9 @@ enum MOTOR_ERRCODE motor_reset(motor_t * handle) {
 static enum MOTOR_ERRCODE motor_update(motor_t * handle, bool use_differential) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
+
+	/* Poll the RPM sensor for this given motor */
+	motor_rpm_sensor_poll(handle);
 
 	if(!use_differential) {
 		if(handle->side == MOTOR_CHANNEL_LEFT)
@@ -138,6 +143,9 @@ static enum MOTOR_ERRCODE motor_update(motor_t * handle, bool use_differential) 
 		/* Calculate new RPM values */
 		newRPM = handle->acceleration + error;
 	}
+
+	if(newRPM > MOTOR_MAX_RPM_SPEED)  newRPM =  MOTOR_MAX_RPM_SPEED;
+	if(newRPM < -MOTOR_MAX_RPM_SPEED) newRPM = -MOTOR_MAX_RPM_SPEED;
 
 	if(handle->side == MOTOR_CHANNEL_LEFT) {
 		/* Update left channel */
@@ -189,6 +197,8 @@ static enum MOTOR_ERRCODE motor_calculate_differential(motor_t * handle, float p
 		if(pid_output > 0)
 			handle->acceleration = (r1 / r3) * handle->speed;
 	}
+
+	handle->acceleration = map(handle->acceleration, MOTOR_DEADBAND, MOTOR_MAX_PWM_SPEED, 0, MOTOR_MAX_RPM_SPEED);
 
 	return MOTOR_OK;
 }
@@ -298,22 +308,31 @@ enum MOTOR_ERRCODE motor_rpm_sensor_poll(motor_t * handle) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
-	if(handle->side == MOTOR_CHANNEL_LEFT && rpmcounter_left_read())
-		handle->rpm_counter++;
-	else if(rpmcounter_right_read())
-		handle->rpm_counter++;
+	if(handle->side == MOTOR_CHANNEL_LEFT) {
+		if(rpmcounter_left_read()) {
+			if(handle->rpm_timestamp_triggered == false) {
+				handle->rpm_timestamp_triggered = true;
 
-	int timeout_index = MOTOR_CHANNEL_LEFT ? 1 : 2;
+				uint32_t current_time = rtos_time();
+				uint32_t elapsed_time = current_time - handle->rpm_timestamp_old;
+				handle->rpm_measured = 60.0f / ((float)elapsed_time / 1000.0f);
+				handle->rpm_timestamp_old = current_time;
+			}
+		} else {
+			handle->rpm_timestamp_triggered = false;
+		}
+	}
+	else if(rpmcounter_right_read()) {
+		if(handle->rpm_timestamp_triggered == false) {
+			handle->rpm_timestamp_triggered = true;
 
-	/* Calculate RPM values every 'MOTOR_RPM_MEASURE_PERIOD'th ms */
-	if(rtos_get_timeout(false, false, MOTOR_RPM_MEASURE_PERIOD, timeout_index)) {
-		if(handle->side == MOTOR_CHANNEL_LEFT)
-			handle->rpm_measured = handle->rpm_counter * 2.56; //(float)(((handle->rpm_counter - handle->rpm_counter_old) / 24) * 500); /* FIXME: Calculate this properly */
-		else
-			handle->rpm_measured = handle->rpm_counter * 2.56; //(float)(((handle->rpm_counter - handle->rpm_counter_old) / 45) * 500); /* FIXME: Calculate this properly */
-
-		handle->rpm_counter_old = handle->rpm_counter;
-		handle->rpm_counter     = 0;
+			uint32_t current_time = rtos_time();
+			uint32_t elapsed_time = current_time - handle->rpm_timestamp_old;
+			handle->rpm_measured = 60.0f / ((float)elapsed_time / 1000.0f);
+			handle->rpm_timestamp_old = current_time;
+		}
+	} else {
+		handle->rpm_timestamp_triggered = false;
 	}
 
 	return MOTOR_OK;

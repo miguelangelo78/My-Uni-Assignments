@@ -11,11 +11,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define MOTOR_MAX_PWM_SPEED      (24575)
-#define MOTOR_MAX_RPM_SPEED      (2000)
-#define MOTOR_SAFE_MODE_LEVEL    (3.26f) /* Expressed in % from 0 to 100 */
-#define MOTOR_DEADBAND           (0)
-#define MOTOR_RPM_MEASURE_PERIOD (15) /* The period in which we measure the motor's RPM (in ms) */
+#define MOTOR_MAX_PWM_SPEED   (24575)
+#define MOTOR_MAX_RPM_SPEED   (2000)
+#define MOTOR_SAFE_MODE_LEVEL (100.0f) /* Expressed in % from 0 to 100 */
+#define MOTOR_DEADBAND        (0)
 
 enum MOTOR_ERRCODE {
 	MOTOR_OK,
@@ -40,8 +39,9 @@ typedef struct {
 	float    speed_safe_old;
 	float    acceleration;
 	float    rpm_measured;
-	uint32_t rpm_counter;
-	uint32_t rpm_counter_old;
+	uint32_t rpm_timestamp;
+	uint32_t rpm_timestamp_old;
+	bool     rpm_timestamp_triggered;
 	bool     is_braking;
 	bool     is_safemode;
 	enum MOTOR_CHANNEL side;
