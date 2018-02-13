@@ -73,10 +73,10 @@ motor_t * motor_init(enum MOTOR_CHANNEL channel) {
 
 motor_t * motor_init_safe(enum MOTOR_CHANNEL channel, bool enable_safemode) {
 	motor_t * ret = motor_init(channel);
-	if((enum MOTOR_ERRCODE)ret == MOTOR_ERR_INVAL_CHANNEL)
+	if((enum MOTOR_RETCODE)ret == MOTOR_ERR_INVAL_CHANNEL)
 		return ret;
 
-	enum MOTOR_ERRCODE errcode;
+	enum MOTOR_RETCODE errcode;
 	if((errcode = motor_set_safe_mode(ret, enable_safemode, false)) == MOTOR_OK) {
 		return ret;
 	} else {
@@ -85,7 +85,7 @@ motor_t * motor_init_safe(enum MOTOR_CHANNEL channel, bool enable_safemode) {
 	}
 }
 
-enum MOTOR_ERRCODE motor_reset(motor_t * handle) {
+enum MOTOR_RETCODE motor_reset(motor_t * handle) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
@@ -109,7 +109,7 @@ enum MOTOR_ERRCODE motor_reset(motor_t * handle) {
 	return MOTOR_OK;
 }
 
-static enum MOTOR_ERRCODE motor_update(motor_t * handle, bool use_differential) {
+static enum MOTOR_RETCODE motor_update(motor_t * handle, bool use_differential) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
@@ -118,9 +118,9 @@ static enum MOTOR_ERRCODE motor_update(motor_t * handle, bool use_differential) 
 
 	if(!use_differential) {
 		if(handle->side == MOTOR_CHANNEL_LEFT)
-			MTU4.TGRC = handle->speed; /* Update left channel  */
+			MTU4.TGRC = MOTOR_LEFT_INVERSE  ? -handle->speed : handle->speed; /* Update left channel  */
 		else
-			MTU4.TGRD = handle->speed; /* Update right channel */
+			MTU4.TGRD = MOTOR_RIGHT_INVERSE ? -handle->speed : handle->speed; /* Update right channel */
 
 		return MOTOR_OK;
 	}
@@ -148,6 +148,9 @@ static enum MOTOR_ERRCODE motor_update(motor_t * handle, bool use_differential) 
 	if(newRPM < -MOTOR_MAX_RPM_SPEED) newRPM = -MOTOR_MAX_RPM_SPEED;
 
 	if(handle->side == MOTOR_CHANNEL_LEFT) {
+#if MOTOR_LEFT_INVERSE == 1
+		newRPM *= -1.0f;
+#endif
 		/* Update left channel */
 		if(newRPM >= 0) {
 			PORT7.DR.BYTE &= 0xEF;
@@ -157,6 +160,9 @@ static enum MOTOR_ERRCODE motor_update(motor_t * handle, bool use_differential) 
 			MTU4.TGRC = (long)(MOTOR_MAX_PWM_SPEED - 1) * (-newRPM) / MOTOR_MAX_RPM_SPEED;
 		}
 	} else {
+#if MOTOR_RIGHT_INVERSE == 1
+		newRPM *= -1.0f;
+#endif
 		/* Update right channel */
 		if(newRPM >= 0) {
 			PORT7.DR.BYTE &= 0xDF;
@@ -170,7 +176,7 @@ static enum MOTOR_ERRCODE motor_update(motor_t * handle, bool use_differential) 
 	return MOTOR_OK;
 }
 
-static enum MOTOR_ERRCODE motor_calculate_differential(motor_t * handle, float pid_output) {
+static enum MOTOR_RETCODE motor_calculate_differential(motor_t * handle, float pid_output) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
@@ -203,21 +209,21 @@ static enum MOTOR_ERRCODE motor_calculate_differential(motor_t * handle, float p
 	return MOTOR_OK;
 }
 
-enum MOTOR_ERRCODE motor_stop(motor_t * handle) {
+enum MOTOR_RETCODE motor_stop(motor_t * handle) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
 	return motor_ctrl(handle, 0);
 }
 
-enum MOTOR_ERRCODE motor_resume(motor_t * handle) {
+enum MOTOR_RETCODE motor_resume(motor_t * handle) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
 	return motor_ctrl(handle, handle->speed_old);
 }
 
-enum MOTOR_ERRCODE motor_refresh(motor_t * handle) {
+enum MOTOR_RETCODE motor_refresh(motor_t * handle) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
@@ -226,7 +232,7 @@ enum MOTOR_ERRCODE motor_refresh(motor_t * handle) {
 	return motor_update(handle, false);
 }
 
-enum MOTOR_ERRCODE motor_refresh_with_differential(motor_t * handle, float pid_output) {
+enum MOTOR_RETCODE motor_refresh_with_differential(motor_t * handle, float pid_output) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
@@ -237,7 +243,7 @@ enum MOTOR_ERRCODE motor_refresh_with_differential(motor_t * handle, float pid_o
 	return MOTOR_ERR_DIFFERENTIAL;
 }
 
-enum MOTOR_ERRCODE motor_ctrl(motor_t * handle, float speed_percentage) {
+enum MOTOR_RETCODE motor_ctrl(motor_t * handle, float speed_percentage) {
 	if(!handle)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
@@ -248,7 +254,7 @@ enum MOTOR_ERRCODE motor_ctrl(motor_t * handle, float speed_percentage) {
 	return MOTOR_ERR_SET_SPEED;
 }
 
-enum MOTOR_ERRCODE motor_ctrl_with_differential(motor_t * handle, float speed_percentage, float pid_output) {
+enum MOTOR_RETCODE motor_ctrl_with_differential(motor_t * handle, float speed_percentage, float pid_output) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
@@ -262,7 +268,7 @@ enum MOTOR_ERRCODE motor_ctrl_with_differential(motor_t * handle, float speed_pe
 	return MOTOR_ERR_DIFFERENTIAL;
 }
 
-enum MOTOR_ERRCODE motor_set_safe_mode(motor_t * handle, bool enable, bool update_speed) {
+enum MOTOR_RETCODE motor_set_safe_mode(motor_t * handle, bool enable, bool update_speed) {
 	if(!handle)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
@@ -281,7 +287,7 @@ enum MOTOR_ERRCODE motor_set_safe_mode(motor_t * handle, bool enable, bool updat
 	return MOTOR_OK;
 }
 
-enum MOTOR_ERRCODE motor_set_speed(motor_t * handle, float speed_percentage) {
+enum MOTOR_RETCODE motor_set_speed(motor_t * handle, float speed_percentage) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
@@ -295,7 +301,7 @@ enum MOTOR_ERRCODE motor_set_speed(motor_t * handle, float speed_percentage) {
 	return MOTOR_OK;
 }
 
-enum MOTOR_ERRCODE motor_brake(motor_t * handle, bool is_breaking) {
+enum MOTOR_RETCODE motor_brake(motor_t * handle, bool is_breaking) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
@@ -304,7 +310,7 @@ enum MOTOR_ERRCODE motor_brake(motor_t * handle, bool is_breaking) {
 	return MOTOR_OK;
 }
 
-enum MOTOR_ERRCODE motor_rpm_sensor_poll(motor_t * handle) {
+enum MOTOR_RETCODE motor_rpm_sensor_poll(motor_t * handle) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 

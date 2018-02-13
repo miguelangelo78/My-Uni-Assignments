@@ -24,21 +24,20 @@ void spwm_poll_trigger(spwm_t * chan, bool level) {
 	uint8_t pinsample = (uint8_t)-1;
 	if(chan->pin) {
 		if(chan->mode & SPWM_MODE_PININPUT) {
-			/* XXX: WE ONLY SUPPORT THESE 4 PINS IN THIS LIBRARY FOR THIS MCU IN PARTICULAR */
+			/* XXX: WE ONLY SUPPORT THESE PINS IN THIS LIBRARY FOR THIS MCU IN PARTICULAR */
 			switch(chan->pin) {
-			case 0: pinsample = PORTA.PORT.BIT.B0; break;
-			case 1: pinsample = PORTA.PORT.BIT.B1; break;
-			case 2: pinsample = PORTA.PORT.BIT.B2; break;
-			case 3: pinsample = PORTA.PORT.BIT.B3; break;
+			case 5: pinsample = PORT9.PORT.BIT.B3; break; /* X-Axis accelerometer */
+			case 6: pinsample = PORTA.PORT.BIT.B2; break; /* Y-Axis accelerometer */
 			}
 		}
 		else {
-			/* XXX: WE ONLY SUPPORT THESE 4 PINS IN THIS LIBRARY FOR THIS MCU IN PARTICULAR */
+			/* XXX: WE ONLY SUPPORT THESE PINS IN THIS LIBRARY FOR THIS MCU IN PARTICULAR */
 			switch(chan->pin) {
-			case 0: PORTA.DR.BIT.B0 = level; break;
-			case 1: PORTA.DR.BIT.B1 = level; break;
-			case 2: PORTA.DR.BIT.B2 = level; break;
-			case 3: PORTA.DR.BIT.B3 = level; break;
+			case 0: PORTA.DR.BIT.B0 = level; break; /* RX byte LED   */
+			case 1: PORTA.DR.BIT.B1 = level; break; /* TX byte LED   */
+			case 2: PORTA.DR.BIT.B2 = level; break; /* RX packet LED */
+			case 3: PORTA.DR.BIT.B3 = level; break; /* TX packet LED */
+			case 4: PORT9.DR.BIT.B0 = level; break; /* Piezo Buzzer  */
 			}
 		}
 	}

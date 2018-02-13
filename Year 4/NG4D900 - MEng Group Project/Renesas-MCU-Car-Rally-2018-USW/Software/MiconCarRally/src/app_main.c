@@ -19,9 +19,9 @@
 #include "app_track_data.h"
 #include "app_template_generator.h"
 
-motor_t     * module_left_wheel  = NULL; /* Left  DC Motor module                */
-motor_t     * module_right_wheel = NULL; /* Right DC Motor module                */
-servo_t     * module_servo       = NULL; /* Servo module                         */
+motor_t * module_left_wheel  = NULL; /* Left  DC Motor module */
+motor_t * module_right_wheel = NULL; /* Right DC Motor module */
+servo_t * module_servo       = NULL; /* Servo module          */
 
 pid_t * pid_controller_normal    = NULL; /* PID for controlling the servo angle and the DC motor differential */
 pid_t * pid_controller_crankmode = NULL; /* PID for controlling each DC motor while in brake mode             */
@@ -289,8 +289,6 @@ void status_logger_task(void * args) {
 			template_generator_dump();
 #endif
 
-	DEBUG("RPM: %.2f | %.2f, %.2f | %.2f", module_left_wheel->rpm_measured, module_left_wheel->acceleration, module_right_wheel->rpm_measured, module_right_wheel->acceleration);
-
 #if ENABLE_STARTSWITCH == 1 && ENABLE_MOTOR_CTRL_LEDS == 1
 		if(start_switch_read()) {
 			is_go = false;
@@ -331,6 +329,25 @@ void poller() {
 	if(!packetman_is_connected())
 		debug_leds_update_pwm();
 #endif
+}
+
+void test_packet_stream(void * args) {
+	while(1) {
+
+		if(packetman_is_connected()) {
+			packet_cmd_t cmd;
+			cmd.getset = 3;
+			cmd.dev_id = 1;
+			cmd.size = 4;
+
+			memset(cmd.operation, 0, sizeof(cmd.operation));
+			sprintf(cmd.operation, "TEST");
+
+			packetman_send_packet(&cmd, PACKET_CMD);
+		}
+
+		rtos_delay(1);
+	}
 }
 
 void main_app(void * args) {
@@ -387,6 +404,8 @@ void main_app(void * args) {
 	/* Initialize Debug LEDs */
 	debug_leds_init();
 #endif
+
+	rtos_spawn_task("test_packet_stream", test_packet_stream);
 
 	/* Reset RTOS timeout service */
 	rtos_reset_timeout_service();

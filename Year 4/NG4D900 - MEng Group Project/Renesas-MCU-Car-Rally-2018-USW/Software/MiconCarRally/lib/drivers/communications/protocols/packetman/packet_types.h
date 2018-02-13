@@ -27,13 +27,10 @@ typedef struct {
 } packet_keepalive_t;
 
 typedef struct {
-	/* TODO */
-	uint8_t nil;
+	uint8_t  getset;        /* 0: Get data. 1: Set data    */
+	uint8_t  dev_id;        /* Device ID                   */
+	uint8_t  operation[10]; /* The command itself          */
+	uint32_t size;          /* Size of the command payload */
 } packet_cmd_t;
-
-typedef struct {
-	/* TODO */
-	uint8_t nil;
-} packet_stream_t;
 
 #endif /* LIB_DRIVERS_COMMUNICATIONS_PROTOCOLS_PACKETMAN_PACKET_TYPES_H_ */

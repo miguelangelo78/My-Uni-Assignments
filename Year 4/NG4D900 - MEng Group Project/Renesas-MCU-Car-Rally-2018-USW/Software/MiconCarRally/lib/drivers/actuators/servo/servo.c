@@ -37,7 +37,7 @@ servo_t * servo_init(void) {
 	return ret;
 }
 
-enum SERVO_ERRCODE servo_reset(servo_t * handle) {
+enum SERVO_RETCODE servo_reset(servo_t * handle) {
 	if(!handle)
 		return SERVO_ERR_INVAL_HANDLE;
 
@@ -48,7 +48,7 @@ enum SERVO_ERRCODE servo_reset(servo_t * handle) {
 	return servo_ctrl(handle, SERVO_ANGLE_CENTER);
 }
 
-enum SERVO_ERRCODE servo_ctrl(servo_t * handle, int16_t angle) {
+enum SERVO_RETCODE servo_ctrl(servo_t * handle, int16_t angle) {
 	if(!handle)
 		return SERVO_ERR_INVAL_HANDLE;
 
@@ -67,7 +67,7 @@ enum SERVO_ERRCODE servo_ctrl(servo_t * handle, int16_t angle) {
 	return SERVO_OK;
 }
 
-enum SERVO_ERRCODE servo_accum_ctrl(servo_t * handle, int16_t sum_angle) {
+enum SERVO_RETCODE servo_accum_ctrl(servo_t * handle, int16_t sum_angle) {
 	if(!handle)
 		return SERVO_ERR_INVAL_HANDLE;
 
@@ -75,7 +75,7 @@ enum SERVO_ERRCODE servo_accum_ctrl(servo_t * handle, int16_t sum_angle) {
 	return servo_ctrl(handle, sum_angle + handle->angle);
 }
 
-enum SERVO_ERRCODE servo_center(servo_t * handle) {
+enum SERVO_RETCODE servo_center(servo_t * handle) {
 	if(!handle)
 		return SERVO_ERR_INVAL_HANDLE;
 
@@ -83,7 +83,7 @@ enum SERVO_ERRCODE servo_center(servo_t * handle) {
 	return servo_ctrl(handle, SERVO_ANGLE_CENTER);
 }
 
-enum SERVO_ERRCODE servo_lock(servo_t * handle) {
+enum SERVO_RETCODE servo_lock(servo_t * handle) {
 	if(!handle)
 		return SERVO_ERR_INVAL_HANDLE;
 
@@ -96,7 +96,7 @@ enum SERVO_ERRCODE servo_lock(servo_t * handle) {
 	return SERVO_OK;
 }
 
-enum SERVO_ERRCODE servo_unlock(servo_t * handle) {
+enum SERVO_RETCODE servo_unlock(servo_t * handle) {
 	if(!handle)
 		return SERVO_ERR_INVAL_HANDLE;
 

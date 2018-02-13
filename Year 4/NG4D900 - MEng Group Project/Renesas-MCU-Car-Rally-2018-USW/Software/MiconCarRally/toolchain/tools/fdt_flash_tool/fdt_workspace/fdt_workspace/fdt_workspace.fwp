@@ -70,7 +70,7 @@
 "FDT_UseInternalKernel" "TRUE" 
 "FDT_BlockLockDisconnect" "1" 
 "FDT_BlockLockConnect" "1" 
-"FDT_Port" "COM10" 
+"FDT_Port" "COM4" 
 "FDT_CKP" "4" 
 "FDT_MessageLevel" "1" 
 "FDT_BootMode" "TRUE" 

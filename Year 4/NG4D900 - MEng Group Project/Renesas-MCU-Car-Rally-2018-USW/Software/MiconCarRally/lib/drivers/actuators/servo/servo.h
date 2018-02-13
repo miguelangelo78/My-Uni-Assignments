@@ -20,7 +20,7 @@
 #define SERVO_MAX_PWM             (3125)
 #define SERVO_ANGLE_STEP          (13)
 
-enum SERVO_ERRCODE {
+enum SERVO_RETCODE {
 	SERVO_OK,
 	SERVO_ERR_ALREADY_INIT,
 	SERVO_ERR_INVAL_ANGLE,
@@ -35,11 +35,11 @@ typedef struct {
 } servo_t;
 
 servo_t * servo_init(void);
-enum SERVO_ERRCODE servo_reset(servo_t * handle);
-enum SERVO_ERRCODE servo_ctrl(servo_t * handle, int16_t angle);
-enum SERVO_ERRCODE servo_accum_ctrl(servo_t * handle, int16_t sum_angle);
-enum SERVO_ERRCODE servo_center(servo_t * handle);
-enum SERVO_ERRCODE servo_lock(servo_t * handle);
-enum SERVO_ERRCODE servo_unlock(servo_t * handle);
+enum SERVO_RETCODE servo_reset(servo_t * handle);
+enum SERVO_RETCODE servo_ctrl(servo_t * handle, int16_t angle);
+enum SERVO_RETCODE servo_accum_ctrl(servo_t * handle, int16_t sum_angle);
+enum SERVO_RETCODE servo_center(servo_t * handle);
+enum SERVO_RETCODE servo_lock(servo_t * handle);
+enum SERVO_RETCODE servo_unlock(servo_t * handle);
 
 #endif /* LIB_DRIVERS_ACTUATORS_SERVO_SERVO_H_ */

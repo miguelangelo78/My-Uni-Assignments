@@ -29,7 +29,7 @@
 /* These defines are not necessarily part of the communication protocol */
 #define PACKETMAN_RXBUFFSIZE 30   /* How large is the RX buffer (in bytes)                */
 #define PACKETMAN_TXBUFFSIZE 64   /* How large is the TX buffer (in bytes)                */
-#define PACKETMAN_BAUDRATE   9600 /* What baud rate shall we use for the bluetooth module */
+#define PACKETMAN_BAUDRATE   9600 /* What baud rate shall we use for the Bluetooth module */
 
 typedef struct {
 	int magic0;
@@ -45,7 +45,6 @@ enum PacketType {
 	PACKET_DISCONNECT,
 	PACKET_KEEPALIVE,
 	PACKET_CMD,
-	PACKET_STREAM,
 	PACKET__COUNT
 };
 
@@ -60,5 +59,6 @@ void packetman_on_bluetooth_rx(uint8_t * buff, uint32_t bufflen);
 void packetman_send_packet(void * payload_data, enum PacketType payload_type);
 enum STREAM_MODE packetman_get_comms_status(void);
 bool packetman_is_connected(void);
+bool packetman_is_busy(void);
 
 #endif /* LIB_DRIVERS_COMMUNICATIONS_PROTOCOLS_PACKETMAN_PACKETMAN_H_ */

@@ -27,19 +27,20 @@ int packet_type_sizes[] = {
 	sizeof(packet_connect_t),
 	sizeof(packet_disconnect_t),
 	sizeof(packet_keepalive_t),
-	sizeof(packet_cmd_t),
-	sizeof(packet_stream_t)
+	sizeof(packet_cmd_t)
 };
 
-bool is_packetman_init = false;
-bool is_connected = false;
-bool received_keepalive_packet = false;
-int keepalive_timeout_counter = 0;
-bool stream_byte_timeout = false;
-int update_byte_stream_delta = 0;
-int update_delta = 0;
-int payload_size = -1;
-fifo_t * packet_byte_buffered = NULL;
+bool     is_packetman_init         = false;
+bool     is_connected              = false;
+bool     received_keepalive_packet = false;
+int      keepalive_timeout_counter = 0;
+bool     stream_byte_timeout       = false;
+int      update_byte_stream_delta  = 0;
+int      update_delta              = 0;
+int      payload_size              = -1;
+fifo_t * packet_byte_buffered      = NULL;
+
+volatile bool packet_transmission_lock = false;
 
 extern cmd_t command_list[];
 extern int   command_count;
@@ -51,9 +52,10 @@ bool       is_packet(uint8_t * packet_bytes);
 packet_t * create_packet(void * payload_data, uint32_t payload_length, enum PacketType payload_type);
 void       discard_packet(packet_t * packet);
 
-void reset_rx_buffer() {
+void reset_rx_buffer(bool clear_byte_buffer) {
 	/* Reset this so we can receive a new packet of a different size */
-	fifo_flush(packet_byte_buffered);
+	if(clear_byte_buffer)
+		fifo_flush(packet_byte_buffered);
 	payload_size = -1;
 	stream_mode = STREAM_NULL;
 }
@@ -61,7 +63,7 @@ void reset_rx_buffer() {
 void push_byte_stream(void) {
 	/* Push received data into stdin */
 	stdin_push_buffer(NULL, packet_byte_buffered->buff, packet_byte_buffered->buff_fifo_sz);
-	reset_rx_buffer();
+	reset_rx_buffer(true);
 }
 
 bool is_packet(uint8_t * packet_bytes) {
@@ -123,9 +125,9 @@ void packetman_on_bluetooth_rx(uint8_t * buff, uint32_t bufflen) {
 			/* Keep receiving the bytes until we reach the total size of the packet */
 		}
 
-		int packet_size = PACKET_HEADER_SIZE + payload_size;
+		int total_packet_size = PACKET_HEADER_SIZE + payload_size;
 
-		if(packet_byte_buffered->buff_fifo_sz == packet_size) {
+		if(packet_byte_buffered->buff_fifo_sz >= total_packet_size) {
 			/* We've received enough bytes.
 			 * Time to parse and construct the packet properly */
 			packet_t * rx_packet = create_packet(
@@ -139,7 +141,7 @@ void packetman_on_bluetooth_rx(uint8_t * buff, uint32_t bufflen) {
 				if(rx_packet->payloadType == command_list[i].packet_compatibility) {
 					debug_leds_update(3);
 
-					if(rx_packet->payloadType == PACKET_CMD || rx_packet->payloadType == PACKET_STREAM) {
+					if(rx_packet->payloadType == PACKET_CMD) {
 						/* Route this packet to the shell packet router function */
 						shell_router(rx_packet);
 					} else {
@@ -149,15 +151,27 @@ void packetman_on_bluetooth_rx(uint8_t * buff, uint32_t bufflen) {
 				}
 			}
 
-			/* Throw away used packed and reset reception buffer */
+			/* Throw away used packet */
 			discard_packet(rx_packet);
-			reset_rx_buffer();
+
+			/* Pop the packet bytes from the byte buffer */
+			int j = 0;
+			for(int i = packet_byte_buffered->buff_fifo_sz + 1; i < packet_byte_buffered->bufflen; i++, j++)
+				packet_byte_buffered->buff[j] = packet_byte_buffered->buff[i];
+			for(; j < packet_byte_buffered->bufflen; j++)
+				packet_byte_buffered->buff[j] = 0;
+
+			if(packet_byte_buffered->buff_fifo_sz >= total_packet_size)
+				packet_byte_buffered->buff_fifo_sz -= total_packet_size;
+
+			/* Reset reception buffer */
+			reset_rx_buffer(packet_byte_buffered->buff_fifo_sz == 0);
 		}
 	}
 }
 
 packet_t * create_packet(void * payload_data, uint32_t payload_length, enum PacketType payload_type) {
-	packet_t * new_packet = (packet_t*)malloc(sizeof(packet_t));
+	packet_t * new_packet   = (packet_t*)malloc(sizeof(packet_t));
 	new_packet->magic0      = STARTPACKET_MAGIC0;
 	new_packet->magic1      = STARTPACKET_MAGIC1;
 	new_packet->payloadSize = payload_length;
@@ -177,6 +191,12 @@ void discard_packet(packet_t * packet) {
 }
 
 void packetman_send_packet(void * payload_data, enum PacketType payload_type) {
+
+	while(packetman_is_busy())
+		rtos_preempt(); /* Spin the thread until the packet manager is available */
+
+	packet_transmission_lock = true; /* Lock this function */
+
 	int payload_size = packet_type_sizes[payload_type];
 
 	/* Create packet with no payload */
@@ -200,6 +220,8 @@ void packetman_send_packet(void * payload_data, enum PacketType payload_type) {
 	write(1, payload_data, payload_size);
 
 	stream_mode = old_stream_mode;
+
+	packet_transmission_lock = false; /* And unlock it now */
 }
 
 int packetman_connect_callback(int argc, char ** argv) {
@@ -210,12 +232,12 @@ int packetman_connect_callback(int argc, char ** argv) {
 	packet_connect_t * rx_payload = (packet_connect_t*)((packet_t*)argv)->payload;
 
 	if(rx_payload->connRequest) {
-		is_connected = true;
-
 		/* Send acknowledgment */
 		packet_connect_t payload;
 		payload.connAck = true;
 		packetman_send_packet(&payload, PACKET_CONNECT);
+
+		is_connected = true;
 	}
 
 	return 0;
@@ -229,12 +251,12 @@ int packetman_disconnect_callback(int argc, char ** argv) {
 	packet_disconnect_t * rx_payload = (packet_disconnect_t*)((packet_t*)argv)->payload;
 
 	if(rx_payload->disconnRequest) {
-		is_connected = false;
-
 		/* Send acknowledgment */
 		packet_disconnect_t payload;
 		payload.disconnAck = true;
 		packetman_send_packet(&payload, PACKET_DISCONNECT);
+
+		is_connected = false;
 	}
 
 	return 0;
@@ -296,7 +318,7 @@ void update_communication(void) {
 
 		break;
 	}
-	case PERIOD_KEEPALIVE/2: {
+	case PERIOD_KEEPALIVE / 2: {
 		if(!is_connected)
 			break;
 
@@ -314,6 +336,10 @@ enum STREAM_MODE packetman_get_comms_status(void) {
 
 bool packetman_is_connected(void) {
 	return is_connected;
+}
+
+bool packetman_is_busy(void) {
+	return packet_transmission_lock;
 }
 
 void packetman_task(void * args) {

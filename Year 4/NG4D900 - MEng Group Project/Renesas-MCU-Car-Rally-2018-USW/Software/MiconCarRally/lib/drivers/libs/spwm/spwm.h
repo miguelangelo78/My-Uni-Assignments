@@ -20,7 +20,7 @@
  * LEDs and Keypads.
  */
 
-#define SPWM_MAX_CHANNEL_COUNT 3
+#define SPWM_MAX_CHANNEL_COUNT 7
 #define SPWM_MAX_FREQUENCY     4000 /* In Hz */
 
 typedef void (*spwm_cback_t)(uint8_t pinsample);
