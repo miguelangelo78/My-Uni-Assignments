@@ -93,7 +93,7 @@
 #define OS_CFG_TASK_SUSPEND_EN          0u   /* Include code for OSTaskSuspend() and OSTaskResume()                   */
 
                                              /* ----------------------- FAST TICK MANAGEMENT ------------------------ */
-#define  OS_CFG_TICK_FAST_TICK_EN       1u   /* Enable Fast Tick */
+#define  OS_CFG_TICK_FAST_TICK_EN       1u   /* Enable Fast Tick                                                      */
 
                                              /* -------------------------- TIME MANAGEMENT -------------------------- */
 #define OS_CFG_TIME_DLY_HMSM_EN         1u   /*     Include code for OSTimeDlyHMSM()                                  */

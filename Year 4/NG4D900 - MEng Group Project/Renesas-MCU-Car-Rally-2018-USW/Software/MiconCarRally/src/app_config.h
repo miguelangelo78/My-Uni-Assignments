@@ -16,6 +16,7 @@
 #define ENABLE_MOTORS              (1)
 #define ENABLE_MOTORS_SAFEMODE     (1)
 #define ENABLE_SERVO               (1)
+#define ENABLE_SOUND               (1)
 #define ENABLE_LTRACKER            (1)
 #define ENABLE_PID                 (1)
 #define ENABLE_STARTSWITCH         (1)
@@ -28,6 +29,11 @@
 
 /******** RTOS APPLICATION DEFINITIONS **************************************************************************/
 #define APP_CFG_POLLFREQ       OS_CFG_TICK_RATE_HZ /* Frequency of the polling                                  */
+/****************************************************************************************************************/
+
+/******** APPLICATION STATUS DEFINITIONS ************************************************************************/
+#define STATUS_LED_FREQ 4000 /* PWM frequency of the status LEDs          */
+#define SOUND_MAX_FREQ  4186 /* Maximum PWM frequency of the piezo buzzer */
 /****************************************************************************************************************/
 
 /********* PID CONTROLLER DEFINITIONS ***************************/

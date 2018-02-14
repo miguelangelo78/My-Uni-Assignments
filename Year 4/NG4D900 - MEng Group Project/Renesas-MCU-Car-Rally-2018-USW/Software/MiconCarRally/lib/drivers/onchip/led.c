@@ -51,8 +51,6 @@ void debug_leds_update_pwm(void) {
 			}
 		}
 	}
-
-	spwm_poll();
 }
 
 void debug_leds_reset(int led_index) {
@@ -76,8 +74,8 @@ void debug_leds_init(void) {
 	PORTA.DDR.BIT.B3 = 1;
 	debug_leds_reset_all();
 
-	status_led1 = spwm_create(SPWM_MAX_FREQUENCY, 100, SPWM_MODE_BOTHLVL, 0, 2);
-	status_led2 = spwm_create(SPWM_MAX_FREQUENCY, 0,   SPWM_MODE_BOTHLVL, 0, 3);
+	status_led1 = spwm_create(STATUS_LED_FREQ, 100, SPWM_MODE_BOTHLVL, 0, 2);
+	status_led2 = spwm_create(STATUS_LED_FREQ, 0,   SPWM_MODE_BOTHLVL, 0, 3);
 }
 
 void motor_ctrl_board_led(uint8_t led_val) {

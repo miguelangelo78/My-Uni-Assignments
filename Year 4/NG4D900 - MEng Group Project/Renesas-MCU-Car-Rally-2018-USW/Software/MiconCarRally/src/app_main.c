@@ -12,6 +12,8 @@
 #include <actuators/motor_driver/motor_driver.h>
 #include <actuators/servo/servo.h>
 #include <sensors/ltracker/ltracker.h>
+#include <sound/piezo.h>
+#include <sound/tunes.h>
 #include <onchip/switch.h>
 #include <onchip/led.h>
 
@@ -26,6 +28,8 @@ servo_t * module_servo       = NULL; /* Servo module          */
 pid_t * pid_controller_normal    = NULL; /* PID for controlling the servo angle and the DC motor differential */
 pid_t * pid_controller_crankmode = NULL; /* PID for controlling each DC motor while in brake mode             */
 pid_t * pid_controller_current   = NULL; /* What current PID controller are we using at any given time        */
+
+piezo_t * module_piezo = NULL; /* Piezo buzzer module */
 
 /* Read white tape on both sides of the track */
 #define check_crossline(sensor_data) ((sensor_data & MASK3_3) == b11100111)
@@ -329,11 +333,12 @@ void poller() {
 	if(!packetman_is_connected())
 		debug_leds_update_pwm();
 #endif
+
+	spwm_poll();
 }
 
 void test_packet_stream(void * args) {
 	while(1) {
-
 		if(packetman_is_connected()) {
 			packet_cmd_t cmd;
 			cmd.getset = 3;
@@ -380,6 +385,11 @@ void main_app(void * args) {
 	pid_controller_current   = pid_controller_normal;
 #endif
 
+#if ENABLE_SOUND == 1
+	/* Create and initialize the piezo buzzer */
+	module_piezo = piezo_init();
+#endif
+
 #if ENABLE_STARTSWITCH == 1
 	/* Initialize start switch GPIO pin */
 	start_switch_init();
@@ -410,6 +420,8 @@ void main_app(void * args) {
 	/* Reset RTOS timeout service */
 	rtos_reset_timeout_service();
 
+	bool is_startup_tune_finished = false;
+
 	while(1) {
 		/* Update RTOS timeout service */
 		rtos_update_timeout_service();
@@ -438,6 +450,12 @@ void main_app(void * args) {
 
 			continue;
 		}
+#endif
+
+#if ENABLE_SOUND == 1
+		/* Play startup tune (only once) */
+		if(!module_piezo->is_playing && !is_startup_tune_finished)
+			is_startup_tune_finished = piezo_play_song_async(module_piezo, tune_startup, arraysize(tune_startup), false) == PIEZO_SONG_DONE;
 #endif
 	}
 }

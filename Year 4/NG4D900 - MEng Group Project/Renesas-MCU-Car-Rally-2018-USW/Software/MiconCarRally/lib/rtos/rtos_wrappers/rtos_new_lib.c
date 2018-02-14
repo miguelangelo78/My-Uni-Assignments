@@ -20,7 +20,7 @@ OS_TCB  mainTCB;
 /* Generalized task / process properties */
 #define PROCESS_STACKSIZE       300
 #define PROCESS_DEFAULTPRIORITY 5
-#define PROCESS_MAXCOUNT        5
+#define PROCESS_MAXCOUNT        6
 
 typedef struct {
 	OS_TCB       tcb;
