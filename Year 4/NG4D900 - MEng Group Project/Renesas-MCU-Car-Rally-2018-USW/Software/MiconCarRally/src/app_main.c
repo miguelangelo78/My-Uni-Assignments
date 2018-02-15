@@ -155,9 +155,37 @@ void car_control_poll() {
 	if(module_left_wheel == NULL || module_right_wheel == NULL || module_servo == NULL)
 		return;
 
+	if(rtos_time() % 50) {
+		uint8_t sensor = ltracker_read(MASK4_4, NULL);
+
+		if(sensor == b11111111 || sensor == b00000000) {
+			if(++track.line_misread_danger_counter >= 5) {
+				/* Completely stop the car if all of the sensor's have been on/off for this period of time */
+				change_to_next_mode(MODE_WAIT_FOR_STARTSWITCH);
+				motor_set_speed(module_left_wheel,  0);
+				motor_set_speed(module_right_wheel, 0);
+
+				/* Alert the user of the event */
+				note_t note_alert;
+				note_alert.duration = 500;
+				note_alert.pitch    = A6;
+				piezo_play(module_piezo, &note_alert, false);
+			}
+		} else {
+			track.line_misread_danger_counter = 0;
+		}
+	}
+
+
 	switch(track.mode) {
 		case MODE_NULL: /* The car shouldn't react to this */ return;
-		case MODE_WAIT_FOR_STARTSWITCH: /* RTOS is going to tell us when to go */ return;
+		case MODE_WAIT_FOR_STARTSWITCH:
+		{
+			/* RTOS is going to tell us when to go
+			   Meanwhile, we'll lock the servo onto the line */
+			handle_normal_drive(ltracker_read(MASK4_4, NULL), false, false);
+			break;
+		}
 		case MODE_FOLLOW_NORMAL_TRACE: ////////////////////////////////////////////////////
 		{
 			/* Check for a white tape on the track */
@@ -231,8 +259,13 @@ void car_control_poll() {
 
 	/* And update the external systems respectively */
 	servo_ctrl(module_servo, (int16_t)pid_output);
-	motor_refresh_with_differential(module_left_wheel,  pid_output);
-	motor_refresh_with_differential(module_right_wheel, pid_output);
+
+	if(track.mode > MODE_WAIT_FOR_STARTSWITCH) {
+		/* Only update the motors if we are NOT in null mode
+		 * and  NOT waiting for the start switch  */
+		motor_refresh_with_differential(module_left_wheel,  pid_output);
+		motor_refresh_with_differential(module_right_wheel, pid_output);
+	}
 }
 
 void master_reset(void) {
@@ -245,6 +278,7 @@ void master_reset(void) {
 	track.last_mode    = MODE_NULL;
 	track.next_mode    = MODE_NULL;
 	track.turn_counter = 0;
+	track.line_misread_danger_counter = 0;
 
 	/* Reset DC motor modules */
 	motor_reset(module_left_wheel);
@@ -279,7 +313,7 @@ void master_reset(void) {
 
 void status_logger_task(void * args) {
 #if ENABLE_STARTSWITCH == 1 && ENABLE_MOTOR_CTRL_LEDS == 1
-	bool is_go = false;
+	bool    is_go   = false;
 	uint8_t led_val = 1;
 #endif
 
@@ -302,10 +336,10 @@ void status_logger_task(void * args) {
 		}
 
 		if(track.mode == MODE_WAIT_FOR_STARTSWITCH) {
-			is_go = false;
+			is_go   = false;
 			led_val = led_val == 1 ? 2 : 1;
 		} else if(!is_go && track.mode != MODE_WAIT_FOR_STARTSWITCH) {
-			is_go = true;
+			is_go   = true;
 			led_val = 0;
 		}
 
@@ -429,7 +463,6 @@ void main_app(void * args) {
 #if ENABLE_STARTSWITCH == 1
 		/* Handle the user switch key press event */
 		if(start_switch_read()) {
-
 			/* Only continue when the user releases the button */
 			while(start_switch_read()) {
 				/* Keep updating the RTOS timeout service */
@@ -437,7 +470,7 @@ void main_app(void * args) {
 			}
 
 			/* Give the user a bit of time to release the button */
-			rtos_delay(150);
+			rtos_delay(50);
 
 			if(track.mode == MODE_WAIT_FOR_STARTSWITCH) {
 				/* Kick start the car! */
@@ -450,6 +483,7 @@ void main_app(void * args) {
 
 			continue;
 		}
+
 #endif
 
 #if ENABLE_SOUND == 1

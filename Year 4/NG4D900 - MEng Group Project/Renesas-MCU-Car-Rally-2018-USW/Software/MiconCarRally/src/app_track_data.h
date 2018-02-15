@@ -14,6 +14,7 @@
 track_t track = {
 	.mode      = { MODE_WAIT_FOR_STARTSWITCH },
 	.next_mode = { MODE_FOLLOW_NORMAL_TRACE  },
+	.line_misread_danger_counter = { 0 },
 
 	/* What patterns shall we match and how should we react to them */
 	.pattern_map = {

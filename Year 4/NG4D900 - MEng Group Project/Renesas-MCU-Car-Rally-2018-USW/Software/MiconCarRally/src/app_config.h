@@ -37,7 +37,7 @@
 /****************************************************************************************************************/
 
 /********* PID CONTROLLER DEFINITIONS ***************************/
-#define HANDLE_KP       4.6 //2.1 /* Normal operation P coefficient */
+#define HANDLE_KP       3     /* Normal operation P coefficient */
 #define HANDLE_KI       0.066 /* Normal operation I coefficient */
 #define HANDLE_KD       37    /* Normal operation D coefficient */
 
@@ -52,15 +52,15 @@
 
 /********* ALGORITHM FSM DEFINITIONS ****************************/
 enum MODE {
-	MODE_NULL,                   /* (0) An unknown state that should not be recognized by the algorithm                                                   */
-	MODE_WAIT_FOR_STARTSWITCH,   /* (1) Wait for the start switch to be pressed before starting the race                                                  */
-	MODE_FOLLOW_NORMAL_TRACE,    /* (2) We are tracing a straight or slightly curved line within controlled conditions                                    */
-	MODE_AVOID_RIGHT_BOUNDARY,   /* (3) The sensor detected a line at the right extreme sensors. We must check if it's a white tape, and if not, avoid it */
-	MODE_AVOID_LEFT_BOUNDARY,    /* (4) The sensor detected a line at the left extreme sensors.  We must check if it's a white tape, and if not, avoid it */
-	MODE_FOUND_LEFT_TAPE,        /* (5) We have encountered the white tape on the left side of the track                                                  */
-	MODE_FOUND_RIGHT_TAPE,       /* (6) We have encountered the white tape on the right side of the track                                                 */
-	MODE_TURNING_CORNER,         /* (7) We are currently turning the car through a 90 degree corner / lane change                                         */
-	MODE_RACE_COMPLETE           /* (8) We have completed the race                                                                                        */
+	MODE_NULL,                 /* (0) An unknown state that should not be recognized by the algorithm                                                   */
+	MODE_WAIT_FOR_STARTSWITCH, /* (1) Wait for the start switch to be pressed before starting the race                                                  */
+	MODE_FOLLOW_NORMAL_TRACE,  /* (2) We are tracing a straight or slightly curved line within controlled conditions                                    */
+	MODE_AVOID_RIGHT_BOUNDARY, /* (3) The sensor detected a line at the right extreme sensors. We must check if it's a white tape, and if not, avoid it */
+	MODE_AVOID_LEFT_BOUNDARY,  /* (4) The sensor detected a line at the left extreme sensors.  We must check if it's a white tape, and if not, avoid it */
+	MODE_FOUND_LEFT_TAPE,      /* (5) We have encountered the white tape on the left side of the track                                                  */
+	MODE_FOUND_RIGHT_TAPE,     /* (6) We have encountered the white tape on the right side of the track                                                 */
+	MODE_TURNING_CORNER,       /* (7) We are currently turning the car through a 90 degree corner / lane change                                         */
+	MODE_RACE_COMPLETE         /* (8) We have completed the race                                                                                        */
 };
 /****************************************************************/
 
@@ -134,6 +134,8 @@ typedef struct {
 	int turn_counter;
 
 	int laps_completed;
+
+	uint32_t line_misread_danger_counter;
 } track_t;
 /******************************************************************************************************/
 

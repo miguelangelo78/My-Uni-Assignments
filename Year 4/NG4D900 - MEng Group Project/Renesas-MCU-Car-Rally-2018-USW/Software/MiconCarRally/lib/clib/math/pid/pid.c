@@ -40,7 +40,7 @@ float pid_control(pid_t * pid_handle) {
 	pid_handle->integral     = pid_handle->ki * (pid_handle->integral + pid_handle->feedback);
 	pid_handle->derivative   = pid_handle->kd * (pid_handle->feedback - pid_handle->error);
 
-	pid_handle->output       = pid_handle->proportional + pid_handle->derivative;
+	pid_handle->output       = pid_handle->proportional + pid_handle->integral + pid_handle->derivative;
 	pid_handle->error        = pid_handle->feedback;
 
 	return pid_handle->output;
