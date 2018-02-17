@@ -82,7 +82,7 @@ void suart_rx_poll(suart_t * chan) {
 			chan->rx_delta_polls = 0;
 			chan->rxing = false;
 
-			if(SUART_RX) {
+			if(DAT_SUART_RX) {
 				/* We found a stop bit */
 #if SUART_ENABLE_NEWLINE_TERMINATOR == 1
 				if(chan->rx_fifo->buff_fifo_idx >= chan->rx_fifo->bufflen - 1 || chan->rx_fifo->buff[chan->rx_fifo->buff_fifo_idx] == SUART_NEWLINE_CHARACTER) {
@@ -105,7 +105,7 @@ void suart_rx_poll(suart_t * chan) {
 			break;
 
 		default: {
-				uint8_t bit = SUART_RX;
+				uint8_t bit = DAT_SUART_RX;
 				chan->rx_fifo->buff[chan->rx_fifo->buff_fifo_idx] |= (bit << chan->rx_delta_polls);
 				chan->rx_delta_polls++;
 			}
@@ -113,7 +113,7 @@ void suart_rx_poll(suart_t * chan) {
 		}
 	} else {
 		/* Check for start bit: */
-		if(!SUART_RX) {
+		if(!DAT_SUART_RX) {
 			/* We've received a start bit! */
 			chan->rxing = true;
 #if SUART_RX_AUTOFLUSH_ENABLE == 1
@@ -149,13 +149,13 @@ void suart_tx_poll(suart_t * chan) {
 		/* Send single bit: */
 		switch(chan->tx_delta_polls) {
 		case 0: /* Send start bit */
-			SUART_TX = 0;
+			DAT_SUART_TX = 0;
 			chan->tx_delta_polls++;
 			if(packetman_get_comms_status() <= STREAM_BYTE)
 				debug_leds_update(0);
 			break;
 		case 9: /* Send stop bit and finish transmission */
-			SUART_TX = 1;
+			DAT_SUART_TX = 1;
 			chan->tx_delta_polls = 0;
 			if(chan->tx_fifo->buff_fifo_idx >= chan->tx_fifo->buff_fifo_sz - 1) {
 				/* Done transmitting the entire FIFO queue / buffer */
@@ -170,7 +170,7 @@ void suart_tx_poll(suart_t * chan) {
 				debug_leds_reset(0);
 			break;
 		default: /* Send 'nth' data bit */
-			SUART_TX = (chan->tx_fifo->buff[chan->tx_fifo->buff_fifo_idx] & (1 << (chan->tx_delta_polls - 1))) ? 1 : 0;
+			DAT_SUART_TX = (chan->tx_fifo->buff[chan->tx_fifo->buff_fifo_idx] & (1 << (chan->tx_delta_polls - 1))) ? 1 : 0;
 			chan->tx_delta_polls++;
 			break;
 		}
@@ -360,9 +360,9 @@ suart_t * suart_init(uint32_t baudrate, suart_rx_cback_t rx_cback_ptr, uint32_t 
 		suart_dispatch_channels[suart_alloc_channel].bufflen  = rx_bufflen;
 
 		/* Initialize RX and TX pins: */
-		SUART_RX_DIR = 0;
-		SUART_TX_DIR = 1;
-		SUART_TX = 1;
+		DIR_SUART_RX = 0;
+		DIR_SUART_TX = 1;
+		DAT_SUART_TX = 1;
 
 		/* Fetch this channel's address: */
 		channel_ptr = (suart_t*)&suart_channels[suart_alloc_channel];

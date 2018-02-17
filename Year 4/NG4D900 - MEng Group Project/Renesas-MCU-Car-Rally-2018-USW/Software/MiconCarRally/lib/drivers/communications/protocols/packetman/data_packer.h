@@ -9,6 +9,7 @@
 #define LIB_DRIVERS_COMMUNICATIONS_PROTOCOLS_PACKETMAN_DATA_PACKER_H_
 
 #include <stdint.h>
-int datapacker_get_int(uint8_t * byte_array, int int_idx);
+
+extern int datapacker_get_int(uint8_t * byte_array, int int_idx);
 
 #endif /* LIB_DRIVERS_COMMUNICATIONS_PROTOCOLS_PACKETMAN_DATA_PACKER_H_ */

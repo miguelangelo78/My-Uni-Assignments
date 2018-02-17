@@ -32,10 +32,10 @@
 #define PACKETMAN_BAUDRATE   9600 /* What baud rate shall we use for the Bluetooth module */
 
 typedef struct {
-	int magic0;
-	int magic1;
-	int payloadSize;
-	int payloadType;
+	int    magic0;
+	int    magic1;
+	int    payloadSize;
+	int    payloadType;
 	char * payload;
 } packet_t;
 

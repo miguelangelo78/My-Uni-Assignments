@@ -20,20 +20,24 @@
 #define ENABLE_LTRACKER            (1)
 #define ENABLE_PID                 (1)
 #define ENABLE_STARTSWITCH         (1)
+#define ENABLE_DIPSWITCH           (1)
 #define ENABLE_MOTOR_CTRL_LEDS     (1)
 #define ENABLE_STATUS_LOGGER       (1)
 #define ENABLE_SHELL               (1)
 #define ENABLE_DEBUG_LEDS          (1)
 #define ENABLE_TEMPLATE_GENERATION (0)
+#define ENABLE_REMOTE_CONTROL_MODE (1)
 /************************************/
 
 /******** RTOS APPLICATION DEFINITIONS **************************************************************************/
-#define APP_CFG_POLLFREQ       OS_CFG_TICK_RATE_HZ /* Frequency of the polling                                  */
+#define APP_CFG_POLLFREQ OS_CFG_TICK_RATE_HZ /* Frequency of the polling                                        */
 /****************************************************************************************************************/
 
 /******** APPLICATION STATUS DEFINITIONS ************************************************************************/
-#define STATUS_LED_FREQ 4000 /* PWM frequency of the status LEDs          */
-#define SOUND_MAX_FREQ  4186 /* Maximum PWM frequency of the piezo buzzer */
+#define STATUS_LED_FREQ 4000 /* PWM frequency of the status LEDs                                                */
+#define SERVO_FREQ      50   /* PWM frequency of the servo motor                                                */
+#define MOTOR_FREQ      63   /* PWM frequency of the two motors                                                 */
+#define SOUND_MAX_FREQ  4186 /* Maximum PWM frequency of the piezo buzzer                                       */
 /****************************************************************************************************************/
 
 /********* PID CONTROLLER DEFINITIONS ***************************/
@@ -60,7 +64,8 @@ enum MODE {
 	MODE_FOUND_LEFT_TAPE,      /* (5) We have encountered the white tape on the left side of the track                                                  */
 	MODE_FOUND_RIGHT_TAPE,     /* (6) We have encountered the white tape on the right side of the track                                                 */
 	MODE_TURNING_CORNER,       /* (7) We are currently turning the car through a 90 degree corner / lane change                                         */
-	MODE_RACE_COMPLETE         /* (8) We have completed the race                                                                                        */
+	MODE_RACE_COMPLETE,        /* (8) We have completed the race                                                                                        */
+	MODE_REMOTE                /* (9) The car is being controlled/interacting with the user (not in race mode)                                          */
 };
 /****************************************************************/
 
@@ -136,6 +141,8 @@ typedef struct {
 	int laps_completed;
 
 	uint32_t line_misread_danger_counter;
+
+	bool rcmode_persistant;
 } track_t;
 /******************************************************************************************************/
 

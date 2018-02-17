@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <platform.h>
 
-#define start_bar_read() ((uint8_t)(!(PORT4.PORT.BIT.B0 & 0x01)))
+#define start_bar_read() ((uint8_t)(!(INP_STARTBAR & 0x01)))
 
 void debug_leds_init(void);
 void debug_leds_reset_all(void);

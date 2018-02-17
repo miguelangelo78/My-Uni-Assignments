@@ -8,8 +8,10 @@
 #ifndef LIB_DRIVERS_ONCHIP_SWITCH_H_
 #define LIB_DRIVERS_ONCHIP_SWITCH_H_
 
-#define start_switch_init() (PORT7.DDR.BIT.B0 = 0)
-#define start_switch_read() ((uint8_t)(~PORT7.PORT.BIT.B0 & 0x01))
-#define dipswitch_read() ((uint8_t)(PORT6.PORT.BYTE & 0xF))
+#include <platform.h>
+
+#define start_switch_init() (DIR_STARTSW = 0)
+#define start_switch_read() ((uint8_t)(~INP_STARTSW & 0x01))
+#define dipswitch_read()    ((uint8_t)(INP_DIPSW & 0xF))
 
 #endif /* LIB_DRIVERS_ONCHIP_SWITCH_H_ */

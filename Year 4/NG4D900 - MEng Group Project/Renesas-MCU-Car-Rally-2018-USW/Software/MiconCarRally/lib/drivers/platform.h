@@ -9,6 +9,7 @@
 #define LIB_DRIVERS_ONCHIP_GPIO_R_GPIO_RX_SRC_PLATFORM_H_
 
 #include <iodefine.h>
+#include <pin_mapping.h>
 #include <stdint.h>
 #include <stdbool.h>
 

@@ -44,9 +44,10 @@ enum PIEZO_RETCODE {
 	PIEZO_ERR__COUNT
 };
 
-piezo_t          * piezo_init(void);
+piezo_t *          piezo_init(void);
 enum PIEZO_RETCODE piezo_play(piezo_t * handle, note_t * note, bool serial);
 enum PIEZO_RETCODE piezo_play_song_async(piezo_t * handle, note_t * song, uint32_t sequence_count, bool serial);
+enum PIEZO_RETCODE piezo_play_song_async_backwards(piezo_t * handle, note_t * song, uint32_t sequence_count, bool serial);
 enum PIEZO_RETCODE piezo_set_volume(piezo_t * handle, uint8_t volume);
 enum MIDI_LUT      midi_lut(uint8_t tone_index);
 uint16_t           midi_lut_count(void);

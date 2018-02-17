@@ -32,8 +32,10 @@ int console_clear(int argc, char ** argv) {
 int help(int argc, char ** argv) {
 	puts("\nHELP: supported commands");
 
-	for(int i = 0; i < command_count; i++)
-		printf("%d - %s\n", i + 1, command_list[i].command);
+	for(int i = 0; i < command_count; i++) {
+		if(command_list[i].packet_compatibility == PACKET_CMD)
+			printf("%d - %s\n", i + 1, command_list[i].command);
+	}
 
 	return 0;
 }
@@ -88,7 +90,7 @@ int dc_motor_control(int argc, char ** argv) {
 #include <platform.h>
 
 int servo_control(int argc, char ** argv) {
-	if(argc != 2) {
+	if(argc < 2) {
 		DEBUG("ERROR: Invalid arguments provided.\nUsage: servo <lock|unlock|[0..180]>");
 		return 1;
 	}
@@ -98,7 +100,17 @@ int servo_control(int argc, char ** argv) {
 	} else if(!strcmp(argv[1], "unlock")) {
 		servo_unlock(module_servo);
 	} else {
-		servo_ctrl(module_servo, atoi(argv[1]));
+		if(argc == 3) {
+			if(!strcmp(argv[2], "freq")) {
+				DEBUG("FREQ: %d", atoi(argv[1]));
+				spwm_set_frequency(module_servo->dev_handle, atoi(argv[1]));
+			}
+			else
+				servo_ctrl(module_servo, atoi(argv[1]));
+		} else {
+			DEBUG("ANGLE: %d deg (%d%)", atoi(argv[1]), map(atoi(argv[1]), SERVO_MIN_ANGLE, SERVO_MAX_ANGLE, SERVO_MIN_ANGLE_DUTY, SERVO_MAX_ANGLE_DUTY));
+			servo_ctrl(module_servo, atoi(argv[1]));
+		}
 	}
 
 	return 0;
@@ -176,6 +188,58 @@ int pidcrank_tune(int argc, char ** argv) {
 	return 0;
 }
 
+#if ENABLE_REMOTE_CONTROL_MODE == 1
+extern void change_to_new_mode(enum MODE new_mode, enum MODE next_mode);
+extern void change_to_next_mode(enum MODE next_mode);
+
+int change_to_rc_mode(int argc, char ** argv) {
+	// Command Format: rcmode [0|1 [0|1]?]?
+
+	switch(argc) {
+	case 1:
+		/* Toggle mode from Race mode to RC mode (persistent) */
+		if(track.mode != MODE_REMOTE)
+			change_to_new_mode(MODE_REMOTE, track.mode);
+		else
+			change_to_next_mode(track.last_mode);
+
+		track.rcmode_persistant = 0;
+		break;
+	case 2:
+		/* Switch mode from Race mode to RC mode (arg1=0) or vice-versa (arg1=1) (persistent) */
+		switch((uint8_t)argv[1]) {
+		case 0: /* Switch to RC mode */
+			change_to_new_mode(MODE_REMOTE, MODE_REMOTE);
+			break;
+		case 1: /* Switch to Race mode */
+			change_to_new_mode(MODE_FOLLOW_NORMAL_TRACE, MODE_FOLLOW_NORMAL_TRACE);
+			break;
+		}
+
+		track.rcmode_persistant = 0;
+		break;
+	case 3:
+		/* Switch mode Race mode to RC mode (arg1=0) or vice-versa (arg1=1) persistant (arg2=0) or temporarily (arg2=1) */
+		switch((uint8_t)argv[1]) {
+		case 0: /* Switch to RC mode */
+			change_to_new_mode(MODE_REMOTE, MODE_REMOTE);
+			break;
+		case 1: /* Switch to Race mode */
+			change_to_new_mode(MODE_FOLLOW_NORMAL_TRACE, MODE_FOLLOW_NORMAL_TRACE);
+			break;
+		}
+
+		track.rcmode_persistant = (bool)argv[2];
+		break;
+	case -1:
+		/* TODO */
+		break;
+	}
+
+	return 0;
+}
+#endif
+
 /* Prototypes declared in 'lib/drivers/communications/protocols/packetman/packetman.c' */
 extern int packetman_connect_callback(int argc, char ** argv);
 extern int packetman_disconnect_callback(int argc, char ** argv);
@@ -207,6 +271,10 @@ cmd_t command_list[] = {
 #if ENABLE_PID == 1
 	{"pid",      pid_tune,      PACKET_CMD},
 	{"pidcrank", pidcrank_tune, PACKET_CMD},
+#endif
+
+#if ENABLE_REMOTE_CONTROL_MODE == 1
+	{"rcmode", change_to_rc_mode, PACKET_CMD},
 #endif
 
 #if ENABLE_COMMUNICATIONS == 1

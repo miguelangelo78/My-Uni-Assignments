@@ -10,10 +10,10 @@
 #include <actuators/motor_driver/motor_driver.h>
 #include "ltracker.h"
 
-extern track_t track;
+extern track_t   track;
 extern motor_t * module_left_wheel;
 extern motor_t * module_right_wheel;
-extern void change_to_next_mode(enum MODE next_mode);
+extern void      change_to_next_mode(enum MODE next_mode);
 
 uint8_t ltracker_read(uint8_t mask, bool * motors_updated) {
 	if(track.mode == MODE_TURNING_CORNER) {
@@ -58,5 +58,5 @@ uint8_t ltracker_read(uint8_t mask, bool * motors_updated) {
 		return current_fake_line->error_pattern & mask;
 	}
 
-	return (~PORT4.PORT.BYTE) & mask;
+	return (~INP_LTRACKER) & mask;
 }

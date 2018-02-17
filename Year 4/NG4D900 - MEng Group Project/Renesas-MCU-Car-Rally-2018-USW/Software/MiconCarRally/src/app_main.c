@@ -68,7 +68,7 @@ bool handle_linetape_detection(uint8_t sensor_data) {
 #if ENABLE_TEMPLATE_GENERATION == 1
 		template_generator_begin();
 #else
-		if(is_in_template_generation_mode())
+		if(ENABLE_DIPSWITCH && is_in_template_generation_mode())
 			template_generator_begin();
 		else
 			change_to_new_mode(MODE_TURNING_CORNER, MODE_FOLLOW_NORMAL_TRACE);
@@ -80,7 +80,7 @@ bool handle_linetape_detection(uint8_t sensor_data) {
 #if ENABLE_TEMPLATE_GENERATION == 1
 		template_generator_begin();
 #else
-		if(is_in_template_generation_mode())
+		if(ENABLE_DIPSWITCH && is_in_template_generation_mode())
 			template_generator_begin();
 		else
 			change_to_new_mode(MODE_FOUND_RIGHT_TAPE, MODE_NULL);
@@ -92,7 +92,7 @@ bool handle_linetape_detection(uint8_t sensor_data) {
 #if ENABLE_TEMPLATE_GENERATION == 1
 		template_generator_begin();
 #else
-		if(is_in_template_generation_mode())
+		if(ENABLE_DIPSWITCH && is_in_template_generation_mode())
 			template_generator_begin();
 		else
 			change_to_new_mode(MODE_FOUND_LEFT_TAPE, MODE_NULL);
@@ -110,7 +110,7 @@ bool handle_linetape_detection(uint8_t sensor_data) {
 #if ENABLE_TEMPLATE_GENERATION == 1
 	template_generator_update(sensor_data);
 #else
-	if(is_in_template_generation_mode())
+	if(ENABLE_DIPSWITCH && is_in_template_generation_mode())
 		template_generator_update(sensor_data);
 #endif
 
@@ -181,6 +181,8 @@ void car_control_poll() {
 		case MODE_NULL: /* The car shouldn't react to this */ return;
 		case MODE_WAIT_FOR_STARTSWITCH:
 		{
+			///XXXXXXXXXXX
+			return;
 			/* RTOS is going to tell us when to go
 			   Meanwhile, we'll lock the servo onto the line */
 			handle_normal_drive(ltracker_read(MASK4_4, NULL), false, false);
@@ -279,6 +281,7 @@ void master_reset(void) {
 	track.next_mode    = MODE_NULL;
 	track.turn_counter = 0;
 	track.line_misread_danger_counter = 0;
+	track.rcmode_persistant = 0;
 
 	/* Reset DC motor modules */
 	motor_reset(module_left_wheel);
@@ -323,7 +326,7 @@ void status_logger_task(void * args) {
 		if(template_generator_is_finished())
 			template_generator_dump();
 #else
-		if(is_in_template_generation_mode() && template_generator_is_finished())
+		if(ENABLE_DIPSWITCH && is_in_template_generation_mode() && template_generator_is_finished())
 			template_generator_dump();
 #endif
 
@@ -368,25 +371,7 @@ void poller() {
 		debug_leds_update_pwm();
 #endif
 
-	spwm_poll();
-}
-
-void test_packet_stream(void * args) {
-	while(1) {
-		if(packetman_is_connected()) {
-			packet_cmd_t cmd;
-			cmd.getset = 3;
-			cmd.dev_id = 1;
-			cmd.size = 4;
-
-			memset(cmd.operation, 0, sizeof(cmd.operation));
-			sprintf(cmd.operation, "TEST");
-
-			packetman_send_packet(&cmd, PACKET_CMD);
-		}
-
-		rtos_delay(1);
-	}
+	spwm_poll_all();
 }
 
 void main_app(void * args) {
@@ -449,8 +434,6 @@ void main_app(void * args) {
 	debug_leds_init();
 #endif
 
-	rtos_spawn_task("test_packet_stream", test_packet_stream);
-
 	/* Reset RTOS timeout service */
 	rtos_reset_timeout_service();
 
@@ -488,7 +471,7 @@ void main_app(void * args) {
 
 #if ENABLE_SOUND == 1
 		/* Play startup tune (only once) */
-		if(!module_piezo->is_playing && !is_startup_tune_finished)
+		if(module_piezo && !module_piezo->is_playing && !is_startup_tune_finished)
 			is_startup_tune_finished = piezo_play_song_async(module_piezo, tune_startup, arraysize(tune_startup), false) == PIEZO_SONG_DONE;
 #endif
 	}

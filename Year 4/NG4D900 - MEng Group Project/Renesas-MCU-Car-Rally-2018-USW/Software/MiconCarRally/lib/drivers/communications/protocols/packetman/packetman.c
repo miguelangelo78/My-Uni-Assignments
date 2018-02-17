@@ -15,6 +15,8 @@
 #include <clib/data_structures/fifo.h>
 #include <communications/bluetooth/bluetooth.h>
 #include <onchip/led.h>
+#include <sound/piezo.h>
+#include <sound/tunes.h>
 #include <shell/shell.h>
 #include "packetman.h"
 #include "packet_types.h"
@@ -32,6 +34,8 @@ int packet_type_sizes[] = {
 
 bool     is_packetman_init         = false;
 bool     is_connected              = false;
+bool     play_connected_tune       = false;
+bool     play_disconnected_tune    = false;
 bool     received_keepalive_packet = false;
 int      keepalive_timeout_counter = 0;
 bool     stream_byte_timeout       = false;
@@ -73,7 +77,7 @@ bool is_packet(uint8_t * packet_bytes) {
 	int payload_size = datapacker_get_int(packet_bytes, 2);
 	int payload_type = datapacker_get_int(packet_bytes, 3);
 
-	bool packet_valid = magic0 == STARTPACKET_MAGIC0 && magic1 == STARTPACKET_MAGIC1;
+	bool packet_valid  = magic0 == STARTPACKET_MAGIC0 && magic1 == STARTPACKET_MAGIC1;
 	bool payload_valid = payload_type >= 0 && payload_type < PACKET__COUNT && payload_size == packet_type_sizes[payload_type];
 
 	return packet_valid && payload_valid;
@@ -191,7 +195,6 @@ void discard_packet(packet_t * packet) {
 }
 
 void packetman_send_packet(void * payload_data, enum PacketType payload_type) {
-
 	while(packetman_is_busy())
 		rtos_preempt(); /* Spin the thread until the packet manager is available */
 
@@ -224,6 +227,8 @@ void packetman_send_packet(void * payload_data, enum PacketType payload_type) {
 	packet_transmission_lock = false; /* And unlock it now */
 }
 
+extern piezo_t * module_piezo;
+
 int packetman_connect_callback(int argc, char ** argv) {
 	if(argc >= 0) return -1; /* Must be a packet */
 
@@ -237,7 +242,8 @@ int packetman_connect_callback(int argc, char ** argv) {
 		payload.connAck = true;
 		packetman_send_packet(&payload, PACKET_CONNECT);
 
-		is_connected = true;
+		is_connected        = true;
+		play_connected_tune = true;
 	}
 
 	return 0;
@@ -256,7 +262,8 @@ int packetman_disconnect_callback(int argc, char ** argv) {
 		payload.disconnAck = true;
 		packetman_send_packet(&payload, PACKET_DISCONNECT);
 
-		is_connected = false;
+		is_connected           = false;
+		play_disconnected_tune = true;
 	}
 
 	return 0;
@@ -327,6 +334,14 @@ void update_communication(void) {
 		packetman_send_packet(&payload, PACKET_KEEPALIVE);
 		break;
 	}
+	}
+
+	/* Play a tune when there's a connection and disconnection event */
+	if(module_piezo && !module_piezo->is_playing) {
+		if(play_connected_tune)
+			play_connected_tune = piezo_play_song_async(module_piezo, tune_connected, arraysize(tune_connected), false) != PIEZO_SONG_DONE;
+		else if(play_disconnected_tune)
+			play_disconnected_tune = piezo_play_song_async_backwards(module_piezo, tune_connected, arraysize(tune_connected), false) != PIEZO_SONG_DONE;
 	}
 }
 

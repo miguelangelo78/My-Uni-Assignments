@@ -20,7 +20,7 @@ bool    samples_dumped    = false;
 bool    start_sampling    = false;
 bool    is_sampling       = false;
 
-#define template_generator_begin() start_sampling = true
+#define template_generator_begin()        start_sampling = true
 #define template_generator_is_finished() (finished_sampling && !samples_dumped)
 
 void template_generator_update(uint8_t sensor_data) {
@@ -32,9 +32,10 @@ void template_generator_update(uint8_t sensor_data) {
 
 	if(!finished_sampling && is_sampling && rtos_get_timeout(false, false, 10, 0)) {
 		sampled_template_sensor_data[template_samples_collected] = sensor_data;
+
 		if(++template_samples_collected > TEMPLATE_MAX_SAMPLES) {
 			finished_sampling = true;
-			timed_out = true;
+			timed_out         = true;
 		}
 	}
 }

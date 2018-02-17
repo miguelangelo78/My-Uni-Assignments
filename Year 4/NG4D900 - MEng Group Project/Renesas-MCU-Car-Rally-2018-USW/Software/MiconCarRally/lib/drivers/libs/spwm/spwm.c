@@ -5,9 +5,11 @@
  *      Author: Miguel
  */
 #include <stdbool.h>
-#include "spwm.h"
+#include <stddef.h>
+#include <platform.h>
 #include <rtos_inc.h>
 #include <app_config.h>
+#include "spwm.h"
 
 #if (1) /**** REGION: SPWM LIBRARY PRIVATE IMPLEMENTATION ****/
 /************************************/
@@ -22,23 +24,22 @@ volatile uint8_t spwm_poll_idx = 0;
 
 void spwm_poll_trigger(spwm_t * chan, bool level) {
 	uint8_t pinsample = (uint8_t)-1;
-	if(chan->pin) {
-		if(chan->mode & SPWM_MODE_PININPUT) {
-			/* XXX: WE ONLY SUPPORT THESE PINS IN THIS LIBRARY FOR THIS MCU IN PARTICULAR */
-			switch(chan->pin) {
-			case 5: pinsample = PORT9.PORT.BIT.B3; break; /* X-Axis accelerometer */
-			case 6: pinsample = PORTA.PORT.BIT.B2; break; /* Y-Axis accelerometer */
-			}
+	if(chan->mode & SPWM_MODE_PININPUT) {
+		/** NOTE: WE ONLY SUPPORT THESE PINS IN THIS LIBRARY FOR THIS MCU IN PARTICULAR **/
+		switch(chan->pin) {
+		case SPWM_DEV_ACCELX: pinsample = INP_ACCEL_X; break; /* X-Axis accelerometer */
+		case SPWM_DEV_ACCELY: pinsample = INP_ACCEL_Y; break; /* Y-Axis accelerometer */
 		}
-		else {
-			/* XXX: WE ONLY SUPPORT THESE PINS IN THIS LIBRARY FOR THIS MCU IN PARTICULAR */
-			switch(chan->pin) {
-			case 0: PORTA.DR.BIT.B0 = level; break; /* RX byte LED   */
-			case 1: PORTA.DR.BIT.B1 = level; break; /* TX byte LED   */
-			case 2: PORTA.DR.BIT.B2 = level; break; /* RX packet LED */
-			case 3: PORTA.DR.BIT.B3 = level; break; /* TX packet LED */
-			case 4: PORT9.DR.BIT.B0 = level; break; /* Piezo Buzzer  */
-			}
+	}
+	else {
+		/** NOTE: WE ONLY SUPPORT THESE PINS IN THIS LIBRARY FOR THIS MCU IN PARTICULAR **/
+		switch(chan->pin) {
+		case SPWM_DEV_DBGLED2:    DAT_DBG_LED2 = level; break; /* RX packet LED */
+		case SPWM_DEV_DBGLED3:    DAT_DBG_LED3 = level; break; /* TX packet LED */
+		case SPWM_DEV_PIEZO:     DAT_PIEZO    = level; break; /* Piezo Buzzer  */
+		case SPWM_DEV_SERVO:      DAT_SERVO    = level; break; /* Servo         */
+		case SPWM_DEV_LEFTMOTOR:  DAT_MOTOR_L  = level; break; /* Left motor    */
+		case SPWM_DEV_RIGHTMOTOR: DAT_MOTOR_R  = level; break; /* Right motor   */
 		}
 	}
 
@@ -90,8 +91,18 @@ void spwm_poll(void) {
 	spwm_t * chan = (spwm_t*)&spwm_channels[spwm_poll_idx];
 	if(chan->is_init)
 		spwm_poll_single_channel(chan);
-	if(++spwm_poll_idx >= SPWM_MAX_CHANNEL_COUNT)
+	if(++spwm_poll_idx >= spwm_alloc_channel)
 		spwm_poll_idx = 0;
+}
+
+void spwm_poll_all(void) {
+	for(int i = 0; i < spwm_alloc_channel; i++) {
+		spwm_t * chan = (spwm_t*)&spwm_channels[spwm_poll_idx];
+		if(chan->is_init)
+			spwm_poll_single_channel(chan);
+		if(++spwm_poll_idx >= spwm_alloc_channel)
+			spwm_poll_idx = 0;
+	}
 }
 
 void spwm_init_all_channels(void) {
@@ -113,10 +124,10 @@ void spwm_init_all_channels(void) {
 /***********************************/
 /****** PUBLIC IMPLEMENTATION ******/
 /***********************************/
-spwm_t * spwm_create(uint32_t frequency_hz, uint8_t duty_cycle, uint8_t spwm_mode, spwm_cback_t cback, uint8_t pin) {
-	if(spwm_alloc_channel >= SPWM_MAX_CHANNEL_COUNT) return (spwm_t*)SPWM_ERR_BADINIT;
+spwm_t * spwm_create(uint32_t frequency_hz, float duty_cycle, uint8_t spwm_mode, spwm_cback_t cback, uint8_t pin) {
+	if(spwm_alloc_channel >= SPWM_MAX_CHANNEL_COUNT) return NULL;
 
-	spwm_t * channel_ptr = (spwm_t*)SPWM_ERR_BADINIT;
+	spwm_t * channel_ptr = NULL;
 
 	/* Only initialize the new channel if the frequency and duty cycle are non-zero, if at least one of the trigger
 	 * methods (cback or pin) is non-zero and the SPWM mode is valid. */
@@ -125,7 +136,7 @@ spwm_t * spwm_create(uint32_t frequency_hz, uint8_t duty_cycle, uint8_t spwm_mod
 	if(!valid_mode)
 		channel_ptr = (spwm_t*)SPWM_ERR_BADARGS;
 
-	if(frequency_hz <= SPWM_MAX_FREQUENCY && duty_cycle <= 100 && (cback || pin) && valid_mode) {
+	if(frequency_hz <= SPWM_MAX_FREQUENCY && duty_cycle <= 100.0f && valid_mode) {
 		if(!spwm_initialized) {
 			spwm_init_all_channels();
 			spwm_initialized = true;
@@ -135,7 +146,7 @@ spwm_t * spwm_create(uint32_t frequency_hz, uint8_t duty_cycle, uint8_t spwm_mod
 		spwm_channels[spwm_alloc_channel].pin           = pin;
 		spwm_channels[spwm_alloc_channel].cback         = cback;
 		spwm_channels[spwm_alloc_channel].max_counter   = SPWM_FREQ_TO_PRESC(frequency_hz);
-		spwm_channels[spwm_alloc_channel].match_counter = (spwm_channels[spwm_alloc_channel].max_counter * duty_cycle) / 100;
+		spwm_channels[spwm_alloc_channel].match_counter = (uint32_t)((((float)spwm_channels[spwm_alloc_channel].max_counter) * duty_cycle) / 100.0f);
 		spwm_channels[spwm_alloc_channel].duty_cycle    = duty_cycle;
 		spwm_channels[spwm_alloc_channel].mode          = spwm_mode;
 
@@ -161,13 +172,14 @@ spwm_t * spwm_create(uint32_t frequency_hz, uint8_t duty_cycle, uint8_t spwm_mod
 	return channel_ptr;
 }
 
-enum SPWM_ERR_CODE spwm_set_duty(spwm_t * handle, uint8_t duty_cycle) {
-	if(!handle)          return SPWM_ERR_BADHANDLE;
-	if(duty_cycle > 100) return SPWM_ERR_BADARGS;
+enum SPWM_ERR_CODE spwm_set_duty(spwm_t * handle, float duty_cycle) {
+	if(!handle)             return SPWM_ERR_BADHANDLE;
+	if(duty_cycle > 100.0f) return SPWM_ERR_BADARGS;
 
-	handle->match_counter   = (handle->max_counter * duty_cycle) / 100;
+	handle->match_counter   = (uint32_t)((((float)handle->max_counter) * duty_cycle) / 100.0f);
 	handle->duty_cycle      = duty_cycle;
 	handle->current_counter = 0;
+
 	return SPWM_OK;
 }
 
@@ -175,10 +187,11 @@ enum SPWM_ERR_CODE spwm_set_frequency(spwm_t * handle, uint32_t frequency_hz) {
 	if(!handle)                           return SPWM_ERR_BADHANDLE;
 	if(frequency_hz > SPWM_MAX_FREQUENCY) return SPWM_ERR_BADARGS;
 
-	handle->max_counter     = SPWM_FREQ_TO_PRESC(frequency_hz);
 	/* Recalculate match counter based on the new frequency: */
-	handle->match_counter   = (handle->max_counter * handle->duty_cycle) / 100;
+	handle->max_counter     = SPWM_FREQ_TO_PRESC(frequency_hz);
+	handle->match_counter   = (uint32_t)((((float)handle->max_counter) * handle->duty_cycle) / 100.0f);
 	handle->current_counter = 0;
+
 	return SPWM_OK;
 }
 #endif

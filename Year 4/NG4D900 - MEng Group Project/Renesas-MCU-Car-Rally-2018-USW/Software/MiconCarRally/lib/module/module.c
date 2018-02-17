@@ -5,6 +5,19 @@
  *      Author: Miguel
  */
 
+///////////////////////////
+///////////////////////////
+///////////////////////////
+///////////////////////////
+/// T
+/// O
+/// D
+/// O
+///////////////////////////
+///////////////////////////
+///////////////////////////
+///////////////////////////
+
 #include "module.h"
 
 static module_t * module_list[MODULE_MAX_COUNT];
@@ -26,6 +39,6 @@ module_t * module_get_handle(void * module, size_t module_size) {
 	return (module_t*)((int)module + module_size);
 }
 
-int module_get_count() {
+int module_get_count(void) {
 	return module_count;
 }

@@ -6,6 +6,7 @@
  */
 
 #include <stdlib.h>
+#include <platform.h>
 #include <rtos_inc.h>
 #include <app_config.h>
 #include "piezo.h"
@@ -49,18 +50,22 @@ piezo_t * piezo_init(void) {
 	if(is_piezo_init)
 		return NULL;
 
+	spwm_t * dev_handle = spwm_create(SOUND_MAX_FREQ, 0, SPWM_MODE_BOTHLVL, 0, SPWM_DEV_PIEZO);
+	if(dev_handle == NULL)
+		return NULL;
+
 	piezo_t * ret = (piezo_t*)malloc(sizeof(piezo_t));
-	ret->dev_handle    = spwm_create(SOUND_MAX_FREQ, 0, SPWM_MODE_BOTHLVL, 0, 4);
 	ret->note.duration = 0;
 	ret->note.pitch    = 0;
 	ret->is_playing    = false;
+	ret->dev_handle    = dev_handle;
 
 	/* Set piezo pin as output */
-	PORT9.DDR.BIT.B0 = 1;
+	DIR_PIEZO = 1;
 
 	/* Set second piezo pin as ground */
-	PORT9.DDR.BIT.B1 = 1;
-	PORT9.DR.BIT.B1  = 0;
+	DIR_PIEZO_GND = 1;
+	DAT_PIEZO_GND = 0;
 
 	/* Set volume to 100% */
 	piezo_set_volume(ret, 100);
@@ -106,8 +111,30 @@ enum PIEZO_RETCODE piezo_play_song_async(piezo_t * handle, note_t * song, uint32
 	if(sequence_num >= sequence_count) {
 		sequence_num = 0;
 		return PIEZO_SONG_DONE;
+	} else {
+		return PIEZO_OK;
 	}
-	else {
+}
+
+enum PIEZO_RETCODE piezo_play_song_async_backwards(piezo_t * handle, note_t * song, uint32_t sequence_count, bool serial) {
+	if(!handle || !song) return PIEZO_ERR;
+
+	static int sequence_num_backwards = -2;
+
+	if(sequence_num_backwards == -2)
+		sequence_num_backwards = sequence_count - 1;
+
+	enum PIEZO_RETCODE ret;
+
+	if((ret = piezo_play(handle, &song[sequence_num_backwards--], serial)) != PIEZO_OK && ret != PIEZO_SONG_DONE) {
+		sequence_num_backwards = sequence_count - 1;
+		return ret;
+	}
+
+	if(sequence_num_backwards < 0) {
+		sequence_num_backwards = sequence_count - 1;
+		return PIEZO_SONG_DONE;
+	} else {
 		return PIEZO_OK;
 	}
 }

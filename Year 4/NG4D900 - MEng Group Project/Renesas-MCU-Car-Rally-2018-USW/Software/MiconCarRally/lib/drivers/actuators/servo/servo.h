@@ -10,15 +10,14 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <libs/spwm/spwm.h>
 
-#define SERVO_ANGLE_RANGE         (80)
-#define SERVO_MIN_ANGLE           (-(SERVO_ANGLE_RANGE / 2))
-#define SERVO_MAX_ANGLE           (SERVO_ANGLE_RANGE / 2)
-#define SERVO_ANGLE_CENTER        (0)
-#define SERVO_ANGLE_CENTER_AS_PWM 2500//(2335)
-#define SERVO_MIN_PWM             (1650)
-#define SERVO_MAX_PWM             (3125)
-#define SERVO_ANGLE_STEP          (13)
+#define SERVO_ANGLE_RANGE       (180)
+#define SERVO_MIN_ANGLE         (-(SERVO_ANGLE_RANGE / 2))
+#define SERVO_MAX_ANGLE         (SERVO_ANGLE_RANGE / 2)
+#define SERVO_MIN_ANGLE_DUTY    (2.5f)
+#define SERVO_MAX_ANGLE_DUTY    (12.5f)
+#define SERVO_ANGLE_CENTER_DUTY (7.5f)
 
 enum SERVO_RETCODE {
 	SERVO_OK,
@@ -29,12 +28,13 @@ enum SERVO_RETCODE {
 };
 
 typedef struct {
-	int32_t angle;
-	int32_t angle_old;
-	bool    is_locked;
+	spwm_t * dev_handle;
+	int32_t  angle;
+	int32_t  angle_old;
+	bool     is_locked;
 } servo_t;
 
-servo_t * servo_init(void);
+servo_t *          servo_init(void);
 enum SERVO_RETCODE servo_reset(servo_t * handle);
 enum SERVO_RETCODE servo_ctrl(servo_t * handle, int16_t angle);
 enum SERVO_RETCODE servo_accum_ctrl(servo_t * handle, int16_t sum_angle);

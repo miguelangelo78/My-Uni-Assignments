@@ -32,7 +32,6 @@ motor_t * motor_init(enum MOTOR_CHANNEL channel) {
 	ret->is_safemode       = false;
 
 	/* Initialize channel controls */
-
 	MSTP_MTU       = 0;    /* Disable module stop state                                           */
 	MTU.TSTRA.BYTE = 0;    /* Stop MTU Counter                                                    */
 	MTU3.TCR.BYTE  = 0x23; /* Select clock source (ICLK/64) and the timer that clears TCNT (TGRA) */

@@ -15,7 +15,7 @@
 
 bool is_shell_init = false;
 bool reset_shell   = false;
-int command_count  = 0;
+int  command_count = 0;
 
 void shell_router(packet_t * packet) {
 	/* TODO */

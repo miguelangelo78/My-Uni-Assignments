@@ -21,12 +21,12 @@
 					<folderInfo id="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.configuration.1263792258." name="/" resourcePath="">
 						<toolChain id="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.toolChain.753392873" name="Renesas CCRX Toolchain" nonInternalBuilderId="com.renesas.cdt.managedbuild.renesas.ccrx.base.builder" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.toolChain">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.PE" id="com.renesas.cdt.managedbuild.renesas.ccrx.base.targetPlatform.501398394" osList="win32" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.targetPlatform"/>
-							<builder buildPath="${workspace_loc:/MiconCarRally}/Build" enableCleanBuild="false" id="com.renesas.cdt.managedbuild.renesas.ccrx.base.builder.1335822479" name="CCRX Builder" parallelBuildOn="true" parallelizationNumber="optimal" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.builder"/>
+							<builder buildPath="${workspace_loc:/MiconCarRally}/Build" command="make" enableCleanBuild="false" id="com.renesas.cdt.managedbuild.renesas.ccrx.base.builder.1033955119" keepEnvironmentInBuildfile="false" name="CCRX Builder" parallelBuildOn="true" parallelizationNumber="optimal" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.builder"/>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.dsp.852730530" name="DSP Assembler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.dsp"/>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.common.209838070" name="Common" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.common">
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.deviceFamily.1429205320" name="Device Family" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.deviceFamily" useByScannerDiscovery="false" value="RX610" valueType="string"/>
-								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.deviceName.1040785928" name="Device Name" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.deviceName" useByScannerDiscovery="false" value="R5F56104VxFP" valueType="string"/>
-								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.deviceCommand.779863168" name="Device Command" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.deviceCommand" useByScannerDiscovery="false" value="R5F56104" valueType="string"/>
+								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.deviceName.1040785928" name="Device Name" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.deviceName" useByScannerDiscovery="false" value="R5F562GAAxFP" valueType="string"/>
+								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.deviceCommand.779863168" name="Device Command" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.deviceCommand" useByScannerDiscovery="false" value="R5F562GA" valueType="string"/>
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.endian.1026106452" name="Data Endian" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.endian" useByScannerDiscovery="false" value="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.endian.big" valueType="enumerated"/>
 							</tool>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.compiler.620889616" name="Compiler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.compiler">
@@ -132,6 +132,8 @@
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.librarian.option.headStdarg.24002567" name="stdarg.h (C89/C99): Variable argument functions" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.librarian.option.headStdarg" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.librarian.option.headComplex.2134260406" name="complex.h (EC++): Complex number operations" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.librarian.option.headComplex" useByScannerDiscovery="false" value="false" valueType="boolean"/>
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.librarian.option.headC99Complex.1108613963" name="complex.h (C99): Complex number operations&#9;" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.librarian.option.headC99Complex" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.librarian.option.mode.863722472" name="Generation mode of the standard library" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.librarian.option.mode" useByScannerDiscovery="false" value="com.renesas.cdt.managedbuild.renesas.ccrx.librarian.option.mode.useExistingLibrary" valueType="enumerated"/>
+								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.librarian.option.userSpecifiedLibrary.1254491253" name="User-specified library file" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.librarian.option.userSpecifiedLibrary" useByScannerDiscovery="false" value="../lib/clib.lib" valueType="string"/>
 							</tool>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.converter.884922484" name="Converter" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.converter">
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.converter.option.outputHexFile.955832808" name="Output hex file" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.converter.option.outputHexFile" useByScannerDiscovery="false" value="true" valueType="boolean"/>
@@ -204,6 +206,7 @@
 							<outputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.outputtype.1621388200" name="Resource Custom Build Step Output Type"/>
 						</tool>
 					</fileInfo>
+					<fileInfo id="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.configuration.1263792258.547028769" name="clib.lib" rcbsApplicability="disable" resourcePath="lib/clib.lib" toolsToInvoke=""/>
 					<folderInfo id="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.configuration.1263792258.277212468" name="/" resourcePath="lib/module">
 						<toolChain id="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.toolChain.1881271179" name="Renesas CCRX Toolchain" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.toolChain" unusedChildren="">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.PE" id="com.renesas.cdt.managedbuild.renesas.ccrx.base.targetPlatform" osList="win32" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.targetPlatform"/>
@@ -346,7 +349,7 @@
 						</tool>
 					</fileInfo>
 					<sourceEntries>
-						<entry excluding="test|src/generated/dbsct.c|lib/drivers/onchip/gpio/r_gpio_rx|src/generated/resetprg.c|src/generated/sbrk.h|src/generated/sbrk.c|src/generated/vecttbl.c|src/generated/vect.h|toolchain" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="lib/clib.lib|test|src/generated/dbsct.c|lib/drivers/onchip/gpio/r_gpio_rx|src/generated/resetprg.c|src/generated/sbrk.h|src/generated/sbrk.c|src/generated/vecttbl.c|src/generated/vect.h|toolchain" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -466,9 +469,7 @@
 		<configuration configurationName="Flash Program">
 			<resource resourceType="PROJECT" workspacePath="/MiconCarRally"/>
 		</configuration>
-		<configuration configurationName="Build">
-			<resource resourceType="PROJECT" workspacePath="/MiconCarRally"/>
-		</configuration>
+		<configuration configurationName="Build"/>
 		<configuration configurationName="FlashProgram">
 			<resource resourceType="PROJECT" workspacePath="/MiconCarRally"/>
 		</configuration>
