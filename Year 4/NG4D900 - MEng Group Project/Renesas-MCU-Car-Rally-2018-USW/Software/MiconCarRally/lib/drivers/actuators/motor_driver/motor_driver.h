@@ -10,13 +10,14 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <libs/spwm/spwm.h>
 
-#define MOTOR_MAX_PWM_SPEED   (24575)
 #define MOTOR_MAX_RPM_SPEED   (2000)
-#define MOTOR_SAFE_MODE_LEVEL (100.0f) /* Expressed in % from 0 to 100 */
-#define MOTOR_DEADBAND        (0)
-#define MOTOR_LEFT_INVERSE    (0) /* Is the rotation of the left wheel reversed */
-#define MOTOR_RIGHT_INVERSE   (1) /* Is the rotation of the left wheel reversed */
+#define MOTOR_MAX_PWM_SPEED   (100.0f) /* Expressed in % from 0 to 100               */
+#define MOTOR_SAFE_MODE_LEVEL (80.0f)  /* Expressed in % from 0 to 100               */
+#define MOTOR_DEADBAND        (0)      /* TODO: We need to find the value for this   */
+#define MOTOR_LEFT_INVERSE    (0)      /* Is the rotation of the left wheel reversed */
+#define MOTOR_RIGHT_INVERSE   (1)      /* Is the rotation of the left wheel reversed */
 
 enum MOTOR_RETCODE {
 	MOTOR_OK,
@@ -36,7 +37,8 @@ enum MOTOR_CHANNEL {
 };
 
 typedef struct {
-	float    speed; /* Expressed in % from 0 to 100 */
+	spwm_t * dev_handle;
+	float    speed; /* Expressed in % from 0 to 100. Value can be negative (for reverse rotation) */
 	float    speed_old;
 	float    speed_safe_old;
 	float    acceleration;
@@ -49,8 +51,8 @@ typedef struct {
 	enum MOTOR_CHANNEL side;
 } motor_t;
 
-motor_t * motor_init(enum MOTOR_CHANNEL channel);
-motor_t * motor_init_safe(enum MOTOR_CHANNEL channel, bool enable_safemode);
+motor_t *          motor_init(enum MOTOR_CHANNEL channel);
+motor_t *          motor_init_safe(enum MOTOR_CHANNEL channel, bool enable_safemode);
 enum MOTOR_RETCODE motor_reset(motor_t * handle);
 enum MOTOR_RETCODE motor_stop(motor_t * handle);
 enum MOTOR_RETCODE motor_resume(motor_t * handle);
@@ -63,7 +65,7 @@ enum MOTOR_RETCODE motor_set_speed(motor_t * handle, float speed_percentage);
 enum MOTOR_RETCODE motor_brake(motor_t * handle, bool is_breaking);
 enum MOTOR_RETCODE motor_rpm_sensor_poll(motor_t * handle);
 
-#define rpmcounter_left_read()  (PORT1.PORT.BIT.B1 & 0x1)
-#define rpmcounter_right_read() (PORT9.PORT.BIT.B6 & 0x1)
+#define rpmcounter_left_read()  (INP_LEFT_HALL  & 0x1)
+#define rpmcounter_right_read() (INP_RIGHT_HALL & 0x1)
 
 #endif /* LIB_DRIVERS_ACTUATORS_MOTOR_DRIVER_H_ */

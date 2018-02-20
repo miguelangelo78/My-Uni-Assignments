@@ -13,11 +13,11 @@
 /******** FEATURES SUPPORTED ********/
 #define ENABLE_DEBUGGING           (1)
 #define ENABLE_COMMUNICATIONS      (1)
+#define ENABLE_SPWM                (1)
 #define ENABLE_MOTORS              (1)
 #define ENABLE_MOTORS_SAFEMODE     (1)
 #define ENABLE_SERVO               (1)
 #define ENABLE_SOUND               (1)
-#define ENABLE_LTRACKER            (1)
 #define ENABLE_PID                 (1)
 #define ENABLE_STARTSWITCH         (1)
 #define ENABLE_DIPSWITCH           (1)
@@ -31,17 +31,24 @@
 
 /******** RTOS APPLICATION DEFINITIONS **************************************************************************/
 #define APP_CFG_POLLFREQ OS_CFG_TICK_RATE_HZ /* Frequency of the polling                                        */
+
+/** INFO: RTOS tasks allocated:
+ * 1- suart_rx_cbk_dspchr @ lib/drivers/communications/protocols/suart/suart.c line 372
+ * 2- packetman_task      @ lib/drivers/communications/protocols/packetman/packetman.c line 376
+ * 3- piezo_player        @ lib/drivers/sound/piezo.c line 74
+ * 4- status_logger_task  @ src/app_main.c line 431
+ * 5- shell_task          @ src/app_main.c line 436
 /****************************************************************************************************************/
 
 /******** APPLICATION STATUS DEFINITIONS ************************************************************************/
 #define STATUS_LED_FREQ 4000 /* PWM frequency of the status LEDs                                                */
-#define SERVO_FREQ      50   /* PWM frequency of the servo motor                                                */
+#define SERVO_FREQ      48.8 /* PWM frequency of the servo motor (NOTE: multimeter reads 50.08 Hz)              */
 #define MOTOR_FREQ      63   /* PWM frequency of the two motors                                                 */
 #define SOUND_MAX_FREQ  4186 /* Maximum PWM frequency of the piezo buzzer                                       */
 /****************************************************************************************************************/
 
 /********* PID CONTROLLER DEFINITIONS ***************************/
-#define HANDLE_KP       3     /* Normal operation P coefficient */
+#define HANDLE_KP       2.85  /* Normal operation P coefficient */
 #define HANDLE_KI       0.066 /* Normal operation I coefficient */
 #define HANDLE_KD       37    /* Normal operation D coefficient */
 

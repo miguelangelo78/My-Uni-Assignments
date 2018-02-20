@@ -17,7 +17,7 @@ extern bool is_debugging;
 
 void debug_set(bool enable_debugging);
 
-#define DEBUG_HELPER(fmt, ...) if(is_debugging) { printf("\n%s ", DEBUG_PROMPT); printf(fmt, __VA_ARGS__); }
+#define DEBUG_HELPER(fmt, ...) if(is_debugging) { printf("\n%s ", DEBUG_PROMPT); static char dbgmsg_ ## __COUNTER__ [] = fmt; printf(dbgmsg_ ## __COUNTER__, __VA_ARGS__); }
 #define DEBUG(...) DEBUG_HELPER(__VA_ARGS__, 0)
 
 #endif /* LIB_DEBUG_DEBUG_H_ */

@@ -21,7 +21,7 @@
  */
 
 #define SPWM_MAX_CHANNEL_COUNT SPWM_DEV__COUNT
-#define SPWM_MAX_FREQUENCY     20000 /* In Hz */
+#define SPWM_MAX_FREQUENCY     20000.0f /* In Hz */
 
 typedef void (*spwm_cback_t)(uint8_t pinsample);
 
@@ -45,33 +45,37 @@ enum SPWM_MODE {
 
 /* What devices are using the Software PWM library */
 enum SPWM_DEVALLOC {
-	SPWM_DEV_DBGLED2,    /* MCU's LED2 for displaying reception of packets       */
-	SPWM_DEV_DBGLED3,    /* MCU's LED2 for displaying transmission of packets    */
+	SPWM_DEV_DBGLED2,    /* MCU's LED2 for displaying reception of packets      */
+	SPWM_DEV_DBGLED3,    /* MCU's LED2 for displaying transmission of packets   */
 	SPWM_DEV_PIEZO,      /* A piezo buzzer for playing tunes in any given event */
-	SPWM_DEV_SERVO,      /* The servo motor                                      */
-	SPWM_DEV_LEFTMOTOR,  /* The left  motor of the car                           */
-	SPWM_DEV_RIGHTMOTOR, /* The right motor of the car                           */
-	SPWM_DEV_ACCELX,     /* The X axis of the accelerometer                      */
-	SPWM_DEV_ACCELY,     /* The Y axis of the accelerometer                      */
-	SPWM_DEV__COUNT      /* How many devices are being used for Software PWM     */
+	SPWM_DEV_SERVO,      /* The servo motor                                     */
+	SPWM_DEV_LEFTMOTOR,  /* The left  motor of the car                          */
+	SPWM_DEV_RIGHTMOTOR, /* The right motor of the car                          */
+	SPWM_DEV_ACCELX,     /* The X axis of the accelerometer                     */
+	SPWM_DEV_ACCELY,     /* The Y axis of the accelerometer                     */
+	SPWM_DEV__COUNT      /* How many devices are being used for Software PWM    */
 };
 
 typedef struct {
 	bool         is_init;
-	uint32_t     current_counter; /* This counter will count until it reaches the match_counter                               */
-	uint32_t     match_counter;   /* This counter marks the point at which the SPWM is triggered / the callbacks are executed */
-	uint32_t     max_counter;     /* This is the max counter / frequency of the SPWM                                          */
+	float        current_counter; /* This counter will count until it reaches the match_counter                               */
+	float        match_counter;   /* This counter marks the point at which the SPWM is triggered / the callbacks are executed */
+	float        max_counter;     /* This is the max counter / frequency of the SPWM                                          */
 	float        duty_cycle;      /* Used only for storage and recalculation                                                  */
+	float        new_duty_cycle;
+	bool         set_new_duty_cycle;
+	float        new_frequency;
+	bool         set_new_frequency;
 	uint8_t      mode;
 	spwm_cback_t cback;
 	uint8_t      pin;
 	bool         level_latch;
 } spwm_t;
 
-spwm_t *           spwm_create(uint32_t frequency_hz, float duty_cycle, uint8_t spwm_mode, spwm_cback_t cback, uint8_t outpin);
+spwm_t *           spwm_create(float frequency_hz, float duty_cycle, uint8_t spwm_mode, spwm_cback_t cback, uint8_t outpin);
 void               spwm_poll(void);
 void               spwm_poll_all(void);
 enum SPWM_ERR_CODE spwm_set_duty(spwm_t * handle, float duty_cycle);
-enum SPWM_ERR_CODE spwm_set_frequency(spwm_t * handle, uint32_t frequency_hz);
+enum SPWM_ERR_CODE spwm_set_frequency(spwm_t * handle, float frequency_hz);
 
 #endif /* DRIVERS_LIBS_SPWM_SPWM_H_ */

@@ -30,15 +30,14 @@ void spwm_poll_trigger(spwm_t * chan, bool level) {
 		case SPWM_DEV_ACCELX: pinsample = INP_ACCEL_X; break; /* X-Axis accelerometer */
 		case SPWM_DEV_ACCELY: pinsample = INP_ACCEL_Y; break; /* Y-Axis accelerometer */
 		}
-	}
-	else {
+	} else {
 		/** NOTE: WE ONLY SUPPORT THESE PINS IN THIS LIBRARY FOR THIS MCU IN PARTICULAR **/
 		switch(chan->pin) {
 		case SPWM_DEV_DBGLED2:    DAT_DBG_LED2 = level; break; /* RX packet LED */
 		case SPWM_DEV_DBGLED3:    DAT_DBG_LED3 = level; break; /* TX packet LED */
-		case SPWM_DEV_PIEZO:     DAT_PIEZO    = level; break; /* Piezo Buzzer  */
-		case SPWM_DEV_SERVO:      DAT_SERVO    = level; break; /* Servo         */
-		case SPWM_DEV_LEFTMOTOR:  DAT_MOTOR_L  = level; break; /* Left motor    */
+		case SPWM_DEV_PIEZO:      DAT_PIEZO    = level; break; /* Piezo buzzer  */
+		case SPWM_DEV_SERVO:      DAT_SERVO    = level; break; /* Servo motor   */
+		case SPWM_DEV_LEFTMOTOR:  DAT_MOTOR_L  = level; break; /* Left  motor   */
 		case SPWM_DEV_RIGHTMOTOR: DAT_MOTOR_R  = level; break; /* Right motor   */
 		}
 	}
@@ -83,8 +82,24 @@ void spwm_poll_single_channel(spwm_t * chan) {
 		}
 	}
 
-	if(++chan->current_counter >= chan->max_counter)
+	if(++chan->current_counter >= chan->max_counter) {
 		chan->current_counter = 0;
+
+		/* Update frequency and duty cycle here (if change requested) */
+		if(chan->set_new_frequency == true) {
+			chan->set_new_frequency = false;
+
+			/* Recalculate match counter based on the new frequency: */
+			chan->max_counter     = chan->new_frequency == 0 ? 0 : SPWM_FREQ_TO_PRESC(chan->new_frequency);
+			chan->match_counter   = (chan->max_counter * chan->duty_cycle) / 100.0f;
+		}
+
+		if(chan->set_new_duty_cycle == true) {
+			chan->set_new_duty_cycle = false;
+			chan->duty_cycle         = chan->new_duty_cycle;
+			chan->match_counter      = (chan->max_counter * chan->duty_cycle) / 100.0f;
+		}
+	}
 }
 
 void spwm_poll(void) {
@@ -96,26 +111,31 @@ void spwm_poll(void) {
 }
 
 void spwm_poll_all(void) {
-	for(int i = 0; i < spwm_alloc_channel; i++) {
+	for(spwm_poll_idx = 0; spwm_poll_idx < spwm_alloc_channel; spwm_poll_idx++) {
 		spwm_t * chan = (spwm_t*)&spwm_channels[spwm_poll_idx];
+
 		if(chan->is_init)
 			spwm_poll_single_channel(chan);
-		if(++spwm_poll_idx >= spwm_alloc_channel)
-			spwm_poll_idx = 0;
 	}
+
+	spwm_poll_idx = 0;
 }
 
 void spwm_init_all_channels(void) {
 	for(uint8_t i = 0; i < SPWM_MAX_CHANNEL_COUNT; i++) {
-		spwm_channels[i].current_counter = 0;
-		spwm_channels[i].match_counter   = 0;
-		spwm_channels[i].max_counter     = 0;
-		spwm_channels[i].duty_cycle      = 0;
-		spwm_channels[i].mode            = SPWM_MODE_NULL;
-		spwm_channels[i].cback           = 0;
-		spwm_channels[i].pin             = 0xFF;
-		spwm_channels[i].level_latch     = false;
-		spwm_channels[i].is_init         = false;
+		spwm_channels[i].current_counter    = 0;
+		spwm_channels[i].match_counter      = 0;
+		spwm_channels[i].max_counter        = 0;
+		spwm_channels[i].duty_cycle         = 0;
+		spwm_channels[i].new_duty_cycle     = 0;
+		spwm_channels[i].new_frequency      = 0;
+		spwm_channels[i].set_new_duty_cycle = false;
+		spwm_channels[i].set_new_frequency  = false;
+		spwm_channels[i].mode               = SPWM_MODE_NULL;
+		spwm_channels[i].cback              = 0;
+		spwm_channels[i].pin                = 0xFF;
+		spwm_channels[i].level_latch        = false;
+		spwm_channels[i].is_init            = false;
 	}
 }
 #endif
@@ -124,7 +144,7 @@ void spwm_init_all_channels(void) {
 /***********************************/
 /****** PUBLIC IMPLEMENTATION ******/
 /***********************************/
-spwm_t * spwm_create(uint32_t frequency_hz, float duty_cycle, uint8_t spwm_mode, spwm_cback_t cback, uint8_t pin) {
+spwm_t * spwm_create(float frequency_hz, float duty_cycle, uint8_t spwm_mode, spwm_cback_t cback, uint8_t pin) {
 	if(spwm_alloc_channel >= SPWM_MAX_CHANNEL_COUNT) return NULL;
 
 	spwm_t * channel_ptr = NULL;
@@ -146,7 +166,7 @@ spwm_t * spwm_create(uint32_t frequency_hz, float duty_cycle, uint8_t spwm_mode,
 		spwm_channels[spwm_alloc_channel].pin           = pin;
 		spwm_channels[spwm_alloc_channel].cback         = cback;
 		spwm_channels[spwm_alloc_channel].max_counter   = SPWM_FREQ_TO_PRESC(frequency_hz);
-		spwm_channels[spwm_alloc_channel].match_counter = (uint32_t)((((float)spwm_channels[spwm_alloc_channel].max_counter) * duty_cycle) / 100.0f);
+		spwm_channels[spwm_alloc_channel].match_counter = (spwm_channels[spwm_alloc_channel].max_counter * duty_cycle) / 100.0f;
 		spwm_channels[spwm_alloc_channel].duty_cycle    = duty_cycle;
 		spwm_channels[spwm_alloc_channel].mode          = spwm_mode;
 
@@ -176,21 +196,21 @@ enum SPWM_ERR_CODE spwm_set_duty(spwm_t * handle, float duty_cycle) {
 	if(!handle)             return SPWM_ERR_BADHANDLE;
 	if(duty_cycle > 100.0f) return SPWM_ERR_BADARGS;
 
-	handle->match_counter   = (uint32_t)((((float)handle->max_counter) * duty_cycle) / 100.0f);
-	handle->duty_cycle      = duty_cycle;
-	handle->current_counter = 0;
+	handle->new_duty_cycle     = duty_cycle;
+	handle->set_new_duty_cycle = true;
 
 	return SPWM_OK;
 }
 
-enum SPWM_ERR_CODE spwm_set_frequency(spwm_t * handle, uint32_t frequency_hz) {
-	if(!handle)                           return SPWM_ERR_BADHANDLE;
-	if(frequency_hz > SPWM_MAX_FREQUENCY) return SPWM_ERR_BADARGS;
+enum SPWM_ERR_CODE spwm_set_frequency(spwm_t * handle, float frequency_hz) {
+	if(!handle)
+		return SPWM_ERR_BADHANDLE;
+	if(frequency_hz < 0 || frequency_hz > SPWM_MAX_FREQUENCY)
+		return SPWM_ERR_BADARGS;
 
 	/* Recalculate match counter based on the new frequency: */
-	handle->max_counter     = SPWM_FREQ_TO_PRESC(frequency_hz);
-	handle->match_counter   = (uint32_t)((((float)handle->max_counter) * handle->duty_cycle) / 100.0f);
-	handle->current_counter = 0;
+	handle->new_frequency     = frequency_hz;
+	handle->set_new_frequency = true;
 
 	return SPWM_OK;
 }

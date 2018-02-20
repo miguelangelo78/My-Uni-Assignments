@@ -29,6 +29,8 @@ pid_t * pid_controller_normal    = NULL; /* PID for controlling the servo angle 
 pid_t * pid_controller_crankmode = NULL; /* PID for controlling each DC motor while in brake mode             */
 pid_t * pid_controller_current   = NULL; /* What current PID controller are we using at any given time        */
 
+float pid_output = 0.0f; /* The final result of the PID that is ready to be used by the servo and DC motors */
+
 piezo_t * module_piezo = NULL; /* Piezo buzzer module */
 
 /* Read white tape on both sides of the track */
@@ -48,18 +50,21 @@ piezo_t * module_piezo = NULL; /* Piezo buzzer module */
 
 #define is_in_template_generation_mode() (uint8_t)((dipswitch_read() & 0x8) >> 3)
 
+///////////////////////////////////////////////////////////////////////////////
 void change_to_new_mode(enum MODE new_mode, enum MODE next_mode) {
 	track.last_mode = track.mode;
 	track.mode      = new_mode;
 	track.next_mode = next_mode;
 }
 
+///////////////////////////////////////////////////////////////////////////////
 void change_to_next_mode(enum MODE next_mode) {
 	track.last_mode = track.mode;
 	track.mode      = track.next_mode;
 	track.next_mode = next_mode;
 }
 
+///////////////////////////////////////////////////////////////////////////////
 bool handle_linetape_detection(uint8_t sensor_data) {
 	bool ret = false;
 
@@ -117,6 +122,7 @@ bool handle_linetape_detection(uint8_t sensor_data) {
 	return ret;
 }
 
+///////////////////////////////////////////////////////////////////////////////
 void handle_normal_drive(uint8_t sensor_data, bool update_mode, bool update_motors) {
 	for(int i = 0; i < PATTERN_MAP_SIZE; i++) {
 		if(sensor_data == track.pattern_map[i].pattern) {
@@ -138,6 +144,7 @@ void handle_normal_drive(uint8_t sensor_data, bool update_mode, bool update_moto
 	}
 }
 
+///////////////////////////////////////////////////////////////////////////////
 void get_next_turn(void) {
 	/* Fetch the next incoming turn */
 	if(track.next_turn == NULL) {
@@ -151,6 +158,7 @@ void get_next_turn(void) {
 	}
 }
 
+///////////////////////////////////////////////////////////////////////////////
 void car_control_poll() {
 	if(module_left_wheel == NULL || module_right_wheel == NULL || module_servo == NULL)
 		return;
@@ -166,24 +174,18 @@ void car_control_poll() {
 				motor_set_speed(module_right_wheel, 0);
 
 				/* Alert the user of the event */
-				note_t note_alert;
-				note_alert.duration = 500;
-				note_alert.pitch    = A6;
-				piezo_play(module_piezo, &note_alert, false);
+				piezo_play(module_piezo, &note_offtrack, false);
 			}
 		} else {
 			track.line_misread_danger_counter = 0;
 		}
 	}
 
-
 	switch(track.mode) {
 		case MODE_NULL: /* The car shouldn't react to this */ return;
 		case MODE_WAIT_FOR_STARTSWITCH:
 		{
-			///XXXXXXXXXXX
-			return;
-			/* RTOS is going to tell us when to go
+			/* RTOS is going to tell us when to go.
 			   Meanwhile, we'll lock the servo onto the line */
 			handle_normal_drive(ltracker_read(MASK4_4, NULL), false, false);
 			break;
@@ -257,19 +259,27 @@ void car_control_poll() {
 	pid_controller_current = (module_left_wheel->is_braking || module_right_wheel->is_braking) ? pid_controller_crankmode : pid_controller_normal;
 
 	/* Recalculate the PID controller values */
-	float pid_output = pid_control(pid_controller_current);
+	pid_output = pid_control(pid_controller_current);
 
 	/* And update the external systems respectively */
-	servo_ctrl(module_servo, (int16_t)pid_output);
+	if(!module_servo->is_sweeping) {
 
-	if(track.mode > MODE_WAIT_FOR_STARTSWITCH) {
-		/* Only update the motors if we are NOT in null mode
-		 * and  NOT waiting for the start switch  */
-		motor_refresh_with_differential(module_left_wheel,  pid_output);
-		motor_refresh_with_differential(module_right_wheel, pid_output);
+		/* Update the servo's duty cycle */
+		servo_ctrl(module_servo, pid_output);
+
+		if(track.mode > MODE_WAIT_FOR_STARTSWITCH) {
+			/* Only update the motors if we are NOT in null mode
+			 * and NOT waiting for the start switch  */
+			motor_refresh_with_differential(module_left_wheel,  pid_output);
+			motor_refresh_with_differential(module_right_wheel, pid_output);
+		}
+	} else {
+		motor_set_speed(module_left_wheel,  0);
+		motor_set_speed(module_right_wheel, 0);
 	}
 }
 
+///////////////////////////////////////////////////////////////////////////////
 void master_reset(void) {
 	/*****************************************/
 	/** Resetting the entire system's logic **/
@@ -314,7 +324,9 @@ void master_reset(void) {
 	change_to_new_mode(MODE_WAIT_FOR_STARTSWITCH, MODE_FOLLOW_NORMAL_TRACE);
 }
 
-void status_logger_task(void * args) {
+///////////////////////////////////////////////////////////////////////////////
+void status_logger_task(void * args){
+
 #if ENABLE_STARTSWITCH == 1 && ENABLE_MOTOR_CTRL_LEDS == 1
 	bool    is_go   = false;
 	uint8_t led_val = 1;
@@ -361,9 +373,13 @@ void status_logger_task(void * args) {
 	}
 }
 
+////EXECUTION FREQUENCY = ~45.18 kHz///////////////////////////////////////////
 void poller() {
-	suart_poll();       /* Update Software UART                    */
-	car_control_poll(); /* Update the control algorithm of the car */
+
+#if ENABLE_COMMUNICATIONS == 1
+	/* Update Software UART */
+	suart_poll();
+#endif
 
 #if ENABLE_DEBUG_LEDS == 1
 	/* Update debug LEDs with Software PWM */
@@ -371,9 +387,13 @@ void poller() {
 		debug_leds_update_pwm();
 #endif
 
+#if ENABLE_SPWM == 1
+	/* Update all devices that use SPWM */
 	spwm_poll_all();
+#endif
 }
 
+///////////////////////////////////////////////////////////////////////////////
 void main_app(void * args) {
 
 #if ENABLE_DEBUGGING == 1
@@ -392,8 +412,8 @@ void main_app(void * args) {
 	module_right_wheel = motor_init_safe(MOTOR_CHANNEL_RIGHT, ENABLE_MOTORS_SAFEMODE);
 #endif
 
-#if ENABLE_LTRACKER == 1
-	/* Create and initialize the Line Tracker sensor */
+#if ENABLE_SERVO == 1
+	/* Create and initialize the line tracker sensor and servo */
 	module_servo = servo_init();
 #endif
 
@@ -437,11 +457,18 @@ void main_app(void * args) {
 	/* Reset RTOS timeout service */
 	rtos_reset_timeout_service();
 
+#if ENABLE_SOUND == 1
 	bool is_startup_tune_finished = false;
+#endif
 
 	while(1) {
 		/* Update RTOS timeout service */
 		rtos_update_timeout_service();
+
+#if ENABLE_MOTORS == 1 && ENABLE_SERVO == 1
+		/* Update the control algorithm of the car */
+		car_control_poll();
+#endif
 
 #if ENABLE_STARTSWITCH == 1
 		/* Handle the user switch key press event */
@@ -458,15 +485,16 @@ void main_app(void * args) {
 			if(track.mode == MODE_WAIT_FOR_STARTSWITCH) {
 				/* Kick start the car! */
 				change_to_next_mode(MODE_FOLLOW_NORMAL_TRACE);
+
+				/* Alert the user of the event */
+				piezo_play(module_piezo, &note_startswitch, false);
+
 				DEBUG("\n>>>>>>>>>>>>>>\n>> !! GO !! <<\n>>>>>>>>>>>>>>");
 			} else {
 				/* Reset the entire program */
 				master_reset();
 			}
-
-			continue;
 		}
-
 #endif
 
 #if ENABLE_SOUND == 1

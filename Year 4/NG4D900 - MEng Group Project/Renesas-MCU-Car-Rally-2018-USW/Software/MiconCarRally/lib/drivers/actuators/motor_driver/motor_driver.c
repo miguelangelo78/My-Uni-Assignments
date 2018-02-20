@@ -20,52 +20,33 @@ motor_t * motor_init(enum MOTOR_CHANNEL channel) {
 		return (motor_t*)MOTOR_ERR_INVAL_CHANNEL;
 
 	/* Create channel */
-	ret                  = (motor_t*)malloc(sizeof(motor_t));
-	ret->side            = channel;
-	ret->speed           = 0.0f;
-	ret->speed_old       = 0.0f;
-	ret->speed_safe_old  = 0.0f;
-	ret->rpm_measured    = 0.0f;
-	ret->rpm_timestamp_triggered = false;
+	ret                    = (motor_t*)malloc(sizeof(motor_t));
+	ret->dev_handle        = spwm_create(MOTOR_FREQ, 0, SPWM_MODE_BOTHLVL, 0, channel == MOTOR_CHANNEL_LEFT ? SPWM_DEV_LEFTMOTOR : SPWM_DEV_RIGHTMOTOR);
+	ret->side              = channel;
+	ret->speed             = 0.0f;
+	ret->speed_old         = 0.0f;
+	ret->speed_safe_old    = 0.0f;
+	ret->is_safemode       = false;
+	ret->rpm_measured      = 0.0f;
 	ret->rpm_timestamp     = 0;
 	ret->rpm_timestamp_old = 0;
-	ret->is_safemode       = false;
-
-	/* Initialize channel controls */
-	MSTP_MTU       = 0;    /* Disable module stop state                                           */
-	MTU.TSTRA.BYTE = 0;    /* Stop MTU Counter                                                    */
-	MTU3.TCR.BYTE  = 0x23; /* Select clock source (ICLK/64) and the timer that clears TCNT (TGRA) */
-	MTU4.TCNT      = 0;    /* Reset timer counter                                                 */
+	ret->rpm_timestamp_triggered = false;
 
 	if(channel == MOTOR_CHANNEL_LEFT) {
 		/* Initialize left channel */
-		PORT7.DDR.BIT.B3 = 1; /* Set left motor's PWM pin as output                */
-		PORT7.DDR.BIT.B5 = 1; /* Set left motor's rotation direction pin as output */
-		PORT1.DDR.BIT.B1 = 0; /* Set left RPM Sensor as input                      */
-		MTU4.TGRA        = 0;
-		MTU4.TGRC        = 0;
+		DIR_MOTOR_L   = 1; /* Set left motor's PWM pin as output            */
+		DIR_MOTOR_LD  = 1; /* Set left motor's direction pin as output      */
+		DAT_MOTOR_LD  = 0; /* Set left motor's direction pin to 0 (forward) */
+		DIR_LEFT_HALL = 0; /* Set left hall effect sensor's pin as input    */
 	}
 
 	if(channel == MOTOR_CHANNEL_RIGHT) {
 		/* Initialize right channel */
-		PORT7.DDR.BIT.B2 = 1; /* Set right motor's PWM pin as output                */
-		PORT7.DDR.BIT.B4 = 1; /* Set right motor's rotation direction pin as output */
-		PORT9.DDR.BIT.B6 = 0; /* Set right RPM Sensor as input                      */
-		MTU4.TGRB        = 0;
-		MTU4.TGRD        = 0;
+		DIR_MOTOR_R    = 1; /* Set right motor's PWM pin as output            */
+		DIR_MOTOR_RD   = 1; /* Set right motor's direction pin as output      */
+		DAT_MOTOR_RD   = 0; /* Set right motor's direction pin to 0 (forward) */
+		DIR_RIGHT_HALL = 0; /* Set right hall effect sensor's pin as input    */
 	}
-
-	/* Finish up initialization */
-
-	MTU3.TGRA = MTU3.TGRC = MOTOR_MAX_PWM_SPEED;
-
-	MTU.TOCR1A.BIT.PSYE = 1;    /* Enable synchronized PWM output mode         */
-	MTU3.TMDR1.BIT.MD   = 8;    /* Set synchronized PWM output mode            */
-	MTU3.TMDR1.BIT.BFA  = 1;    /* Set TGRA and TGRC to be used as buffer mode */
-	MTU3.TMDR1.BIT.BFB  = 1;    /* Set TGRB and TGRD to be used as buffer mode */
-	MTU4.TMDR1.BYTE     = 0;    /* Set 0 to exclude MTU3 effects               */
-	MTU.TOERA.BYTE      = 0xC7; /* Enable output out of the pin                */
-	MTU.TSTRA.BIT.CST3  = 1;    /* Enable timer counter                        */
 
 	return ret;
 }
@@ -88,6 +69,7 @@ enum MOTOR_RETCODE motor_reset(motor_t * handle) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
+	handle->is_braking        = false;
 	handle->speed             = 0.0f;
 	handle->speed_old         = 0.0f;
 	handle->speed_safe_old    = 0.0f;
@@ -95,15 +77,8 @@ enum MOTOR_RETCODE motor_reset(motor_t * handle) {
 	handle->rpm_timestamp     = 0;
 	handle->rpm_timestamp_old = 0;
 	handle->rpm_timestamp_triggered = false;
-	handle->is_braking        = false;
 
-	if(handle->side == MOTOR_CHANNEL_LEFT) {
-		MTU4.TGRA = 0;
-		MTU4.TGRC = 0;
-	} else {
-		MTU4.TGRB = 0;
-		MTU4.TGRD = 0;
-	}
+	spwm_set_duty(handle->dev_handle, 0);
 
 	return MOTOR_OK;
 }
@@ -116,13 +91,27 @@ static enum MOTOR_RETCODE motor_update(motor_t * handle, bool use_differential) 
 	motor_rpm_sensor_poll(handle);
 
 	if(!use_differential) {
-		if(handle->side == MOTOR_CHANNEL_LEFT)
-			MTU4.TGRC = MOTOR_LEFT_INVERSE  ? -handle->speed : handle->speed; /* Update left channel  */
-		else
-			MTU4.TGRD = MOTOR_RIGHT_INVERSE ? -handle->speed : handle->speed; /* Update right channel */
+		/* Update motor WITHOUT differential */
 
+		/* Set the direction of the rotation for this given motor first */
+		if(handle->side == MOTOR_CHANNEL_LEFT) {
+			/* Set direction for the left motor */
+			DAT_MOTOR_LD = handle->speed >= 0.0f ? 0 : 1;
+			if(MOTOR_LEFT_INVERSE)
+				DAT_MOTOR_LD = !DAT_MOTOR_LD;
+		} else if(handle->side == MOTOR_CHANNEL_RIGHT) {
+			/* Set direction for the right motor */
+			DAT_MOTOR_RD = handle->speed >= 0.0f ? 0 : 1;
+			if(MOTOR_RIGHT_INVERSE)
+				DAT_MOTOR_RD = !DAT_MOTOR_RD;
+		}
+
+		/* And set its speed */
+		spwm_set_duty(handle->dev_handle, fabsf(handle->speed));
 		return MOTOR_OK;
 	}
+
+	/* Update motor WITH differential */
 
 	float newRPM;
 	float error = handle->acceleration - handle->rpm_measured;
@@ -143,34 +132,27 @@ static enum MOTOR_RETCODE motor_update(motor_t * handle, bool use_differential) 
 		newRPM = handle->acceleration + error;
 	}
 
-	if(newRPM > MOTOR_MAX_RPM_SPEED)  newRPM =  MOTOR_MAX_RPM_SPEED;
+	if(newRPM >  MOTOR_MAX_RPM_SPEED) newRPM =  MOTOR_MAX_RPM_SPEED;
 	if(newRPM < -MOTOR_MAX_RPM_SPEED) newRPM = -MOTOR_MAX_RPM_SPEED;
 
+	/* Set the direction of the rotation for this given motor */
 	if(handle->side == MOTOR_CHANNEL_LEFT) {
 #if MOTOR_LEFT_INVERSE == 1
 		newRPM *= -1.0f;
 #endif
 		/* Update left channel */
-		if(newRPM >= 0) {
-			PORT7.DR.BYTE &= 0xEF;
-			MTU4.TGRC = (long)(MOTOR_MAX_PWM_SPEED - 1) * newRPM / MOTOR_MAX_RPM_SPEED;
-		} else {
-			PORT7.DR.BYTE |= 0x10;
-			MTU4.TGRC = (long)(MOTOR_MAX_PWM_SPEED - 1) * (-newRPM) / MOTOR_MAX_RPM_SPEED;
-		}
+		if(newRPM >= 0) DAT_MOTOR_LD = 0; /* Rotate forward   */
+		else            DAT_MOTOR_LD = 1; /* Rotate backwards */
 	} else {
 #if MOTOR_RIGHT_INVERSE == 1
 		newRPM *= -1.0f;
 #endif
 		/* Update right channel */
-		if(newRPM >= 0) {
-			PORT7.DR.BYTE &= 0xDF;
-			MTU4.TGRD = (long)(MOTOR_MAX_PWM_SPEED - 1) * newRPM / MOTOR_MAX_RPM_SPEED;
-		} else {
-			PORT7.DR.BYTE |= 0x20;
-			MTU4.TGRD = (long)(MOTOR_MAX_PWM_SPEED - 1) * (-newRPM) / MOTOR_MAX_RPM_SPEED;
-		}
+		if(newRPM >= 0) DAT_MOTOR_RD = 0; /* Rotate forward   */
+		else            DAT_MOTOR_RD = 1; /* Rotate backwards */
 	}
+
+	spwm_set_duty(handle->dev_handle, (fabsf(newRPM) / MOTOR_MAX_RPM_SPEED) * 100.0f);
 
 	return MOTOR_OK;
 }
@@ -291,11 +273,15 @@ enum MOTOR_RETCODE motor_set_speed(motor_t * handle, float speed_percentage) {
 		return MOTOR_ERR_INVAL_CHANNEL;
 
 	/* Get the maximum allowed speed */
-	int max_speed = handle->is_safemode ? (MOTOR_SAFE_MODE_LEVEL * MOTOR_MAX_PWM_SPEED) / 100 : MOTOR_MAX_PWM_SPEED;
+	float max_speed = handle->is_safemode ? MOTOR_SAFE_MODE_LEVEL : MOTOR_MAX_PWM_SPEED;
 
-	/* Change speed value (map from 0% -> 100% to range of MOTOR_DEADBAND -> max_speed) */
+	/* Change speed value (map from +- 0% -> +- 100% to range of +- MOTOR_DEADBAND -> +- max_speed) */
 	handle->speed_old = handle->speed;
-	handle->speed     = map(speed_percentage, 0, 100, MOTOR_DEADBAND, max_speed);
+
+	if(speed_percentage >= 0.0f)
+		handle->speed = mapfloat(speed_percentage, 0, 100, MOTOR_DEADBAND, max_speed);
+	else
+		handle->speed = mapfloat(speed_percentage, -100, 0, -max_speed, -MOTOR_DEADBAND);
 
 	return MOTOR_OK;
 }

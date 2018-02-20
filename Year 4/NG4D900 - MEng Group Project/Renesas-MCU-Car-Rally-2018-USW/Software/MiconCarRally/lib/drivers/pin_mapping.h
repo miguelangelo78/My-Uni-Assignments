@@ -62,23 +62,31 @@
 /*********************************/
 /************* Servo *************/
 /*********************************/
-#define DIR_SERVO PORTB.DDR.BIT.B1
-#define DAT_SERVO PORTB.DR.BIT.B1
+#define DIR_SERVO PORT7.DDR.BIT.B6
+#define DAT_SERVO PORT7.DR.BIT.B6
 /*********************************/
 
 /************************************/
 /************** Motors **************/
 /************************************/
-#define DIR_MOTOR_L  PORTB.DDR.BIT.B3
-#define DAT_MOTOR_L  PORTB.DR.BIT.B3
-#define DIR_MOTOR_LD PORTB.DDR.BIT.B5
-#define DAT_MOTOR_LD PORTB.DR.BIT.B5
+#define DIR_MOTOR_L  PORTB.DDR.BIT.B2
+#define DAT_MOTOR_L  PORTB.DR.BIT.B2
+#define DIR_MOTOR_LD PORTB.DDR.BIT.B4
+#define DAT_MOTOR_LD PORTB.DR.BIT.B4
 
-#define DIR_MOTOR_R  PORTB.DDR.BIT.B2
-#define DAT_MOTOR_R  PORTB.DR.BIT.B2
-#define DIR_MOTOR_RD PORTB.DDR.BIT.B4
-#define DAT_MOTOR_RD PORTB.DR.BIT.B4
+#define DIR_MOTOR_R  PORTB.DDR.BIT.B3
+#define DAT_MOTOR_R  PORTB.DR.BIT.B3
+#define DIR_MOTOR_RD PORTB.DDR.BIT.B5
+#define DAT_MOTOR_RD PORTB.DR.BIT.B5
 /************************************/
+
+/***************************************/
+/*** Hall effect sensor (RPM counter) **/
+/***************************************/
+#define DIR_LEFT_HALL  PORT1.DDR.BIT.B1
+#define INP_LEFT_HALL  PORT1.PORT.BIT.B1
+#define DIR_RIGHT_HALL PORT9.DDR.BIT.B6
+#define INP_RIGHT_HALL PORT9.PORT.BIT.B6
 
 /************************************/
 /*********** Accelerometer **********/

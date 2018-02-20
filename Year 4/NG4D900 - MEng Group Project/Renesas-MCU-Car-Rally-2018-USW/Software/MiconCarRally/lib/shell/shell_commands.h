@@ -59,8 +59,7 @@ int dc_motor_control(int argc, char ** argv) {
 			float rpm_measured_copy = module_left_wheel->rpm_measured;
 			DEBUG("Left RPM: %d", rpm_measured_copy);
 		} else {
-			int speed = atoi(argv[2]);
-			motor_ctrl(module_left_wheel, speed);
+			motor_ctrl(module_left_wheel, atof(argv[2]));
 		}
 	} else if(!strcmp(argv[1], "right")) {
 
@@ -68,8 +67,7 @@ int dc_motor_control(int argc, char ** argv) {
 			float rpm_measured_copy = module_right_wheel->rpm_measured;
 			DEBUG("Right RPM: %d", rpm_measured_copy);
 		} else {
-			int speed = atoi(argv[2]);
-			motor_ctrl(module_right_wheel, speed);
+			motor_ctrl(module_right_wheel, atof(argv[2]));
 		}
 	} else if(!strcmp(argv[1], "all")) {
 
@@ -78,8 +76,8 @@ int dc_motor_control(int argc, char ** argv) {
 			float rpm_right_measured_copy = module_right_wheel->rpm_measured;
 			DEBUG("Left RPM: %d | Right RPM: %d", rpm_left_measured_copy, rpm_right_measured_copy);
 		} else {
-			int speed = atoi(argv[1]);
-			motor_ctrl(module_left_wheel, speed);
+			float speed = atof(argv[2]);
+			motor_ctrl(module_left_wheel,  speed);
 			motor_ctrl(module_right_wheel, speed);
 		}
 	}
@@ -88,30 +86,41 @@ int dc_motor_control(int argc, char ** argv) {
 }
 
 #include <platform.h>
+#include <rtos_inc.h>
 
 int servo_control(int argc, char ** argv) {
 	if(argc < 2) {
-		DEBUG("ERROR: Invalid arguments provided.\nUsage: servo <lock|unlock|[0..180]>");
+		DEBUG("ERROR: Invalid arguments provided.\nUsage: servo <[-90..90] <hz>>");
 		return 1;
 	}
 
-	if(!strcmp(argv[1], "lock")) {
-		servo_lock(module_servo);
-	} else if(!strcmp(argv[1], "unlock")) {
-		servo_unlock(module_servo);
-	} else {
-		if(argc == 3) {
-			if(!strcmp(argv[2], "freq")) {
-				DEBUG("FREQ: %d", atoi(argv[1]));
-				spwm_set_frequency(module_servo->dev_handle, atoi(argv[1]));
-			}
-			else
-				servo_ctrl(module_servo, atoi(argv[1]));
+	if(argc == 3) {
+		if(!strcmp(argv[2], "hz")) {
+			spwm_set_frequency(module_servo->dev_handle, atof(argv[1]));
+			DEBUG("FREQ: %d", module_servo->dev_handle->max_counter);
 		} else {
-			DEBUG("ANGLE: %d deg (%d%)", atoi(argv[1]), map(atoi(argv[1]), SERVO_MIN_ANGLE, SERVO_MAX_ANGLE, SERVO_MIN_ANGLE_DUTY, SERVO_MAX_ANGLE_DUTY));
-			servo_ctrl(module_servo, atoi(argv[1]));
+			servo_ctrl(module_servo, atof(argv[1]));
 		}
+	} else {
+		servo_ctrl(module_servo, atof(argv[1]));
+		DEBUG("ANGLE: %.2f deg (%.2f%)", module_servo->angle, module_servo->dev_handle->duty_cycle);
 	}
+
+	return 0;
+}
+
+int servo_control_sweep(int argc, char ** argv) {
+	if(argc == 1) {
+		servo_sweep(module_servo, -90, 90, 3, 1, false);
+		return 0;
+	}
+
+	if(argc != 3) {
+		DEBUG("ERROR: Invalid arguments provided.\nUsage: sweep <<delay> <inc>>");
+		return 1;
+	}
+
+	servo_sweep(module_servo, -90, 90, atoi(argv[1]), atof(argv[2]), true);
 
 	return 0;
 }
@@ -188,6 +197,23 @@ int pidcrank_tune(int argc, char ** argv) {
 	return 0;
 }
 
+#include <sound/piezo.h>
+extern piezo_t * module_piezo;
+
+int play_tune(int argc, char ** argv) {
+	if(argc < 3) {
+		DEBUG("ERROR: Invalid arguments provided.\nUsage: play <pitch> <duration>");
+		return 1;
+	}
+
+	note_t note;
+	note.pitch    = atoi(argv[1]);
+	note.duration = atoi(argv[2]);
+	piezo_play(module_piezo, &note, true);
+
+	return 0;
+}
+
 #if ENABLE_REMOTE_CONTROL_MODE == 1
 extern void change_to_new_mode(enum MODE new_mode, enum MODE next_mode);
 extern void change_to_next_mode(enum MODE next_mode);
@@ -260,6 +286,7 @@ cmd_t command_list[] = {
 
 #if ENABLE_SERVO == 1
 	{"servo", servo_control, PACKET_CMD},
+	{"sweep", servo_control_sweep, PACKET_CMD},
 #endif
 
 #if ENABLE_STARTSWITCH == 1
@@ -271,6 +298,10 @@ cmd_t command_list[] = {
 #if ENABLE_PID == 1
 	{"pid",      pid_tune,      PACKET_CMD},
 	{"pidcrank", pidcrank_tune, PACKET_CMD},
+#endif
+
+#if ENABLE_SOUND == 1
+	{"play", play_tune, PACKET_CMD},
 #endif
 
 #if ENABLE_REMOTE_CONTROL_MODE == 1

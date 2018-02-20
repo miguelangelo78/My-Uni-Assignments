@@ -30,3 +30,6 @@ note_t tune_connected[] = {
 	{0,  80 },
 	{G4, 220}
 };
+
+note_t note_startswitch = { C8, 250 };
+note_t note_offtrack    = { A6, 500 };
