@@ -243,6 +243,14 @@ enum MOTOR_RETCODE motor_ctrl(motor_t * handle, float speed_percentage) {
 	return MOTOR_ERR_SET_SPEED;
 }
 
+enum MOTOR_RETCODE motor_ctrl2(motor_t * left_motor, motor_t * right_motor, float speed_percentage) {
+	enum MOTOR_RETCODE ret;
+	if((ret = motor_ctrl(left_motor, speed_percentage)) != MOTOR_OK)
+		return ret;
+
+	return motor_ctrl(right_motor, speed_percentage);
+}
+
 enum MOTOR_RETCODE motor_ctrl_with_differential(motor_t * handle, float speed_percentage, float pid_output) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;

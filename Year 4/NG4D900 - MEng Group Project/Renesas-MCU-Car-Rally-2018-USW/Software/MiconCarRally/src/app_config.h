@@ -33,6 +33,7 @@
 #define APP_CFG_POLLFREQ OS_CFG_TICK_RATE_HZ /* Frequency of the polling                                        */
 
 /** INFO: RTOS tasks allocated:
+ * 0- main_app            @ src/app_main.c line 132
  * 1- suart_rx_cbk_dspchr @ lib/drivers/communications/protocols/suart/suart.c line 372
  * 2- packetman_task      @ lib/drivers/communications/protocols/packetman/packetman.c line 376
  * 3- piezo_player        @ lib/drivers/sound/piezo.c line 74
@@ -72,10 +73,11 @@ enum MODE {
 	MODE_FOUND_RIGHT_TAPE,     /* (6)  We have encountered the white tape on the right side of the track                                                 */
 	MODE_ALIGN_BOUNDARY,       /* (7)  We are currently aligning the car with the left/right side of the track                                           */
 	MODE_TURNING_LANE,         /* (8)  We are currently turning the car through a lane change in basic or advanced mode                                  */
-	MODE_TURNING_CORNER,       /* (9) We are currently turning the car through a 90 degree corner in basic or advanced mode                             */
+	MODE_TURNING_CORNER,       /* (9) We are currently turning the car through a 90 degree corner in basic or advanced mode                              */
 	MODE_TURNING_CORNER_BLIND, /* (10) We are currently turning the car through a lane change/90 degree blindly in smart mode                            */
-	MODE_RACE_COMPLETE,        /* (11) We have completed the race                                                                                        */
-	MODE_REMOTE                /* (12) The car is being controlled/interacting with the user (not in race mode)                                          */
+	MODE_ACCIDENT,             /* (11) We have gone off track. Wait until the user puts the car back on the track and presses the button                 */
+	MODE_RACE_COMPLETE,        /* (12) We have completed the race                                                                                        */
+	MODE_REMOTE                /* (13) The car is being controlled/interacting with the user (not in race mode)                                          */
 };
 /****************************************************************/
 
@@ -85,8 +87,8 @@ enum MODE {
 /*********************************************************/
 
 /********* RACING / TRACK DEFINITIONS ******************************************************************/
-#define LAP_MAX_COUNT             3   /* How many laps will we make                                    */
-#define LAP_MAX_TURNS             1   /* How many 90 degree / lane change turns exist on the track     */
+#define LAP_MAX_COUNT             5   /* How many laps will we make                                    */
+#define LAP_MAX_TURNS             3   /* How many 90 degree / lane change turns exist on the track     */
 #define PATTERN_MAP_SIZE          15  /* Total amount of sensor patterns we are going to try to match  */
 #define TEMPLATE_MAX_SAMPLES      300 /* How many samples shall we use when generating a template line */
 #define FAKE_LINEDATA_MAX_SAMPLES 30  /* How many fake line data samples in total shall we use         */
@@ -133,7 +135,7 @@ typedef struct {
 
 enum INTEL {
 	INTEL_BASIC,    /* Brakes down every white tape detection. Stays in the middle of the track.                                                                                 */
-	INTEL_ADVANCED, /* Brakes down every white tape detection. Aligns itself in the right side of the track right before reaching apex                                           */
+	INTEL_ADVANCED, /* Brakes down every white tape detection. Aligns itself in the right/left side of the track right before reaching apex.                                     */
 	INTEL_SMART     /* Brakes down only on 90 degree corners. Ignores line sensor when detects a line, but still reads it to prevent any accident. Relies on distance travelled. */
 };
 
@@ -145,9 +147,6 @@ typedef struct {
 	enum MODE mode;
 	enum MODE last_mode;
 	enum MODE next_mode;
-
-	bool is_turning_lane;   /* Is the car currently going through a lane change? (regardless of the intelligence level)      */
-	bool is_turning_corner; /* Is the car currently going through a 90 degree corner? (regardless of the intelligence level) */
 
 	/* Tells the car how to react whenever it detects a certain pattern */
 	pattern_map_t pattern_map[PATTERN_MAP_SIZE];
@@ -162,6 +161,9 @@ typedef struct {
 	int laps_completed;
 
 	uint32_t line_misread_danger_counter;
+
+	bool is_turning_lane;   /* Is the car currently going through a lane change? (regardless of the intelligence level)      */
+	bool is_turning_corner; /* Is the car currently going through a 90 degree corner? (regardless of the intelligence level) */
 
 	bool rcmode_persistant;
 } track_t;

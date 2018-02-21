@@ -20,17 +20,35 @@ float pid_output = 0.0f; /* The final result of the PID that is ready to be used
 piezo_t * module_piezo = NULL; /* Piezo buzzer module */
 
 ///////////////////////////////////////////////////////////////////////////////
-enum MODE get_next_turn_mode_from_intel(bool is_next_turn_a_lane_change) {
+void update_track_status(void) {
 	/* Fetch the next incoming turn */
 	if(track.next_turn == NULL) {
 		track.next_turn = &track.incoming_turn[0];
 	} else {
 		if(++track.turn_counter >= LAP_MAX_TURNS) {
-			track.turn_counter = 1;
-			track.laps_completed++;
+			/* We have completed a lap */
+			track.turn_counter = 1; /* Counter does not reset back to 0 because the first and last turns STORED IN MEMORY are meant for the same (physical) turns */
+
+			/* Check if we have completed all laps */
+			if(++track.laps_completed >= LAP_MAX_COUNT) {
+				track.mode = MODE_RACE_COMPLETE;
+				motor_set_braking2(module_right_wheel, module_right_wheel, true);
+				motor_set_speed2(module_left_wheel, module_right_wheel, 0);
+
+				/* Play song signaling the end of the race */
+				while(piezo_play_song_async_backwards(module_piezo, tune_startup, arraysize(tune_startup), true) != PIEZO_SONG_DONE)
+					rtos_preempt();
+				while(piezo_play_song_async(module_piezo, tune_startup, arraysize(tune_startup), true) != PIEZO_SONG_DONE)
+					rtos_preempt();
+			}
 		}
 		track.next_turn = &track.incoming_turn[track.turn_counter];
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////////
+enum MODE get_next_turn_mode_from_intel(bool is_next_turn_a_lane_change) {
+	update_track_status();
 
 	if(is_next_turn_a_lane_change) {
 		track.is_turning_lane = true;
@@ -150,9 +168,10 @@ void car_control_poll(void) {
 	if(rtos_time() % 50 == 0) {
 		if(!track.is_turning_lane && (sensor_unmsk == b11111111 || sensor_unmsk == b00000000)) {
 			if(++track.line_misread_danger_counter >= 5) {
-				/* Completely stop the car if all of the sensors have been on/off for this period of time */
-				change_to_next_mode(MODE_WAIT_FOR_STARTSWITCH);
-				motor_set_speed2(module_left_wheel, module_right_wheel, 0);
+				/* Completely stop the car and center the servo if all of the sensors have been on/off for this period of time */
+				motor_ctrl2(module_left_wheel, module_right_wheel, 0);
+				servo_ctrl(module_servo, 0);
+				change_to_next_mode(MODE_ACCIDENT);
 
 				/* Alert the user of the event */
 				piezo_play(module_piezo, &note_alert, false);
@@ -170,6 +189,14 @@ void car_control_poll(void) {
 			/* Wait until the user presses the start button.
 			   Meanwhile, we'll lock the servo onto the line */
 			handle_normal_drive(sensor_unmsk, false, false);
+			break;
+		}
+		case MODE_ACCIDENT:
+		{
+			/* Block the control system from updating its variables */
+			while(!start_switch_read()) rtos_update_timeout_service(); /* Still need to let RTOS work properly for other tasks even though we're blocking this thread */
+			/* (The car better be back on the track when we reach this point...) */
+			change_to_next_mode(MODE_FOLLOW_NORMAL_TRACE);
 			break;
 		}
 		case MODE_FOLLOW_NORMAL_TRACE: ////APPLIES TO: BASIC|ADVANCED|SMART////////////////////////////////////////////////
@@ -212,10 +239,10 @@ void car_control_poll(void) {
 				/* Drive the car slowly until it reaches the other side of the track where the line begins again */
 				if(track.last_mode == MODE_FOUND_LEFT_TAPE) {
 					/* Change the lane to the left */
-					// TODO
+					// TODO (don't forget to set track.is_turning_lane = false and braking = false after done)
 				} else if(track.last_mode == MODE_FOUND_RIGHT_TAPE) {
 					/* Change the lane to the right */
-					// TODO
+					// TODO (don't forget to set track.is_turning_lane = false and braking = false after done)
 				}
 			} else { ////ADVANCED MODE
 
@@ -224,7 +251,8 @@ void car_control_poll(void) {
 		}
 		case MODE_TURNING_CORNER: ////APPLIES TO: BASIC|ADVANCED////////////////////////////////////////////////
 		{
-			// TODO
+			/* Drive the car through a 90 degree corner (we don't know the direction though, at least in this intel mode) */
+			// TODO (don't forget to set track.is_turning_corner = false and braking = false after done)
 			break;
 		}
 		case MODE_TURNING_CORNER_BLIND: ////APPLIES TO: SMART////////////////////////////////////////////////
@@ -233,15 +261,8 @@ void car_control_poll(void) {
 			bool motors_updated;
 			uint8_t sensor_data = ltracker_read(MASK4_4, &motors_updated);
 
-			/* Check if we have completed all laps */
-			if(track.laps_completed >= LAP_MAX_COUNT) {
-				track.mode = MODE_RACE_COMPLETE;
-				motor_set_braking2(module_right_wheel, module_right_wheel, true);
-				motor_set_speed2(module_left_wheel, module_right_wheel, 0);
-			} else {
-				/* Keep driving until we reach the end of the 'blind data' */
-				handle_normal_drive(sensor_data, false, !motors_updated);
-			}
+			/* Keep driving until we reach the end of the 'blind' data set */
+			handle_normal_drive(sensor_data, false, !motors_updated);
 			break;
 		}
 	}

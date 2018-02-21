@@ -18,7 +18,7 @@ CPU_STK mainStk[KMAIN_STACKSIZE];
 OS_TCB  mainTCB;
 
 /* Generalized task / process properties */
-#define PROCESS_STACKSIZE       300
+#define PROCESS_STACKSIZE       256
 #define PROCESS_DEFAULTPRIORITY 5
 #define PROCESS_MAXCOUNT        5
 
