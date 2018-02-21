@@ -7,16 +7,16 @@
 
 #include <rtos_inc.h>
 #include <app_config.h>
+#include <app_car_control.h>
 #include <actuators/motor_driver/motor_driver.h>
 #include "ltracker.h"
 
 extern track_t   track;
 extern motor_t * module_left_wheel;
 extern motor_t * module_right_wheel;
-extern void      change_to_next_mode(enum MODE next_mode);
 
 uint8_t ltracker_read(uint8_t mask, bool * motors_updated) {
-	if(track.mode == MODE_TURNING_CORNER) {
+	if(track.mode == MODE_TURNING_CORNER_BLIND) { //// SMART MODE
 		turn_t * next_turn = track.next_turn;
 
 		uint16_t fake_sample_count = (next_turn->fake_line_data_max_count > 0 ? next_turn->fake_line_data_max_count : FAKE_LINEDATA_MAX_SAMPLES) - 1;
@@ -34,8 +34,7 @@ uint8_t ltracker_read(uint8_t mask, bool * motors_updated) {
 			/***********************************/
 
 			/* Stop braking the motors */
-			motor_brake(module_left_wheel,  false);
-			motor_brake(module_right_wheel, false);
+			motor_set_braking2(module_left_wheel, module_right_wheel, false);
 
 			/* Set the mode to follow the track (normal mode) */
 			change_to_next_mode(MODE_FOLLOW_NORMAL_TRACE);

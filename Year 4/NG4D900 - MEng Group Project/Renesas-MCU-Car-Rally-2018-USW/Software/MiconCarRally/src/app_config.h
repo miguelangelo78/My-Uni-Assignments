@@ -48,7 +48,7 @@
 /****************************************************************************************************************/
 
 /********* PID CONTROLLER DEFINITIONS ***************************/
-#define HANDLE_KP       2.85  /* Normal operation P coefficient */
+#define HANDLE_KP       3     /* Normal operation P coefficient */
 #define HANDLE_KI       0.066 /* Normal operation I coefficient */
 #define HANDLE_KD       37    /* Normal operation D coefficient */
 
@@ -63,16 +63,19 @@
 
 /********* ALGORITHM FSM DEFINITIONS ****************************/
 enum MODE {
-	MODE_NULL,                 /* (0) An unknown state that should not be recognized by the algorithm                                                   */
-	MODE_WAIT_FOR_STARTSWITCH, /* (1) Wait for the start switch to be pressed before starting the race                                                  */
-	MODE_FOLLOW_NORMAL_TRACE,  /* (2) We are tracing a straight or slightly curved line within controlled conditions                                    */
-	MODE_AVOID_RIGHT_BOUNDARY, /* (3) The sensor detected a line at the right extreme sensors. We must check if it's a white tape, and if not, avoid it */
-	MODE_AVOID_LEFT_BOUNDARY,  /* (4) The sensor detected a line at the left extreme sensors.  We must check if it's a white tape, and if not, avoid it */
-	MODE_FOUND_LEFT_TAPE,      /* (5) We have encountered the white tape on the left side of the track                                                  */
-	MODE_FOUND_RIGHT_TAPE,     /* (6) We have encountered the white tape on the right side of the track                                                 */
-	MODE_TURNING_CORNER,       /* (7) We are currently turning the car through a 90 degree corner / lane change                                         */
-	MODE_RACE_COMPLETE,        /* (8) We have completed the race                                                                                        */
-	MODE_REMOTE                /* (9) The car is being controlled/interacting with the user (not in race mode)                                          */
+	MODE_NULL,                 /* (0)  An unknown state that should not be recognized by the algorithm                                                   */
+	MODE_WAIT_FOR_STARTSWITCH, /* (1)  Wait for the start switch to be pressed before starting the race                                                  */
+	MODE_FOLLOW_NORMAL_TRACE,  /* (2)  We are tracing a straight or slightly curved line within controlled conditions                                    */
+	MODE_AVOID_RIGHT_BOUNDARY, /* (3)  The sensor detected a line at the right extreme sensors. We must check if it's a white tape, and if not, avoid it */
+	MODE_AVOID_LEFT_BOUNDARY,  /* (4)  The sensor detected a line at the left extreme sensors.  We must check if it's a white tape, and if not, avoid it */
+	MODE_FOUND_LEFT_TAPE,      /* (5)  We have encountered the white tape on the left side of the track                                                  */
+	MODE_FOUND_RIGHT_TAPE,     /* (6)  We have encountered the white tape on the right side of the track                                                 */
+	MODE_ALIGN_BOUNDARY,       /* (7)  We are currently aligning the car with the left/right side of the track                                           */
+	MODE_TURNING_LANE,         /* (8)  We are currently turning the car through a lane change in basic or advanced mode                                  */
+	MODE_TURNING_CORNER,       /* (9) We are currently turning the car through a 90 degree corner in basic or advanced mode                             */
+	MODE_TURNING_CORNER_BLIND, /* (10) We are currently turning the car through a lane change/90 degree blindly in smart mode                            */
+	MODE_RACE_COMPLETE,        /* (11) We have completed the race                                                                                        */
+	MODE_REMOTE                /* (12) The car is being controlled/interacting with the user (not in race mode)                                          */
 };
 /****************************************************************/
 
@@ -90,7 +93,6 @@ enum MODE {
 /** NOTE: it's possible to use less samples through the variable 'fake_line_data_max_count' ************/
 
 enum TURN_DIRECTION {
-	TURN_UNKNOWN,
 	TURN_LEFT,
 	TURN_RIGHT
 };
@@ -129,11 +131,23 @@ typedef struct {
 	uint16_t            fake_line_data_index;
 } turn_t;
 
+enum INTEL {
+	INTEL_BASIC,    /* Brakes down every white tape detection. Stays in the middle of the track.                                                                                 */
+	INTEL_ADVANCED, /* Brakes down every white tape detection. Aligns itself in the right side of the track right before reaching apex                                           */
+	INTEL_SMART     /* Brakes down only on 90 degree corners. Ignores line sensor when detects a line, but still reads it to prevent any accident. Relies on distance travelled. */
+};
+
 typedef struct {
 	/* Current global mode of the car's algorithm */
+
+	enum INTEL intelligence_level;
+
 	enum MODE mode;
 	enum MODE last_mode;
 	enum MODE next_mode;
+
+	bool is_turning_lane;   /* Is the car currently going through a lane change? (regardless of the intelligence level)      */
+	bool is_turning_corner; /* Is the car currently going through a 90 degree corner? (regardless of the intelligence level) */
 
 	/* Tells the car how to react whenever it detects a certain pattern */
 	pattern_map_t pattern_map[PATTERN_MAP_SIZE];

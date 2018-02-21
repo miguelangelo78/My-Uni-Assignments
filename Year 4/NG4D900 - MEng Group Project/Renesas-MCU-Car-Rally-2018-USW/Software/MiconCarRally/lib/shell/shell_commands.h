@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <debug.h>
 #include <app_config.h>
+#include <app_car_control.h>
 #include "shell.h"
 
 extern cmd_t command_list[];
@@ -215,8 +216,6 @@ int play_tune(int argc, char ** argv) {
 }
 
 #if ENABLE_REMOTE_CONTROL_MODE == 1
-extern void change_to_new_mode(enum MODE new_mode, enum MODE next_mode);
-extern void change_to_next_mode(enum MODE next_mode);
 
 int change_to_rc_mode(int argc, char ** argv) {
 	// Command Format: rcmode [0|1 [0|1]?]?

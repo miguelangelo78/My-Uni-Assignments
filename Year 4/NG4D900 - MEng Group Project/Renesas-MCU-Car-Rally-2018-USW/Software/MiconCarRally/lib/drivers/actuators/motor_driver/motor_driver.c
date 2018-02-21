@@ -224,6 +224,14 @@ enum MOTOR_RETCODE motor_refresh_with_differential(motor_t * handle, float pid_o
 	return MOTOR_ERR_DIFFERENTIAL;
 }
 
+enum MOTOR_RETCODE motor_refresh_with_differential2(motor_t * left_motor, motor_t * right_motor, float pid_output) {
+	enum MOTOR_RETCODE ret;
+	if((ret = motor_refresh_with_differential(left_motor, pid_output)) != MOTOR_OK)
+		return ret;
+
+	return motor_refresh_with_differential(right_motor, pid_output);
+}
+
 enum MOTOR_RETCODE motor_ctrl(motor_t * handle, float speed_percentage) {
 	if(!handle)
 		return MOTOR_ERR_INVAL_CHANNEL;
@@ -286,13 +294,30 @@ enum MOTOR_RETCODE motor_set_speed(motor_t * handle, float speed_percentage) {
 	return MOTOR_OK;
 }
 
-enum MOTOR_RETCODE motor_brake(motor_t * handle, bool is_breaking) {
+enum MOTOR_RETCODE motor_set_speed2(motor_t * left_motor, motor_t * right_motor, float speed_percentage) {
+	enum MOTOR_RETCODE ret;
+	if((ret = motor_set_speed(left_motor, speed_percentage)) != MOTOR_OK)
+		return ret;
+
+	return motor_set_speed(right_motor, speed_percentage);
+}
+
+enum MOTOR_RETCODE motor_set_braking(motor_t * handle, bool is_braking) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
-	handle->is_braking = is_breaking;
+	handle->is_braking = is_braking;
 
 	return MOTOR_OK;
+}
+
+enum MOTOR_RETCODE motor_set_braking2(motor_t * left_motor, motor_t * right_motor, bool is_braking) {
+	enum MOTOR_RETCODE ret;
+
+	if((ret = motor_set_braking(left_motor, is_braking)) != MOTOR_OK)
+		return ret;
+
+	return motor_set_braking(right_motor, is_braking);
 }
 
 enum MOTOR_RETCODE motor_rpm_sensor_poll(motor_t * handle) {
