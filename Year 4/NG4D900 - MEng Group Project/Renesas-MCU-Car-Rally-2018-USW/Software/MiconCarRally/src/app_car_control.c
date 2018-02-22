@@ -154,7 +154,7 @@ void handle_normal_drive(uint8_t sensor_data, bool update_mode, bool update_moto
 	}
 }
 
-bool update_control_variables(void) {
+bool update_control_variables(uint8_t * line_var) {
 	/* Switch to the correct PID controller, which depends on whether or not we are breaking/slowing down */
 	pid_controller_current = (module_left_wheel->is_braking || module_right_wheel->is_braking) ? pid_controller_crankmode : pid_controller_normal;
 
@@ -175,6 +175,11 @@ bool update_control_variables(void) {
 	}
 
 	rtos_preempt();
+
+	if(line_var) {
+		/* Re-read the new line after changing the controls */
+		*line_var = ltracker_read(MASK4_4, NULL);
+	}
 
 	return true;
 }
@@ -272,18 +277,18 @@ void car_control_poll(void) {
 					motor_set_speed2(module_left_wheel, module_right_wheel, 15);
 					rtos_delay(200);
 
-					while(update_control_variables()) {
+					while(update_control_variables(&sensor_unmsk)) {
 						if(sensor_unmsk & b11111000)      pid_update_feedback(pid_controller_crankmode, 37);
 						else if(sensor_unmsk & b00000011) break;
 					}
 
-					while(update_control_variables()) {
+					while(update_control_variables(&sensor_unmsk)) {
 						if(sensor_unmsk & b00000011)      pid_update_feedback(pid_controller_crankmode, -17);
 						else if(sensor_unmsk & b11111000) pid_update_feedback(pid_controller_crankmode, 17);
 						else break;
 					}
 
-					while(update_control_variables()) {
+					while(update_control_variables(&sensor_unmsk)) {
 						if(sensor_unmsk & b00111000) break;
 						else                         pid_update_feedback(pid_controller_crankmode, 25);
 					}
@@ -325,5 +330,5 @@ void car_control_poll(void) {
 	}
 	///// END - MAIN CONTROL FINITE STATE MACHINE /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	update_control_variables();
+	update_control_variables(NULL);
 }
