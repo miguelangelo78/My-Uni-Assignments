@@ -14,5 +14,6 @@ extern note_t tune_startup[9];
 extern note_t tune_connected[9];
 extern note_t note_startswitch;
 extern note_t note_alert;
+extern note_t note_turn_found;
 
 #endif /* LIB_DRIVERS_SOUND_TUNES_H_ */

@@ -361,6 +361,9 @@ void packetman_task(void * args) {
 	while(true) {
 		update_communication();
 		rtos_delay(PERIOD_UPDATE);
+
+		/* Also update RTOS timeout service */
+		rtos_update_timeout_service();
 	}
 }
 

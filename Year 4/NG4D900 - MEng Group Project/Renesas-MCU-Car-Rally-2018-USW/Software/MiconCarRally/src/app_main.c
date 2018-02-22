@@ -67,6 +67,13 @@ void status_logger_task(void * args) {
 	uint8_t led_val = 1;
 #endif
 
+#if ENABLE_SOUND == 1
+		/* Play startup tune (only once) */
+		if(module_piezo && !module_piezo->is_playing)
+			while(piezo_play_song_async(module_piezo, tune_startup, arraysize(tune_startup), false) != PIEZO_SONG_DONE)
+				rtos_preempt();
+#endif
+
 	while(1) {
 
 #if ENABLE_TEMPLATE_GENERATION == 1
@@ -192,13 +199,7 @@ void main_app(void * args) {
 	/* Reset RTOS timeout service */
 	rtos_reset_timeout_service();
 
-#if ENABLE_SOUND == 1
-	bool is_startup_tune_finished = false;
-#endif
-
 	while(1) {
-		/* Update RTOS timeout service */
-		rtos_update_timeout_service();
 
 #if ENABLE_MOTORS == 1 && ENABLE_SERVO == 1
 		/* Update the control algorithm of the car */
@@ -209,10 +210,8 @@ void main_app(void * args) {
 		/* Handle the user switch key press event */
 		if(start_switch_read()) {
 			/* Only continue when the user releases the button */
-			while(start_switch_read()) {
-				/* Keep updating the RTOS timeout service */
-				rtos_update_timeout_service();
-			}
+			while(start_switch_read())
+				rtos_preempt();
 
 			/* Give the user a bit of time to release the button */
 			rtos_delay(50);
@@ -230,12 +229,6 @@ void main_app(void * args) {
 				master_reset();
 			}
 		}
-#endif
-
-#if ENABLE_SOUND == 1
-		/* Play startup tune (only once) */
-		if(module_piezo && !module_piezo->is_playing && !is_startup_tune_finished)
-			is_startup_tune_finished = piezo_play_song_async(module_piezo, tune_startup, arraysize(tune_startup), false) == PIEZO_SONG_DONE;
 #endif
 	}
 }

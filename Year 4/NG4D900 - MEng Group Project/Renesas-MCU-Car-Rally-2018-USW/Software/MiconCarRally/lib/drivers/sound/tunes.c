@@ -33,3 +33,4 @@ note_t tune_connected[] = {
 
 note_t note_startswitch = { C8, 250 };
 note_t note_alert       = { A6, 500 };
+note_t note_turn_found  = { C8, 100 };

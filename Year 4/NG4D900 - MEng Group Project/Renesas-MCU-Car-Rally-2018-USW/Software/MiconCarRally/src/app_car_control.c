@@ -20,7 +20,11 @@ float pid_output = 0.0f; /* The final result of the PID that is ready to be used
 piezo_t * module_piezo = NULL; /* Piezo buzzer module */
 
 ///////////////////////////////////////////////////////////////////////////////
-void update_track_status(void) {
+void update_track_status(bool is_next_turn_a_lane_change) {
+
+	track.is_turning_lane   = is_next_turn_a_lane_change;
+	track.is_turning_corner = !is_next_turn_a_lane_change;
+
 	/* Fetch the next incoming turn */
 	if(track.next_turn == NULL) {
 		track.next_turn = &track.incoming_turn[0];
@@ -48,10 +52,7 @@ void update_track_status(void) {
 
 ///////////////////////////////////////////////////////////////////////////////
 enum MODE get_next_turn_mode_from_intel(bool is_next_turn_a_lane_change) {
-	update_track_status();
-
 	if(is_next_turn_a_lane_change) {
-		track.is_turning_lane = true;
 		switch(track.intelligence_level) {
 		case INTEL_BASIC:    return MODE_TURNING_LANE;
 		case INTEL_ADVANCED: return MODE_ALIGN_BOUNDARY;
@@ -59,7 +60,6 @@ enum MODE get_next_turn_mode_from_intel(bool is_next_turn_a_lane_change) {
 		default:             return MODE_NULL;
 		}
 	} else {
-		track.is_turning_corner = true;
 		switch(track.intelligence_level) {
 		case INTEL_BASIC:    return MODE_TURNING_CORNER;
 		case INTEL_ADVANCED: return MODE_ALIGN_BOUNDARY;
@@ -83,6 +83,8 @@ bool change_mode_on_line_detection(uint8_t sensor_data) {
 		else
 			change_to_new_mode(get_next_turn_mode_from_intel(true), MODE_FOLLOW_NORMAL_TRACE);
 #endif
+
+		update_track_status(true);
 	}
 
 	/* Check white tape which covers only the right lane */
@@ -112,7 +114,7 @@ bool change_mode_on_line_detection(uint8_t sensor_data) {
 	if(ret) {
 		/* We found a white tape. Don't care which one for now,
 		 * all we know now is that we must slow down the wheels */
-		piezo_play(module_piezo, &note_alert, false);
+		piezo_play(module_piezo, &note_turn_found, false);
 
 		if(track.intelligence_level != INTEL_SMART)
 			motor_set_braking2(module_left_wheel, module_right_wheel, true);
@@ -150,6 +152,31 @@ void handle_normal_drive(uint8_t sensor_data, bool update_mode, bool update_moto
 			break;
 		}
 	}
+}
+
+bool update_control_variables(void) {
+	/* Switch to the correct PID controller, which depends on whether or not we are breaking/slowing down */
+	pid_controller_current = (module_left_wheel->is_braking || module_right_wheel->is_braking) ? pid_controller_crankmode : pid_controller_normal;
+
+	/* Recalculate the PID controller values */
+	pid_output = pid_control(pid_controller_current);
+
+	/* And update the external systems respectively */
+	if(!module_servo->is_sweeping) {
+		/* Update the servo's duty cycle */
+		servo_ctrl(module_servo, pid_output);
+
+		/* And the motors (after the user presses the switch) */
+		if(track.mode > MODE_WAIT_FOR_STARTSWITCH)
+			motor_refresh_with_differential2(module_left_wheel, module_right_wheel, pid_output);
+	} else {
+		/* Stop the car while the servo is sweeping */
+		motor_set_speed2(module_left_wheel, module_right_wheel, 0);
+	}
+
+	rtos_preempt();
+
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -194,7 +221,7 @@ void car_control_poll(void) {
 		case MODE_ACCIDENT:
 		{
 			/* Block the control system from updating its variables */
-			while(!start_switch_read()) rtos_update_timeout_service(); /* Still need to let RTOS work properly for other tasks even though we're blocking this thread */
+			while(!start_switch_read()) rtos_preempt();
 			/* (The car better be back on the track when we reach this point...) */
 			change_to_next_mode(MODE_FOLLOW_NORMAL_TRACE);
 			break;
@@ -202,11 +229,8 @@ void car_control_poll(void) {
 		case MODE_FOLLOW_NORMAL_TRACE: ////APPLIES TO: BASIC|ADVANCED|SMART////////////////////////////////////////////////
 		{
 			/* Check for a white tape on the track */
-			if(change_mode_on_line_detection(sensor_unmsk))
-				break;
-
-			/* Drive the car normally */
-			handle_normal_drive(sensor_unmsk, true, true);
+			if(!change_mode_on_line_detection(sensor_unmsk))
+				handle_normal_drive(sensor_unmsk, true, true); /* Drive the car normally */
 			break;
 		}
 		case MODE_AVOID_RIGHT_BOUNDARY: ////APPLIES TO: BASIC|ADVANCED|SMART////////////////////////////////////////////////
@@ -225,7 +249,10 @@ void car_control_poll(void) {
 		case MODE_FOUND_RIGHT_TAPE:
 		{
 			/* Change lane to the left / right if and ONLY if we did NOT "misdetect" a crossline */
-			change_to_new_mode(get_next_turn_mode_from_intel(sensor_unmsk & MASK3_3 != b11100111), MODE_FOLLOW_NORMAL_TRACE);
+			bool is_next_turn_a_lane_change = sensor_unmsk & MASK3_3 != b11100111;
+
+			change_to_new_mode(get_next_turn_mode_from_intel(is_next_turn_a_lane_change), MODE_FOLLOW_NORMAL_TRACE);
+			update_track_status(is_next_turn_a_lane_change);
 			break;
 		}
 		case MODE_ALIGN_BOUNDARY: ////APPLIES TO: ADVANCED////////////////////////////////////////////////
@@ -242,7 +269,37 @@ void car_control_poll(void) {
 					// TODO (don't forget to set track.is_turning_lane = false and braking = false after done)
 				} else if(track.last_mode == MODE_FOUND_RIGHT_TAPE) {
 					/* Change the lane to the right */
-					// TODO (don't forget to set track.is_turning_lane = false and braking = false after done)
+					motor_set_speed2(module_left_wheel, module_right_wheel, 15);
+					rtos_delay(200);
+
+					while(update_control_variables()) {
+						if(sensor_unmsk & b11111000)      pid_update_feedback(pid_controller_crankmode, 37);
+						else if(sensor_unmsk & b00000011) break;
+					}
+
+					while(update_control_variables()) {
+						if(sensor_unmsk & b00000011)      pid_update_feedback(pid_controller_crankmode, -17);
+						else if(sensor_unmsk & b11111000) pid_update_feedback(pid_controller_crankmode, 17);
+						else break;
+					}
+
+					while(update_control_variables()) {
+						if(sensor_unmsk & b00111000) break;
+						else                         pid_update_feedback(pid_controller_crankmode, 25);
+					}
+
+					/* Done lane change */
+					track.is_turning_lane = false;
+					motor_set_braking2(module_left_wheel, module_right_wheel, false);
+					change_to_next_mode(MODE_FOLLOW_NORMAL_TRACE);
+
+					/////////////////
+					motor_ctrl2(module_left_wheel, module_right_wheel, 0);
+					while(1) {
+						piezo_play(module_piezo, &note_turn_found, true);
+						rtos_update_timeout_service();
+					}
+					/////////////////
 				}
 			} else { ////ADVANCED MODE
 
@@ -268,22 +325,5 @@ void car_control_poll(void) {
 	}
 	///// END - MAIN CONTROL FINITE STATE MACHINE /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	/* Switch to the correct PID controller, which depends on whether or not we are breaking/slowing down */
-	pid_controller_current = (module_left_wheel->is_braking || module_right_wheel->is_braking) ? pid_controller_crankmode : pid_controller_normal;
-
-	/* Recalculate the PID controller values */
-	pid_output = pid_control(pid_controller_current);
-
-	/* And update the external systems respectively */
-	if(!module_servo->is_sweeping) {
-		/* Update the servo's duty cycle */
-		servo_ctrl(module_servo, pid_output);
-
-		/* And the motors (after the user presses the switch) */
-		if(track.mode > MODE_WAIT_FOR_STARTSWITCH)
-			motor_refresh_with_differential2(module_left_wheel, module_right_wheel, pid_output);
-	} else {
-		/* Stop the car while the servo is sweeping */
-		motor_set_speed2(module_left_wheel, module_right_wheel, 0);
-	}
+	update_control_variables();
 }
