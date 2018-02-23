@@ -360,10 +360,9 @@ bool packetman_is_busy(void) {
 void packetman_task(void * args) {
 	while(true) {
 		update_communication();
-		rtos_delay(PERIOD_UPDATE);
 
 		/* Also update RTOS timeout service */
-		rtos_update_timeout_service();
+		rtos_update_timeout_service(PERIOD_UPDATE);
 	}
 }
 
@@ -375,6 +374,9 @@ void packetman_init() {
 
 	/* Create a buffer for every byte received */
 	packet_byte_buffered = fifo_create(PACKETMAN_RXBUFFSIZE);
+
+	/* Reset RTOS timeout service */
+	rtos_reset_timeout_service();
 
 	rtos_spawn_task("packetman_task", packetman_task);
 }

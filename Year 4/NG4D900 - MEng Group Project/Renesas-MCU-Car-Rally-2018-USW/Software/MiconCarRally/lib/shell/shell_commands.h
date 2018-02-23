@@ -10,9 +10,11 @@
 
 #include <stdbool.h>
 #include <debug.h>
+#include <platform.h>
+#include <rtos_inc.h>
+#include <shell.h>
 #include <app_config.h>
 #include <app_car_control.h>
-#include "shell.h"
 
 extern cmd_t command_list[];
 extern int   command_count;
@@ -33,10 +35,9 @@ int console_clear(int argc, char ** argv) {
 int help(int argc, char ** argv) {
 	puts("\nHELP: supported commands");
 
-	for(int i = 0; i < command_count; i++) {
+	for(int i = 0; i < command_count; i++)
 		if(command_list[i].packet_compatibility == PACKET_CMD)
 			printf("%d - %s\n", i + 1, command_list[i].command);
-	}
 
 	return 0;
 }
@@ -50,7 +51,7 @@ extern servo_t * module_servo;
 
 int dc_motor_control(int argc, char ** argv) {
 	if(argc < 2) {
-		DEBUG("ERROR: Invalid arguments provided.\nUsage: motor <left|right|all> <rpm|[-100..100]>");
+		DEBUG("Usage: motor <left|right|all> <rpm|[-100..100]>");
 		return 1;
 	}
 
@@ -86,12 +87,9 @@ int dc_motor_control(int argc, char ** argv) {
 	return 0;
 }
 
-#include <platform.h>
-#include <rtos_inc.h>
-
 int servo_control(int argc, char ** argv) {
 	if(argc < 2) {
-		DEBUG("ERROR: Invalid arguments provided.\nUsage: servo <[-90..90] <hz>>");
+		DEBUG("Usage: servo <[-90..90] <hz>>");
 		return 1;
 	}
 
@@ -117,84 +115,75 @@ int servo_control_sweep(int argc, char ** argv) {
 	}
 
 	if(argc != 3) {
-		DEBUG("ERROR: Invalid arguments provided.\nUsage: sweep <<delay> <inc>>");
+		DEBUG("Usage: sweep <<delay> <inc>>");
 		return 1;
 	}
 
 	servo_sweep(module_servo, -90, 90, atoi(argv[1]), atof(argv[2]), true);
-
 	return 0;
 }
 
-#include <math/pid/pid.h>
-extern void master_reset(void);          /* Resets the entire system's logic                                  */
-extern pid_t * pid_controller_normal;    /* PID for controlling the servo angle and the DC motor differential */
-extern pid_t * pid_controller_crankmode; /* PID for controlling each DC motor while in crank mode             */
-extern track_t track;                    /* Current global state of the car's algorithm                       */
-
 int go(int argc, char ** argv) {
-	if(pid_reset(pid_controller_normal))
-		return 1;
-	if(pid_reset(pid_controller_crankmode))
-		return 1;
+	/* Kick start the car! */
+	change_to_next_mode(MODE_FOLLOW_NORMAL_TRACE);
 
-	track.mode = MODE_FOLLOW_NORMAL_TRACE;
-
+	/* Alert the user of the event */
+	piezo_play(module_piezo, &note_startswitch, false);
 	return 0;
 }
 
 int reset(int argc, char ** argv) {
-	master_reset();
+	/* Kick start the car! */
+	change_to_next_mode(MODE_WAIT_FOR_STARTSWITCH);
+
+	/* Alert the user of the event */
+	piezo_play(module_piezo, &note_startswitch, false);
 	return 0;
 }
 
-int pid_tune(int argc, char ** argv) {
-	if(!strcmp(argv[1], "p")) {
-		/* pid p x */
-		if(argc == 2)
-			pid_controller_normal->kp = atof(argv[2]);
-	} else if(!strcmp(argv[1], "i")) {
-		/* pid i x */
-		if(argc == 2)
-			pid_controller_normal->ki = atof(argv[2]);
-	} else if(!strcmp(argv[1], "d")) {
-		/* pid d x */
-		if(argc == 2)
-			pid_controller_normal->kd = atof(argv[2]);
-	} else {
-		/* pid x y z */
-		if(argc == 3) {
-			pid_controller_normal->kp = atof(argv[1]);
-			pid_controller_normal->ki = atof(argv[2]);
-			pid_controller_normal->kd = atof(argv[3]);
-		}
-	}
+#include <math/pid/pid.h>
+extern pid_t * pid_controller_normal;    /* PID for controlling the servo angle and the DC motor differential */
+extern pid_t * pid_controller_crankmode; /* PID for controlling each DC motor while in crank mode             */
 
+int prop_tune(int argc, char ** argv) {
+	if(argc == 2) pid_controller_normal->kp = atof(argv[1]);
+	else          return 1;
 	return 0;
 }
 
-int pidcrank_tune(int argc, char ** argv) {
-	if(!strcmp(argv[1], "p")) {
-		/* pidcrank p x */
-		if(argc == 2)
-			pid_controller_crankmode->kp = atof(argv[2]);
-	} else if(!strcmp(argv[1], "i")) {
-		/* pidcrank i x */
-		if(argc == 2)
-			pid_controller_crankmode->ki = atof(argv[2]);
-	} else if(!strcmp(argv[1], "d")) {
-		/* pidcrank d x */
-		if(argc == 2)
-			pid_controller_crankmode->kd = atof(argv[2]);
-	} else {
-		/* pidcrank x y z */
-		if(argc == 3) {
-			pid_controller_crankmode->kp = atof(argv[1]);
-			pid_controller_crankmode->ki = atof(argv[2]);
-			pid_controller_crankmode->kd = atof(argv[3]);
-		}
-	}
+int integ_tune(int argc, char ** argv) {
+	if(argc == 2) pid_controller_normal->ki = atof(argv[1]);
+	else          return 1;
+	return 0;
+}
 
+int deriv_tune(int argc, char ** argv) {
+	if(argc == 2) pid_controller_normal->kd = atof(argv[1]);
+	else          return 1;
+	return 0;
+}
+
+int prop_crank_tune(int argc, char ** argv) {
+	if(argc == 2) pid_controller_crankmode->kp = atof(argv[1]);
+	else          return 1;
+	return 0;
+}
+
+int integ_crank_tune(int argc, char ** argv) {
+	if(argc == 2) pid_controller_crankmode->ki = atof(argv[1]);
+	else          return 1;
+	return 0;
+}
+
+int deriv_crank_tune(int argc, char ** argv) {
+	if(argc == 2) pid_controller_crankmode->kd = atof(argv[1]);
+	else          return 1;
+	return 0;
+}
+
+int int_windup_tune(int argc, char ** argv) {
+	if(argc == 2) pid_controller_crankmode->integral_windup_period = atoi(argv[1]);
+	else          return 1;
 	return 0;
 }
 
@@ -203,7 +192,7 @@ extern piezo_t * module_piezo;
 
 int play_tune(int argc, char ** argv) {
 	if(argc < 3) {
-		DEBUG("ERROR: Invalid arguments provided.\nUsage: play <pitch> <duration>");
+		DEBUG("Usage: play <pitch> <duration>");
 		return 1;
 	}
 
@@ -218,8 +207,7 @@ int play_tune(int argc, char ** argv) {
 #if ENABLE_REMOTE_CONTROL_MODE == 1
 
 int change_to_rc_mode(int argc, char ** argv) {
-	// Command Format: rcmode [0|1 [0|1]?]?
-
+	// Command Format: rcmode <0|1 <0|1>>
 	switch(argc) {
 	case 1:
 		/* Toggle mode from Race mode to RC mode (persistent) */
@@ -295,8 +283,13 @@ cmd_t command_list[] = {
 	{"reset", reset, PACKET_CMD},
 
 #if ENABLE_PID == 1
-	{"pid",      pid_tune,      PACKET_CMD},
-	{"pidcrank", pidcrank_tune, PACKET_CMD},
+	{"p",  prop_tune,        PACKET_CMD},
+	{"i",  integ_tune,       PACKET_CMD},
+	{"d",  deriv_tune,       PACKET_CMD},
+	{"pc", prop_crank_tune,  PACKET_CMD},
+	{"ic", integ_crank_tune, PACKET_CMD},
+	{"dc", deriv_crank_tune, PACKET_CMD},
+	{"w",  int_windup_tune,  PACKET_CMD},
 #endif
 
 #if ENABLE_SOUND == 1

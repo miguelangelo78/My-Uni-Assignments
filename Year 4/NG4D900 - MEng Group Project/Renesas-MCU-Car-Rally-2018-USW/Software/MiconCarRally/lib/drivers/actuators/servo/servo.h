@@ -16,9 +16,9 @@
 #define SERVO_MIN_ANGLE         (-(SERVO_ANGLE_RANGE / 2))
 #define SERVO_CENTER_ANGLE      (0)
 #define SERVO_MAX_ANGLE         (SERVO_ANGLE_RANGE / 2)
-#define SERVO_MIN_ANGLE_DUTY    (10.14f) /* Note: servo is installed in reverse ... */
-#define SERVO_CENTER_ANGLE_DUTY (8.09f)
-#define SERVO_MAX_ANGLE_DUTY    (6.04f)  /* Note: servo is installed in reverse ... */
+#define SERVO_MIN_ANGLE_DUTY    (5.93f)
+#define SERVO_CENTER_ANGLE_DUTY (7.75f)
+#define SERVO_MAX_ANGLE_DUTY    (9.69f)
 
 enum SERVO_RETCODE {
 	SERVO_OK,

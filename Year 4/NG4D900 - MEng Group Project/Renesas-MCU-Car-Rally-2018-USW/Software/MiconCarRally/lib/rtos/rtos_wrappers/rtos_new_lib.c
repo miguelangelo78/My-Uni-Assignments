@@ -117,7 +117,7 @@ void rtos_reset_timeout_service(void) {
 	rtos_get_timeout(false, true, 0, 0);
 }
 
-bool rtos_update_timeout_service(void) {
+bool rtos_update_timeout_service(uint32_t period_update) {
 	rtos_delay(1);
 	rtos_time_ms++;
 	return rtos_get_timeout(true, false, 0, 0);

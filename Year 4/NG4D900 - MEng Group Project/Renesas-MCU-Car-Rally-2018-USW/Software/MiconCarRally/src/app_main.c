@@ -13,53 +13,6 @@
 #include <app_track_data.h>
 
 ///////////////////////////////////////////////////////////////////////////////
-void master_reset(void) {
-	/*****************************************/
-	/** Resetting the entire system's logic **/
-	/*****************************************/
-
-	/* Reset the track logic before resetting all the controllers */
-	track.mode              = MODE_NULL;
-	track.last_mode         = MODE_NULL;
-	track.next_mode         = MODE_NULL;
-	track.is_turning_lane   = false;
-	track.is_turning_corner = false;
-	track.turn_counter      = 0;
-	track.rcmode_persistant = 0;
-	track.line_misread_danger_counter = 0;
-
-	/* Reset DC motor modules */
-	motor_reset(module_left_wheel);
-	motor_reset(module_right_wheel);
-
-	/* Reset servo module */
-	servo_reset(module_servo);
-
-	/* Reset all PID controllers */
-	pid_reset(pid_controller_normal);
-	pid_reset(pid_controller_crankmode);
-	pid_controller_current = pid_controller_normal;
-
-	/* Reset RTOS' timeout service */
-	rtos_reset_timeout_service();
-
-	/* Reset interactive shell */
-	shell_reset();
-
-	DEBUG("** ALERT: Master reset executed. Press the switch again to start. **");
-
-	/* Reset debug LEDs */
-	debug_leds_reset_all();
-
-	/* Prevent switch debouncing */
-	while(start_switch_read())
-		rtos_preempt();
-
-	/* Wait for the user to press the switch again */
-	change_to_new_mode(MODE_WAIT_FOR_STARTSWITCH, MODE_FOLLOW_NORMAL_TRACE);
-}
-
-///////////////////////////////////////////////////////////////////////////////
 void status_logger_task(void * args) {
 
 #if ENABLE_STARTSWITCH == 1 && ENABLE_MOTOR_CTRL_LEDS == 1
@@ -69,12 +22,24 @@ void status_logger_task(void * args) {
 
 #if ENABLE_SOUND == 1
 		/* Play startup tune (only once) */
-		if(module_piezo && !module_piezo->is_playing)
-			while(piezo_play_song_async(module_piezo, tune_startup, arraysize(tune_startup), false) != PIEZO_SONG_DONE)
-				rtos_preempt();
+		if(module_piezo && !module_piezo->is_playing) {
+			while(piezo_play_song_async(module_piezo, tune_startup, arraysize(tune_startup), false) != PIEZO_SONG_DONE) {
+				while(module_piezo->is_playing)
+					rtos_preempt();
+			}
+		}
 #endif
 
 	while(1) {
+
+		/*DEBUG("P: %.2f I: %.2f D: %.2f = %.2f   feed: %.2f error: %.2f",
+				pid_controller_current->proportional,
+				pid_controller_current->integral,
+				pid_controller_current->derivative,
+				pid_controller_current->output,
+				pid_controller_current->feedback,
+				pid_controller_current->error
+		);*/
 
 #if ENABLE_TEMPLATE_GENERATION == 1
 		if(template_generator_is_finished())
@@ -161,8 +126,8 @@ void main_app(void * args) {
 
 #if ENABLE_PID == 1
 	/* Create and initialize all PID controllers */
-	pid_controller_normal    = pid_new_controller(HANDLE_KP,       HANDLE_KI,       HANDLE_KD);
-	pid_controller_crankmode = pid_new_controller(CRANK_HANDLE_KP, CRANK_HANDLE_KI, CRANK_HANDLE_KD);
+	pid_controller_normal    = pid_new_controller(HANDLE_KP,       HANDLE_KI,       HANDLE_KD,       SERVO_MIN_ANGLE, SERVO_MAX_ANGLE, INT_WIND_PERIOD);
+	pid_controller_crankmode = pid_new_controller(CRANK_HANDLE_KP, CRANK_HANDLE_KI, CRANK_HANDLE_KD, SERVO_MIN_ANGLE, SERVO_MAX_ANGLE, INT_WIND_PERIOD);
 	pid_controller_current   = pid_controller_normal;
 #endif
 
@@ -196,9 +161,6 @@ void main_app(void * args) {
 	debug_leds_init();
 #endif
 
-	/* Reset RTOS timeout service */
-	rtos_reset_timeout_service();
-
 	while(1) {
 
 #if ENABLE_MOTORS == 1 && ENABLE_SERVO == 1
@@ -224,9 +186,6 @@ void main_app(void * args) {
 				piezo_play(module_piezo, &note_startswitch, false);
 
 				DEBUG("\n>>>>>>>>>>>>>>\n>> !! GO !! <<\n>>>>>>>>>>>>>>");
-			} else {
-				/* Reset the entire program */
-				master_reset();
 			}
 		}
 #endif

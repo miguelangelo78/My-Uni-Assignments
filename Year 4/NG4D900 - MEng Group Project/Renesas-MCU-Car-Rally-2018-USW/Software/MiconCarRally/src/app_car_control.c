@@ -137,7 +137,7 @@ void handle_normal_drive(uint8_t sensor_data, bool update_mode, bool update_moto
 	for(int i = 0; i < PATTERN_MAP_SIZE; i++) {
 		if(sensor_data == track.pattern_map[i].pattern) {
 			/* Update servo angle */
-			pid_update_feedback(pid_controller_current, track.pattern_map[i].desired_angle);
+			pid_update_feedback(pid_controller_current, track.pattern_map[i].desired_angle, 0);
 
 			/* The mode (if necessary, depends on the map) */
 			if(update_mode)
@@ -159,7 +159,7 @@ bool update_control_variables(uint8_t * line_var) {
 	pid_controller_current = (module_left_wheel->is_braking || module_right_wheel->is_braking) ? pid_controller_crankmode : pid_controller_normal;
 
 	/* Recalculate the PID controller values */
-	pid_output = pid_control(pid_controller_current);
+	pid_output = pid_control_recalculate(pid_controller_current);
 
 	/* And update the external systems respectively */
 	if(!module_servo->is_sweeping) {
@@ -186,8 +186,10 @@ bool update_control_variables(uint8_t * line_var) {
 
 ///////////////////////////////////////////////////////////////////////////////
 void car_control_poll(void) {
-	if(module_left_wheel == NULL || module_right_wheel == NULL || module_servo == NULL)
+	if(module_left_wheel == NULL || module_right_wheel == NULL || module_servo == NULL) {
+		rtos_preempt();
 		return;
+	}
 
 	/* We have finished the race. Do not update the controls anymore. */
 	if(track.mode == MODE_RACE_COMPLETE)
@@ -278,19 +280,19 @@ void car_control_poll(void) {
 					rtos_delay(200);
 
 					while(update_control_variables(&sensor_unmsk)) {
-						if(sensor_unmsk & b11111000)      pid_update_feedback(pid_controller_crankmode, 37);
+						if(sensor_unmsk & b11111000)      pid_update_feedback(pid_controller_crankmode, sensor_unmsk, 37);
 						else if(sensor_unmsk & b00000011) break;
 					}
 
 					while(update_control_variables(&sensor_unmsk)) {
-						if(sensor_unmsk & b00000011)      pid_update_feedback(pid_controller_crankmode, -17);
-						else if(sensor_unmsk & b11111000) pid_update_feedback(pid_controller_crankmode, 17);
+						if(sensor_unmsk & b00000011)      pid_update_feedback(pid_controller_crankmode, sensor_unmsk, -17);
+						else if(sensor_unmsk & b11111000) pid_update_feedback(pid_controller_crankmode, sensor_unmsk, 17);
 						else break;
 					}
 
 					while(update_control_variables(&sensor_unmsk)) {
 						if(sensor_unmsk & b00111000) break;
-						else                         pid_update_feedback(pid_controller_crankmode, 25);
+						else                         pid_update_feedback(pid_controller_crankmode, sensor_unmsk, 25);
 					}
 
 					/* Done lane change */
@@ -302,7 +304,7 @@ void car_control_poll(void) {
 					motor_ctrl2(module_left_wheel, module_right_wheel, 0);
 					while(1) {
 						piezo_play(module_piezo, &note_turn_found, true);
-						rtos_update_timeout_service();
+						rtos_preempt();
 					}
 					/////////////////
 				}

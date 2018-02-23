@@ -17,7 +17,7 @@
 #define ENABLE_MOTORS              (1)
 #define ENABLE_MOTORS_SAFEMODE     (1)
 #define ENABLE_SERVO               (1)
-#define ENABLE_SOUND               (1)
+#define ENABLE_SOUND               (0)
 #define ENABLE_PID                 (1)
 #define ENABLE_STARTSWITCH         (1)
 #define ENABLE_DIPSWITCH           (1)
@@ -50,8 +50,8 @@
 
 /********* PID CONTROLLER DEFINITIONS ***************************/
 #define HANDLE_KP       3     /* Normal operation P coefficient */
-#define HANDLE_KI       0.066 /* Normal operation I coefficient */
-#define HANDLE_KD       37    /* Normal operation D coefficient */
+#define HANDLE_KI       0//0.066 /* Normal operation I coefficient */
+#define HANDLE_KD       20    /* Normal operation D coefficient */
 
 #define CRANK_HANDLE_KP 1     /* Crank operation P coefficient  */
 #define CRANK_HANDLE_KI 0     /* Crank operation I coefficient  */
@@ -60,6 +60,8 @@
 #define BRAKE_KP        2     /* Braking P coefficient          */
 #define BRAKE_KI        0     /* Braking I coefficient          */
 #define BRAKE_KD        0     /* Braking D coefficient          */
+
+#define INT_WIND_PERIOD 10 /* The period at which the integral is reset */
 /****************************************************************/
 
 /********* ALGORITHM FSM DEFINITIONS ****************************/

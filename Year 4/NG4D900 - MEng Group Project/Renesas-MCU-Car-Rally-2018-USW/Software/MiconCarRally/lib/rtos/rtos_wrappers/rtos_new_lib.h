@@ -26,7 +26,7 @@ uint32_t rtos_time(void);
 
 bool rtos_get_timeout(bool update_timer, bool reset_timer, uint32_t timeout_ms, uint8_t timeout_id);
 void rtos_reset_timeout_service(void);
-bool rtos_update_timeout_service(void);
+bool rtos_update_timeout_service(uint32_t period_update);
 
 void rtos_launch(OS_TASK_PTR main_task);
 
