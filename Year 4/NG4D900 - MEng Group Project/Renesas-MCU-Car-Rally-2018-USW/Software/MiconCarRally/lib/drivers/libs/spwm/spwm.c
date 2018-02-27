@@ -56,8 +56,7 @@ void spwm_poll_single_channel(spwm_t * chan) {
 			if(chan->level_latch) {
 				/* We are at the negative edge of the PWM wave. */
 				spwm_poll_trigger(chan, false);
-			}
-			else if(chan->mode & SPWM_MODE_REPEAT) {
+			} else if(chan->mode & SPWM_MODE_REPEAT) {
 				/* Already run this. We might want to repeat the trigger though. (Negative Level)  */
 				spwm_poll_trigger(chan, false);
 			}

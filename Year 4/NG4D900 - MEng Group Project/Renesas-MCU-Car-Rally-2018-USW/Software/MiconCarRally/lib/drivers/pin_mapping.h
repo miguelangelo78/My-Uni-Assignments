@@ -10,6 +10,8 @@
 
 #include <iodefine.h>
 
+#define CAR_YEAR 2018
+
 /************************************/
 /******** MCU's Debug LEDs **********/
 /************************************/
@@ -26,17 +28,37 @@
 /********************************/
 /**** Power board's LED pins ****/
 /********************************/
+#if CAR_YEAR == 2018
+
 #define DIR_LED0 PORTB.DDR.BIT.B6
 #define DAT_LED0 PORTB.DR.BIT.B6
 #define DIR_LED1 PORTB.DDR.BIT.B7
 #define DAT_LED1 PORTB.DR.BIT.B7
+
+#elif CAR_YEAR == 2017
+
+#define DIR_LED0 PORT7.DDR.BIT.B6
+#define DAT_LED0 PORT7.DR.BIT.B6
+#define DIR_LED1 PORT1.DDR.BIT.B0
+#define DAT_LED1 PORT1.DR.BIT.B0
+
+#endif
 /********************************/
 
 /************************************/
 /*********** Start switch ***********/
 /************************************/
+#if CAR_YEAR == 2018
+
 #define DIR_STARTSW PORTB.DDR.BIT.B0
 #define INP_STARTSW PORTB.PORT.BIT.B0
+
+#elif CAR_YEAR == 2017
+
+#define DIR_STARTSW PORT7.DDR.BIT.B0
+#define INP_STARTSW PORT7.PORT.BIT.B0
+
+#endif
 /************************************/
 
 /*************************************/
@@ -62,13 +84,24 @@
 /*********************************/
 /************* Servo *************/
 /*********************************/
+#if CAR_YEAR == 2018
+
 #define DIR_SERVO PORT7.DDR.BIT.B6
 #define DAT_SERVO PORT7.DR.BIT.B6
+
+#elif CAR_YEAR == 2017
+
+#define DIR_SERVO PORT7.DDR.BIT.B1
+#define DAT_SERVO PORT7.DR.BIT.B1
+
+#endif
 /*********************************/
 
 /************************************/
 /************** Motors **************/
 /************************************/
+#if CAR_YEAR == 2018
+
 #define DIR_MOTOR_L  PORTB.DDR.BIT.B2
 #define DAT_MOTOR_L  PORTB.DR.BIT.B2
 #define DIR_MOTOR_LD PORTB.DDR.BIT.B4
@@ -78,6 +111,20 @@
 #define DAT_MOTOR_R  PORTB.DR.BIT.B3
 #define DIR_MOTOR_RD PORTB.DDR.BIT.B5
 #define DAT_MOTOR_RD PORTB.DR.BIT.B5
+
+#elif CAR_YEAR == 2017
+
+#define DIR_MOTOR_L  PORT7.DDR.BIT.B2
+#define DAT_MOTOR_L  PORT7.DR.BIT.B2
+#define DIR_MOTOR_LD PORT7.DDR.BIT.B4
+#define DAT_MOTOR_LD PORT7.DR.BIT.B4
+
+#define DIR_MOTOR_R  PORT7.DDR.BIT.B3
+#define DAT_MOTOR_R  PORT7.DR.BIT.B3
+#define DIR_MOTOR_RD PORT7.DDR.BIT.B5
+#define DAT_MOTOR_RD PORT7.DR.BIT.B5
+
+#endif
 /************************************/
 
 /***************************************/

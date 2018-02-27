@@ -17,8 +17,10 @@
 #define ENABLE_MOTORS              (1)
 #define ENABLE_MOTORS_SAFEMODE     (1)
 #define ENABLE_SERVO               (1)
-#define ENABLE_SOUND               (0)
+#define ENABLE_ACCELEROMETER       (0)
+#define ENABLE_SOUND               (1)
 #define ENABLE_PID                 (1)
+#define ENABLE_DYNAMIC_PID         (0)
 #define ENABLE_STARTSWITCH         (1)
 #define ENABLE_DIPSWITCH           (1)
 #define ENABLE_MOTOR_CTRL_LEDS     (1)
@@ -45,23 +47,20 @@
 #define STATUS_LED_FREQ 4000 /* PWM frequency of the status LEDs                                                */
 #define SERVO_FREQ      48.8 /* PWM frequency of the servo motor (NOTE: multimeter reads 50.08 Hz)              */
 #define MOTOR_FREQ      63   /* PWM frequency of the two motors                                                 */
+#define ACCEL_FREQ      100  /* PWM frequency of the 2-axis accelerometer                                       */
 #define SOUND_MAX_FREQ  4186 /* Maximum PWM frequency of the piezo buzzer                                       */
 /****************************************************************************************************************/
 
 /********* PID CONTROLLER DEFINITIONS ***************************/
-#define HANDLE_KP       3     /* Normal operation P coefficient */
-#define HANDLE_KI       0//0.066 /* Normal operation I coefficient */
-#define HANDLE_KD       20    /* Normal operation D coefficient */
+#define HANDLE_KP       5   /* Normal operation P coefficient */
+#define HANDLE_KI       0.5 /* Normal operation I coefficient */
+#define HANDLE_KD       37  /* Normal operation D coefficient */
 
-#define CRANK_HANDLE_KP 1     /* Crank operation P coefficient  */
-#define CRANK_HANDLE_KI 0     /* Crank operation I coefficient  */
-#define CRANK_HANDLE_KD 10    /* Crank operation D coefficient  */
+#define CRANK_HANDLE_KP 5   /* Crank operation P coefficient  */
+#define CRANK_HANDLE_KI 0.5 /* Crank operation I coefficient  */
+#define CRANK_HANDLE_KD 37  /* Crank operation D coefficient  */
 
-#define BRAKE_KP        2     /* Braking P coefficient          */
-#define BRAKE_KI        0     /* Braking I coefficient          */
-#define BRAKE_KD        0     /* Braking D coefficient          */
-
-#define INT_WIND_PERIOD 10 /* The period at which the integral is reset */
+#define INT_WIND_PERIOD 100 /* The period at which the integral is reset */
 /****************************************************************/
 
 /********* ALGORITHM FSM DEFINITIONS ****************************/
@@ -83,17 +82,12 @@ enum MODE {
 };
 /****************************************************************/
 
-/******** PHYSICAL PROPERTIES DEFINITIONS ****************/
-#define WHEEL_LENGTH 0.132 /* Car wheel base length in m */
-#define WHEEL_WIDTH  0.160 /* Car wheel base width  in m */
-/*********************************************************/
-
 /********* RACING / TRACK DEFINITIONS ******************************************************************/
 #define LAP_MAX_COUNT             5   /* How many laps will we make                                    */
-#define LAP_MAX_TURNS             3   /* How many 90 degree / lane change turns exist on the track     */
-#define PATTERN_MAP_SIZE          15  /* Total amount of sensor patterns we are going to try to match  */
+#define LAP_MAX_TURNS             8   /* How many 90 degree / lane change turns exist on the track     */
+#define PATTERN_MAP_SIZE          21  /* Total amount of sensor patterns we are going to try to match  */
 #define TEMPLATE_MAX_SAMPLES      300 /* How many samples shall we use when generating a template line */
-#define FAKE_LINEDATA_MAX_SAMPLES 30  /* How many fake line data samples in total shall we use         */
+#define FAKE_LINEDATA_MAX_SAMPLES 1   /* How many fake line data samples in total shall we use         */
 /** NOTE: it's possible to use less samples through the variable 'fake_line_data_max_count' ************/
 
 enum TURN_DIRECTION {
@@ -108,9 +102,10 @@ enum TURN_DIRECTION {
  */
 typedef struct {
 	uint8_t   pattern;
-	float     desired_angle;
+	float     mapped_angle;
 	float     desired_motor_left;
 	float     desired_motor_right;
+	float     p, i, d;
 	enum MODE change_mode;
 } pattern_map_t;
 
@@ -154,7 +149,7 @@ typedef struct {
 	pattern_map_t pattern_map[PATTERN_MAP_SIZE];
 
 	/* Allows the car to learn and predict 90 degree corners */
-	turn_t   incoming_turn[LAP_MAX_TURNS + 1];
+	turn_t   incoming_turn[LAP_MAX_TURNS];
 	turn_t * next_turn;
 
 	/* How many 90 degree turns have we encountered so far */
@@ -168,6 +163,8 @@ typedef struct {
 	bool is_turning_corner; /* Is the car currently going through a 90 degree corner? (regardless of the intelligence level) */
 
 	bool rcmode_persistant;
+
+	bool race_started;
 } track_t;
 /******************************************************************************************************/
 

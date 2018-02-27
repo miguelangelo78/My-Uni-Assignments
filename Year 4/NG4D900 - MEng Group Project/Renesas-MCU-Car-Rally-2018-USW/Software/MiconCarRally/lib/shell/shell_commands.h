@@ -125,19 +125,30 @@ int servo_control_sweep(int argc, char ** argv) {
 
 int go(int argc, char ** argv) {
 	/* Kick start the car! */
-	change_to_next_mode(MODE_FOLLOW_NORMAL_TRACE);
-
-	/* Alert the user of the event */
-	piezo_play(module_piezo, &note_startswitch, false);
+	kickstart_car();
 	return 0;
 }
 
-int reset(int argc, char ** argv) {
-	/* Kick start the car! */
-	change_to_next_mode(MODE_WAIT_FOR_STARTSWITCH);
+int stop(int argc, char ** argv) {
+	/* Stop the car completely */
+	change_to_new_mode(MODE_WAIT_FOR_STARTSWITCH, MODE_WAIT_FOR_STARTSWITCH);
+	track.race_started      = false;
+	track.is_turning_lane   = false;
+	track.is_turning_corner = false;
+	track.next_turn         = &track.incoming_turn[0];
+	track.turn_counter      = 0;
 
 	/* Alert the user of the event */
 	piezo_play(module_piezo, &note_startswitch, false);
+
+	servo_ctrl(module_servo, 0);
+
+	motor_stop(module_left_wheel);
+	motor_stop(module_right_wheel);
+
+	spwm_set_frequency(module_left_wheel->dev_handle,  0);
+	spwm_set_frequency(module_right_wheel->dev_handle, 0);
+
 	return 0;
 }
 
@@ -258,6 +269,33 @@ extern int packetman_connect_callback(int argc, char ** argv);
 extern int packetman_disconnect_callback(int argc, char ** argv);
 extern int packetman_keepalive_callback(int argc, char ** argv);
 
+extern bool log_pid;
+extern bool log_mode;
+extern bool log_speed;
+extern bool log_unrec_patt;
+
+int log_set(int argc, char ** argv) {
+	if(!strcmp(argv[0], "l3"))
+		log_unrec_patt = !log_unrec_patt;
+	else if(!strcmp(argv[0], "l2"))
+		log_speed = !log_speed;
+	else if(!strcmp(argv[0], "l1"))
+		log_mode = !log_mode;
+	else if(!strcmp(argv[0], "l"))
+		log_pid = !log_pid;
+	return 0;
+}
+
+int speed_set(int argc, char ** argv) {
+	if(argc > 1) {
+		motor_set_max_speed(module_left_wheel,  atof(argv[1]));
+		motor_set_max_speed(module_right_wheel, atof(argv[1]));
+		return 0;
+	} else {
+		return 1;
+	}
+}
+
 /*****************************************/
 
 /***************************************/
@@ -267,20 +305,20 @@ cmd_t command_list[] = {
 	{"help",     help,          PACKET_CMD},
 	{"clear",    console_clear, PACKET_CMD},
 
+#if ENABLE_STARTSWITCH == 1
+	{"g", go,   PACKET_CMD},
+	{"s", stop, PACKET_CMD},
+#endif
+
 #if ENABLE_MOTORS == 1
+	{"speed", speed_set,        PACKET_CMD},
 	{"motor", dc_motor_control, PACKET_CMD},
 #endif
 
 #if ENABLE_SERVO == 1
-	{"servo", servo_control, PACKET_CMD},
+	{"servo", servo_control,       PACKET_CMD},
 	{"sweep", servo_control_sweep, PACKET_CMD},
 #endif
-
-#if ENABLE_STARTSWITCH == 1
-	{"go", go, PACKET_CMD},
-#endif
-
-	{"reset", reset, PACKET_CMD},
 
 #if ENABLE_PID == 1
 	{"p",  prop_tune,        PACKET_CMD},
@@ -305,6 +343,11 @@ cmd_t command_list[] = {
 	{"disconnect", packetman_disconnect_callback, PACKET_DISCONNECT},
 	{"keepalive",  packetman_keepalive_callback,  PACKET_KEEPALIVE },
 #endif
+
+	{"l3", log_set, PACKET_CMD},
+	{"l2", log_set, PACKET_CMD},
+	{"l1", log_set, PACKET_CMD},
+	{"l",  log_set, PACKET_CMD},
 
 /***************************************/
 	SHELL_NULL_COMMAND

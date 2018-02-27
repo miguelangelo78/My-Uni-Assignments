@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <platform.h>
 #include <rtos_inc.h>
+#include <utils.h>
 #include <app_config.h>
 #include "piezo.h"
 
@@ -37,12 +38,15 @@ static void piezo_player(void * args) {
 
 		/* Update sound with new pitch */
 		spwm_set_frequency(piezo_handle->dev_handle, piezo_handle->note.pitch);
-		rtos_delay(piezo_handle->note.duration);
+
+		for(int i = 0; i < piezo_handle->note.duration && !piezo_handle->stop_playing; i++)
+			rtos_delay(1);
 
 		/* Stop the tone */
 		spwm_set_frequency(piezo_handle->dev_handle, 0);
 
-		piezo_handle->is_playing = false;
+		piezo_handle->is_playing   = false;
+		piezo_handle->stop_playing = false;
 	}
 }
 
@@ -139,16 +143,26 @@ enum PIEZO_RETCODE piezo_play_song_async_backwards(piezo_t * handle, note_t * so
 	}
 }
 
-enum PIEZO_RETCODE piezo_set_volume(piezo_t * handle, uint8_t volume) {
+enum PIEZO_RETCODE piezo_stop(piezo_t * handle, bool stop_and_wait) {
 	if(!handle) return PIEZO_ERR;
 
-	enum PIEZO_RETCODE ret = PIEZO_OK;
+	handle->stop_playing = true;
+
+	if(stop_and_wait)
+		while(handle->is_playing)
+			rtos_preempt();
+
+	return PIEZO_OK;
+}
+
+enum PIEZO_RETCODE piezo_set_volume(piezo_t * handle, uint8_t volume) {
+	if(!handle) return PIEZO_ERR;
 
 	handle->volume = volume;
 
 	spwm_set_duty(handle->dev_handle, (volume * 50) / 100);
 
-	return ret;
+	return PIEZO_OK;
 }
 
 enum MIDI_LUT midi_lut(uint8_t tone_index) {
@@ -159,5 +173,5 @@ enum MIDI_LUT midi_lut(uint8_t tone_index) {
 }
 
 uint16_t midi_lut_count(void) {
-	return sizeof(midi_lut_list) / sizeof(midi_lut_list[0]);
+	return arraysize(midi_lut_list);
 }

@@ -8,6 +8,7 @@
 #ifndef LIB_DEBUG_DEBUG_H_
 #define LIB_DEBUG_DEBUG_H_
 
+#include <stdio.h>
 #include <stdbool.h>
 #include <utils.h>
 

@@ -132,9 +132,10 @@ void shell_task(void * args) {
 					}
 
 					/* And finally run the command */
-					if(command_list[i].command_function(spaces_found, argv)) {
-						/* TODO: Command returned a non-zero value.
-						 * We might want to see what that value is */
+					int retcode;
+					if((retcode = command_list[i].command_function(spaces_found, argv))) {
+						static char retcode_error_msg[] = "\n\n(SHELL): ret code %d\n";
+						printf(retcode_error_msg, retcode);
 					}
 
 					/* Free arguments */

@@ -37,6 +37,12 @@
 #define b00000000 0x00
 #define b11111111 0xFF
 #define b00011000 0x18
+#define b00010000 0x10
+#define b00001000 0x08
+#define b00100000 0x20
+#define b01000000 0x40
+#define b00000010 0x02
+#define b00000100 0x04
 #define b00001100 0x0C
 #define b00000110 0x06
 #define b00000011 0x03
@@ -63,6 +69,7 @@
 #define b01110000 0x70
 #define b11100000 0xE0
 #define b00111111 0x3F
+#define b01111111 0x7F
 #define b00001111 0x0F
 #define b11100111 0xE7
 #define b11111100 0xFC

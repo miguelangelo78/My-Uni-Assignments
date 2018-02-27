@@ -12,8 +12,6 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#define PID_ERROR_REVERSED (1)
-
 typedef struct {
 	bool  init;
 	float target;

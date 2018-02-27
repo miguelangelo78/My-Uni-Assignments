@@ -16,6 +16,7 @@
 #include <actuators/servo/servo.h>
 #include <sensors/ltracker/ltracker.h>
 #include <actuators/motor_driver/motor_driver.h>
+#include <sensors/accel/accel.h>
 #include <sound/piezo.h>
 #include <sound/tunes.h>
 #include <onchip/led.h>
@@ -28,7 +29,7 @@
 #define check_crossline(sensor_data) ((sensor_data & MASK3_3) == b11100111)
 
 /* Read white tape only on the right side */
-#define check_rightline(sensor_data) (sensor_data == b00011111 || sensor_data == b00111111 || sensor_data == b00001111)
+#define check_rightline(sensor_data) (sensor_data == b00011111 || sensor_data == b00111111 || sensor_data == b01111111 || sensor_data == b00001111)
 
 /* Read white tape only on the left side */
 #define check_leftline(sensor_data)  (sensor_data == b11111000 || sensor_data == b11111100 || sensor_data == b11111110 || sensor_data == b11110000)
@@ -49,12 +50,17 @@ extern track_t   track;
 extern motor_t * module_left_wheel;
 extern motor_t * module_right_wheel;
 extern servo_t * module_servo;
+extern accel_t * module_accel;
 extern pid_t   * pid_controller_normal;
 extern pid_t   * pid_controller_crankmode;
 extern pid_t   * pid_controller_current;
 extern float     pid_output;
 extern piezo_t * module_piezo;
 
-void car_control_poll(void);
+void  kickstart_car(void);
+void  car_algorithm_poll(void);
+void  update_fast_control_variables(void);
+float map_sensor_to_angle(uint8_t sensor_data);
+void  log_unrecognized_pattern(uint8_t pattern);
 
 #endif /* SRC_APP_CAR_CONTROL_H_ */

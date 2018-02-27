@@ -11,6 +11,7 @@
  **/
 
 #include "pid.h"
+#include <pin_mapping.h>
 #include <rtos_inc.h>
 
 pid_t * pid_new_controller(float kp, float ki, float kd, float min_val, float max_val, uint32_t integral_windup_period) {
@@ -42,20 +43,15 @@ float pid_control_recalculate(pid_t * pid_handle) {
 	if(!pid_handle)
 		return 0.0f;
 
-#if PID_ERROR_REVERSED == 1
-	pid_handle->error        = pid_handle->target + pid_handle->feedback;
-#else
-	pid_handle->error        = pid_handle->target - pid_handle->feedback;
-#endif
-
-	pid_handle->proportional = pid_handle->kp * pid_handle->error;
+	pid_handle->error        = pid_handle->target   - pid_handle->feedback;
+	pid_handle->proportional = pid_handle->kp       * pid_handle->error;
 	pid_handle->integral     = pid_handle->integral + pid_handle->error;
-	pid_handle->derivative   = pid_handle->error - pid_handle->last_error;
+	pid_handle->derivative   = pid_handle->error    - pid_handle->last_error;
 
-	pid_handle->output       =
-			pid_handle->proportional                  +
-			pid_handle->ki * pid_handle->integral     +
-			pid_handle->kd * pid_handle->derivative;
+	pid_handle->output =
+		pid_handle->proportional                 +
+		pid_handle->ki * pid_handle->integral    +
+		pid_handle->kd * pid_handle->derivative;
 
 	/* Limit the output value */
 	if(pid_handle->output < pid_handle->min_val)
@@ -63,8 +59,11 @@ float pid_control_recalculate(pid_t * pid_handle) {
 	if(pid_handle->output > pid_handle->max_val)
 		pid_handle->output = pid_handle->max_val;
 
-	if(rtos_time() % pid_handle->integral_windup_period == 0)
+	static int ctr = 0;
+	if(ctr++ % pid_handle->integral_windup_period == 0) {
 		pid_handle->integral = 0;
+		ctr = 0;
+	}
 
 	pid_handle->last_error = pid_handle->error;
 

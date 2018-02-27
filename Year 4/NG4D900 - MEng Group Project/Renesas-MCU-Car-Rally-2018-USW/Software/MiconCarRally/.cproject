@@ -14,7 +14,7 @@
 			</storageModule>
 			<storageModule moduleId="com.renesas.cdt.managedbuild.core.toolchainInfo">
 				<option id="toolchain.id" value="Renesas_RXC"/>
-				<option id="toolchain.version" value="v2.07.00"/>
+				<option id="toolchain.version" value="v2.08.00"/>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 				<configuration artifactExtension="mot" artifactName="MiconCarRally" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" description="Compile program (Debug Mode)" errorParsers="org.eclipse.cdt.core.GmakeErrorParser;com.renesas.cdt.managedbuild.renesas.core.RenesasCompilerAssemblerErrorParser;com.renesas.cdt.managedbuild.core.buildRunnerErrorParser" id="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.configuration.1263792258" name="Build" parent="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.configuration" postbuildStep="">
@@ -28,6 +28,8 @@
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.deviceName.1040785928" name="Device Name" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.deviceName" useByScannerDiscovery="false" value="R5F562GAAxFP" valueType="string"/>
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.deviceCommand.779863168" name="Device Command" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.deviceCommand" useByScannerDiscovery="false" value="R5F562GA" valueType="string"/>
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.endian.1026106452" name="Data Endian" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.endian" useByScannerDiscovery="false" value="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.endian.big" valueType="enumerated"/>
+								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.denormalized.317973207" name="Handling of denormalized numbers in floating-point constants" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.denormalized" useByScannerDiscovery="false" value="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.denormalized.asZero" valueType="enumerated"/>
+								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.doubleSize.1336815548" name="Suppress to change double type and long double type as float type" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.doubleSize" useByScannerDiscovery="false" value="false" valueType="boolean"/>
 							</tool>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.compiler.620889616" name="Compiler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.compiler">
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.fpu.1661420471" name="Use floating point arithmetic instructions" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.fpu" useByScannerDiscovery="false" value="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.fpu.depend" valueType="enumerated"/>
@@ -57,6 +59,8 @@
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.case.1218235406" name="Expansion method of the switch statement" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.case" useByScannerDiscovery="false" value="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.case.auto" valueType="enumerated"/>
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.library.1277167210" name="Expansion method of the library function" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.library" useByScannerDiscovery="false" value="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.library.instructions" valueType="enumerated"/>
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.listfile.1212049217" name="Generate list file" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.listfile" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="true" id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.userBefore.1162652327" name="User-defined options (added before all specified options)" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.userBefore" useByScannerDiscovery="false" valueType="stringList"/>
+								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.stackProtector.2114566279" name="Detect stack smashing" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.stackProtector" useByScannerDiscovery="false" value="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.stackProtector.no" valueType="enumerated"/>
 								<inputType id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gcc.inputType.1644557766" name="Compiler Input C" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gcc.inputType"/>
 								<inputType id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gpp.inputType.1291810026" name="Compiler Input CPP" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gpp.inputType"/>
 							</tool>
@@ -74,10 +78,30 @@
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.linkerSection.1840552158" name="Sections" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.linkerSection" useByScannerDiscovery="false" value="B_1,R_1,B_2,R_2,B,R,SU,SI/00000,PResetPRG/0FFFC0000,C_1,C_2,C,L,C$*,D*,P,PIntPRG,W*/0FFFC0100,FIXEDVECT/0FFFFFFD0" valueType="string"/>
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.debug.1776810092" name="Outputs debugging information" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.debug" useByScannerDiscovery="false" value="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.debug.no" valueType="enumerated"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.noneLinkageOrderList.789721586" name="(Linkage order list)" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.noneLinkageOrderList" useByScannerDiscovery="false" valueType="stringList">
-									<listOptionValue builtIn="false" value="&quot;.\lib/rtos/Micrium/BSP/RXC\dbsct.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/rtos/Micrium/BSP/RXC\cstartup.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\lib/rtos/Micrium/uCOS-III/Ports/Renesas/RX/RXC\os_cpu_a.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/clib/data_structures\circular_buffer.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/clib/data_structures\fifo.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/clib/data_structures\linked_list.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/clib/math\mathutils.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/clib/math/pid\pid.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/clib\stdio_redirect.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/debug\debug.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/actuators/motor_driver\motor_driver.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/actuators/servo\servo.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/communications/bluetooth\bluetooth.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/communications/protocols/packetman\data_packer.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/communications/protocols/packetman\packetman.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/communications/protocols/suart\suart.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/libs/spwm\spwm.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/onchip\led.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/sensors/accel\accel.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/sensors/ltracker\ltracker.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/sound\piezo.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/sound\tunes.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/module\module.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\lib/rtos/Micrium/BSP/RXC\bsp_vect_tbl.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/rtos/Micrium/BSP/RXC\cstartup.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\lib/rtos/Micrium/BSP/RXC\dbsct.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\lib/rtos/Micrium/BSP/RXC\sbrk.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\lib/rtos/Micrium/BSP\bsp.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\lib/rtos/Micrium/BSP\bsp_int.obj&quot;"/>
@@ -111,37 +135,18 @@
 									<listOptionValue builtIn="false" value="&quot;.\lib/rtos/Micrium/uCOS-III/Source\os_tmr.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\lib/rtos/Micrium/uCOS-III/Source\os_var.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\lib/rtos/rtos_wrappers\rtos_new_lib.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/clib/data_structures\circular_buffer.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/clib/data_structures\fifo.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/clib/data_structures\linked_list.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/clib\stdio_redirect.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/actuators/motor_driver\motor_driver.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/actuators/servo\servo.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/communications/protocols/packetman\packetman.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/communications/protocols/suart\suart.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/module\module.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/clib/math\mathutils.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/clib/math/pid\pid.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/debug\debug.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/communications/bluetooth\bluetooth.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/communications/protocols/packetman\data_packer.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/libs/spwm\spwm.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/onchip\led.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/sensors/accel\accel.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/sensors/ltracker\ltracker.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/sound\piezo.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\lib/drivers/sound\tunes.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\lib/shell\shell.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src\app_car_control.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src\app_main.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src\app_template_generator.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../lib/clib.lib&quot;"/>
 								</option>
-								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.useCustomLinkageOrder.77883870" name="Use custom linkage order" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.useCustomLinkageOrder" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.useCustomLinkageOrder.77883870" name="Use custom linkage order" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.useCustomLinkageOrder" useByScannerDiscovery="false" value="false" valueType="boolean"/>
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.optimize.1496365949" name="Optimization type" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.optimize" useByScannerDiscovery="false" value="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.optimize.speedOptimize" valueType="enumerated"/>
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.optimizeCommand.2106665598" name="Optimize command" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.optimizeCommand" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.optimize.symbolDelete.85672151" name="Deletes variables/functions that are not referenced" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.optimize.symbolDelete" useByScannerDiscovery="false" value="false" valueType="boolean"/>
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.memory.11351961" name="Reduces the memory occupancy" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.memory" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.specifyAddress.193340906" name="Specify execution start address" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.specifyAddress" useByScannerDiscovery="false" value="false" valueType="boolean"/>
 							</tool>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.librarian.1000847810" name="Library Generator" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.librarian">
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.librarian.option.fpu.780789244" name="Use floating point arithmetic instructions" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.librarian.option.fpu" useByScannerDiscovery="false" value="com.renesas.cdt.managedbuild.renesas.ccrx.librarian.option.fpu.depend" valueType="enumerated"/>
@@ -337,10 +342,7 @@
 		<configuration configurationName="Flash Program">
 			<resource resourceType="PROJECT" workspacePath="/MiconCarRally"/>
 		</configuration>
-		<configuration configurationName="Build">
-			<resource resourceType="FOLDER" workspacePath="/MiconCarRally/lib"/>
-			<resource resourceType="FOLDER" workspacePath="/MiconCarRally/src"/>
-		</configuration>
+		<configuration configurationName="Build"/>
 		<configuration configurationName="FlashProgram">
 			<resource resourceType="PROJECT" workspacePath="/MiconCarRally"/>
 		</configuration>

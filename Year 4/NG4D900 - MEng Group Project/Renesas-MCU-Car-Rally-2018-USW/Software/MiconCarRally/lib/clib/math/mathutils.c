@@ -7,6 +7,8 @@
 
 #include "mathutils.h"
 
+#include "mathutils.h"
+
 long map(long x, long in_min, long in_max, long out_min, long out_max) {
 	if(x < in_min) x = in_min;
 	if(x > in_max) x = in_max;

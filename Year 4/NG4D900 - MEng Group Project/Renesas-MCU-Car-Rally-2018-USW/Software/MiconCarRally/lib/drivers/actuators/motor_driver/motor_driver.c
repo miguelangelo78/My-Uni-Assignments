@@ -10,6 +10,7 @@
 #include <utils.h>
 #include <rtos_inc.h>
 #include "motor_driver.h"
+#include <drivers/actuators/servo/servo.h>
 #include <app_config.h>
 
 motor_t * motor_init(enum MOTOR_CHANNEL channel) {
@@ -26,6 +27,7 @@ motor_t * motor_init(enum MOTOR_CHANNEL channel) {
 	ret->speed             = 0.0f;
 	ret->speed_old         = 0.0f;
 	ret->speed_safe_old    = 0.0f;
+	ret->max_speed         = MOTOR_MAX_PWM_SPEED;
 	ret->is_safemode       = false;
 	ret->rpm_measured      = 0.0f;
 	ret->rpm_timestamp     = 0;
@@ -56,6 +58,8 @@ motor_t * motor_init_safe(enum MOTOR_CHANNEL channel, bool enable_safemode) {
 	if((enum MOTOR_RETCODE)ret == MOTOR_ERR_INVAL_CHANNEL)
 		return ret;
 
+	ret->max_speed = MOTOR_SAFE_MODE_LEVEL;
+
 	enum MOTOR_RETCODE errcode;
 	if((errcode = motor_set_safe_mode(ret, enable_safemode, false)) == MOTOR_OK) {
 		return ret;
@@ -83,6 +87,40 @@ enum MOTOR_RETCODE motor_reset(motor_t * handle) {
 	return MOTOR_OK;
 }
 
+static enum MOTOR_RETCODE motor_rpm_sensor_poll(motor_t * handle) {
+	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
+		return MOTOR_ERR_INVAL_CHANNEL;
+
+	if(handle->side == MOTOR_CHANNEL_LEFT) {
+		if(rpmcounter_left_read()) {
+			if(handle->rpm_timestamp_triggered == false) {
+				handle->rpm_timestamp_triggered = true;
+
+				uint32_t current_time = rtos_time();
+				uint32_t elapsed_time = current_time - handle->rpm_timestamp_old;
+				handle->rpm_measured = 60.0f / ((float)elapsed_time / 1000.0f);
+				handle->rpm_timestamp_old = current_time;
+			}
+		} else {
+			handle->rpm_timestamp_triggered = false;
+		}
+	}
+	else if(rpmcounter_right_read()) {
+		if(handle->rpm_timestamp_triggered == false) {
+			handle->rpm_timestamp_triggered = true;
+
+			uint32_t current_time = rtos_time();
+			uint32_t elapsed_time = current_time - handle->rpm_timestamp_old;
+			handle->rpm_measured = 60.0f / ((float)elapsed_time / 1000.0f);
+			handle->rpm_timestamp_old = current_time;
+		}
+	} else {
+		handle->rpm_timestamp_triggered = false;
+	}
+
+	return MOTOR_OK;
+}
+
 static enum MOTOR_RETCODE motor_update(motor_t * handle, bool use_differential) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
@@ -106,34 +144,21 @@ static enum MOTOR_RETCODE motor_update(motor_t * handle, bool use_differential) 
 				DAT_MOTOR_RD = !DAT_MOTOR_RD;
 		}
 
+		handle->is_stopped = handle->speed == 0.0f;
+
 		/* And set its speed */
-		spwm_set_duty(handle->dev_handle, fabsf(handle->speed));
+		if(!handle->is_stopped)
+			spwm_set_duty(handle->dev_handle, fabsf(handle->speed));
+		else
+			spwm_set_duty(handle->dev_handle, 0);
 		return MOTOR_OK;
 	}
 
 	/* Update motor WITH differential */
+	float newRPM = handle->speed - handle->deceleration;
 
-	float newRPM;
-	float error = handle->acceleration - handle->rpm_measured;
-
-	/* Limit the error values */
-	if(error >  MOTOR_MAX_RPM_SPEED) error =  MOTOR_MAX_RPM_SPEED;
-	if(error < -MOTOR_MAX_RPM_SPEED) error = -MOTOR_MAX_RPM_SPEED;
-
-	if(handle->is_braking) {
-		/* Calculate the proportional system output for this motor channel (p only) */
-		float pid_proportional = error * BRAKE_KP;
-		if(pid_proportional >  MOTOR_MAX_RPM_SPEED) pid_proportional =  MOTOR_MAX_RPM_SPEED;
-		if(pid_proportional < -MOTOR_MAX_RPM_SPEED) pid_proportional = -MOTOR_MAX_RPM_SPEED;
-
-		newRPM = pid_proportional;
-	} else {
-		/* Calculate new RPM values */
-		newRPM = handle->acceleration + error;
-	}
-
-	if(newRPM >  MOTOR_MAX_RPM_SPEED) newRPM =  MOTOR_MAX_RPM_SPEED;
-	if(newRPM < -MOTOR_MAX_RPM_SPEED) newRPM = -MOTOR_MAX_RPM_SPEED;
+	if(newRPM >  MOTOR_MAX_PWM_SPEED) newRPM =  MOTOR_MAX_PWM_SPEED;
+	if(newRPM < -MOTOR_MAX_PWM_SPEED) newRPM = -MOTOR_MAX_PWM_SPEED;
 
 	/* Set the direction of the rotation for this given motor */
 	if(handle->side == MOTOR_CHANNEL_LEFT) {
@@ -152,7 +177,12 @@ static enum MOTOR_RETCODE motor_update(motor_t * handle, bool use_differential) 
 		else            DAT_MOTOR_RD = 1; /* Rotate backwards */
 	}
 
-	spwm_set_duty(handle->dev_handle, (fabsf(newRPM) / MOTOR_MAX_RPM_SPEED) * 100.0f);
+	handle->is_stopped = newRPM == 0.0f;
+
+	if(!handle->is_stopped)
+		spwm_set_duty(handle->dev_handle, newRPM);
+	else
+		spwm_set_duty(handle->dev_handle, 0);
 
 	return MOTOR_OK;
 }
@@ -161,32 +191,17 @@ static enum MOTOR_RETCODE motor_calculate_differential(motor_t * handle, float p
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
-	float r1 = 0, r2 = 0, r3 = 0;
-
-	r2 = WHEEL_LENGTH / tan(RAD(abs(pid_output)));
-	r1 = r2 - (WHEEL_WIDTH / 2);
-	r3 = r2 + (WHEEL_WIDTH / 2);
-
 	if(handle->side == MOTOR_CHANNEL_LEFT) {
-		/* Change acceleration for this motor channel in particular */
-		if(pid_output < 0)
-			handle->acceleration = (r1 / r3) * handle->speed;
-
-		/* No differential */
-		if(pid_output >= 0)
-			handle->acceleration = handle->speed;
+		if(pid_output < 0.0f)
+			handle->deceleration = mapfloat(fabsf(pid_output), 0, SERVO_MAX_ANGLE, 0, mapfloat(handle->rpm_measured, 700, 1034, 0, handle->speed));
+		else
+			handle->deceleration = 0.0f;
 	} else {
-		/* No differential */
-		if(pid_output <= 0)
-			handle->acceleration = handle->speed;
-
-		/* Change acceleration for this motor channel in particular */
-		if(pid_output > 0)
-			handle->acceleration = (r1 / r3) * handle->speed;
+		if(pid_output > 0.0f)
+			handle->deceleration = mapfloat(pid_output, 0, SERVO_MAX_ANGLE, 0, mapfloat(handle->rpm_measured, 900, 1304, 0, handle->speed));
+		else
+			handle->deceleration = 0.0f;
 	}
-
-	handle->acceleration = map(handle->acceleration, MOTOR_DEADBAND, MOTOR_MAX_PWM_SPEED, 0, MOTOR_MAX_RPM_SPEED);
-
 	return MOTOR_OK;
 }
 
@@ -265,6 +280,12 @@ enum MOTOR_RETCODE motor_ctrl_with_differential(motor_t * handle, float speed_pe
 	return MOTOR_ERR_DIFFERENTIAL;
 }
 
+enum MOTOR_RETCODE motor_ctrl_with_differential2(motor_t * left_motor, motor_t * right_motor, float speed_percentage, float pid_output) {
+	motor_ctrl_with_differential(left_motor,  speed_percentage, pid_output);
+	motor_ctrl_with_differential(right_motor, speed_percentage, pid_output);
+	return MOTOR_OK;
+}
+
 enum MOTOR_RETCODE motor_set_safe_mode(motor_t * handle, bool enable, bool update_speed) {
 	if(!handle)
 		return MOTOR_ERR_INVAL_CHANNEL;
@@ -288,16 +309,15 @@ enum MOTOR_RETCODE motor_set_speed(motor_t * handle, float speed_percentage) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
-	/* Get the maximum allowed speed */
-	float max_speed = handle->is_safemode ? MOTOR_SAFE_MODE_LEVEL : MOTOR_MAX_PWM_SPEED;
-
 	/* Change speed value (map from +- 0% -> +- 100% to range of +- MOTOR_DEADBAND -> +- max_speed) */
 	handle->speed_old = handle->speed;
 
-	if(speed_percentage >= 0.0f)
-		handle->speed = mapfloat(speed_percentage, 0, 100, MOTOR_DEADBAND, max_speed);
+	if(speed_percentage > 0.0f)
+		handle->speed = mapfloat(speed_percentage, 0, 100, MOTOR_DEADBAND, handle->max_speed);
+	else if(speed_percentage < 0.0f)
+		handle->speed = mapfloat(speed_percentage, -100, 0, -handle->max_speed, -MOTOR_DEADBAND);
 	else
-		handle->speed = mapfloat(speed_percentage, -100, 0, -max_speed, -MOTOR_DEADBAND);
+		handle->speed = 0.0f;
 
 	return MOTOR_OK;
 }
@@ -328,36 +348,14 @@ enum MOTOR_RETCODE motor_set_braking2(motor_t * left_motor, motor_t * right_moto
 	return motor_set_braking(right_motor, is_braking);
 }
 
-enum MOTOR_RETCODE motor_rpm_sensor_poll(motor_t * handle) {
+enum MOTOR_RETCODE motor_set_max_speed(motor_t * handle, float new_max_speed) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
-	if(handle->side == MOTOR_CHANNEL_LEFT) {
-		if(rpmcounter_left_read()) {
-			if(handle->rpm_timestamp_triggered == false) {
-				handle->rpm_timestamp_triggered = true;
+	if(new_max_speed < -100.0f || new_max_speed > 100.0f)
+		return MOTOR_ERR_SET_SPEED;
 
-				uint32_t current_time = rtos_time();
-				uint32_t elapsed_time = current_time - handle->rpm_timestamp_old;
-				handle->rpm_measured = 60.0f / ((float)elapsed_time / 1000.0f);
-				handle->rpm_timestamp_old = current_time;
-			}
-		} else {
-			handle->rpm_timestamp_triggered = false;
-		}
-	}
-	else if(rpmcounter_right_read()) {
-		if(handle->rpm_timestamp_triggered == false) {
-			handle->rpm_timestamp_triggered = true;
-
-			uint32_t current_time = rtos_time();
-			uint32_t elapsed_time = current_time - handle->rpm_timestamp_old;
-			handle->rpm_measured = 60.0f / ((float)elapsed_time / 1000.0f);
-			handle->rpm_timestamp_old = current_time;
-		}
-	} else {
-		handle->rpm_timestamp_triggered = false;
-	}
+	handle->max_speed = new_max_speed;
 
 	return MOTOR_OK;
 }

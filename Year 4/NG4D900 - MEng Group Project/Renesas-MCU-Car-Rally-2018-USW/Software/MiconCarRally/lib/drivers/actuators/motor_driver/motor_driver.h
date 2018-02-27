@@ -14,7 +14,7 @@
 
 #define MOTOR_MAX_RPM_SPEED   (2000)
 #define MOTOR_MAX_PWM_SPEED   (100.0f) /* Expressed in % from 0 to 100               */
-#define MOTOR_SAFE_MODE_LEVEL (100.0f)  /* Expressed in % from 0 to 100               */
+#define MOTOR_SAFE_MODE_LEVEL (90.0f)  /* Expressed in % from 0 to 100               */
 #define MOTOR_DEADBAND        (0)      /* TODO: We need to find the value for this   */
 #define MOTOR_LEFT_INVERSE    (0)      /* Is the rotation of the left wheel reversed */
 #define MOTOR_RIGHT_INVERSE   (0)      /* Is the rotation of the left wheel reversed */
@@ -41,13 +41,15 @@ typedef struct {
 	float    speed; /* Expressed in % from 0 to 100. Value can be negative (for reverse rotation) */
 	float    speed_old;
 	float    speed_safe_old;
-	float    acceleration;
+	float    max_speed;
+	float    deceleration;
 	float    rpm_measured;
 	uint32_t rpm_timestamp;
 	uint32_t rpm_timestamp_old;
 	bool     rpm_timestamp_triggered;
 	bool     is_braking;
 	bool     is_safemode;
+	bool     is_stopped;
 	enum MOTOR_CHANNEL side;
 } motor_t;
 
@@ -59,6 +61,7 @@ enum MOTOR_RETCODE motor_resume(motor_t * handle);
 enum MOTOR_RETCODE motor_ctrl(motor_t * handle, float speed_percentage);
 enum MOTOR_RETCODE motor_ctrl2(motor_t * left_motor, motor_t * right_motor, float speed_percentage);
 enum MOTOR_RETCODE motor_ctrl_with_differential(motor_t * handle, float speed_percentage, float pid_output);
+enum MOTOR_RETCODE motor_ctrl_with_differential2(motor_t * left_motor, motor_t * right_motor, float speed_percentage, float pid_output);
 enum MOTOR_RETCODE motor_refresh(motor_t * handle);
 enum MOTOR_RETCODE motor_refresh_with_differential(motor_t * handle, float pid_output);
 enum MOTOR_RETCODE motor_refresh_with_differential2(motor_t * left_motor, motor_t * right_motor, float pid_output);
@@ -67,7 +70,7 @@ enum MOTOR_RETCODE motor_set_speed(motor_t * handle, float speed_percentage);
 enum MOTOR_RETCODE motor_set_speed2(motor_t * left_motor, motor_t * right_motor, float speed_percentage);
 enum MOTOR_RETCODE motor_set_braking(motor_t * handle, bool is_braking);
 enum MOTOR_RETCODE motor_set_braking2(motor_t * left_motor, motor_t * right_motor, bool is_braking);
-enum MOTOR_RETCODE motor_rpm_sensor_poll(motor_t * handle);
+enum MOTOR_RETCODE motor_set_max_speed(motor_t * handle, float new_max_speed);
 
 #define rpmcounter_left_read()  (INP_LEFT_HALL  & 0x1)
 #define rpmcounter_right_read() (INP_RIGHT_HALL & 0x1)
