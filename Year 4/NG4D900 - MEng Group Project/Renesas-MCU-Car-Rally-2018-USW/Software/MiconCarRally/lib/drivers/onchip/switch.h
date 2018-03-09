@@ -8,7 +8,7 @@
 #ifndef LIB_DRIVERS_ONCHIP_SWITCH_H_
 #define LIB_DRIVERS_ONCHIP_SWITCH_H_
 
-#include <platform.h>
+#include <app_config.h>
 
 #define start_switch_init() (DIR_STARTSW = 0)
 #define start_switch_read() ((uint8_t)(~INP_STARTSW & 0x01))

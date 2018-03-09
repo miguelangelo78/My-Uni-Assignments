@@ -6,7 +6,6 @@
  */
 #include <stdbool.h>
 #include <stddef.h>
-#include <platform.h>
 #include <rtos_inc.h>
 #include <app_config.h>
 #include "spwm.h"

@@ -3,13 +3,13 @@
 [DATABASE_VERSION]
 "2.5" 
 [PROJECT_DETAILS]
-"fdt_workspace" "E:\Users\Miguel\Dropbox2\Dropbox\My-Uni-Assignments\Year 4\NG4D900 - MEng Group Project\Renesas-MCU-Car-Rally-2018-USW\Software\MiconCarRally\toolchain\tools\fdt_flash_tool\fdt_workspace\fdt_workspace" "E:\Users\Miguel\Dropbox2\Dropbox\My-Uni-Assignments\Year 4\NG4D900 - MEng Group Project\Renesas-MCU-Car-Rally-2018-USW\Software\MiconCarRally\toolchain\tools\fdt_flash_tool\fdt_workspace\fdt_workspace\fdt_workspace.fwp" "All Flash Devices" "" "FDT Project Generator" 
+"fdt_workspace" "E:\Users\Miguel\Dropbox2\Dropbox\My-Uni-Assignments\Year 4\NG4D900 - MEng Group Project\Renesas-MCU-Car-Rally-2018-USW\Software\MiconCarRally\toolchain\tools\fdt_flash_tool\fdt_workspace_2017\fdt_workspace" "E:\Users\Miguel\Dropbox2\Dropbox\My-Uni-Assignments\Year 4\NG4D900 - MEng Group Project\Renesas-MCU-Car-Rally-2018-USW\Software\MiconCarRally\toolchain\tools\fdt_flash_tool\fdt_workspace_2017\fdt_workspace\fdt_workspace.fwp" "All Flash Devices" "" "FDT Project Generator" 
 [INFORMATION]
 "No project information available" 
 [TOOL_CHAIN]
 "" "" 
 [CONFIGURATIONS]
-"Default" "E:\Users\Miguel\Dropbox2\Dropbox\My-Uni-Assignments\Year 4\NG4D900 - MEng Group Project\Renesas-MCU-Car-Rally-2018-USW\Software\MiconCarRally\toolchain\tools\fdt_flash_tool\fdt_workspace\fdt_workspace\default" 
+"Default" "E:\Users\Miguel\Dropbox2\Dropbox\My-Uni-Assignments\Year 4\NG4D900 - MEng Group Project\Renesas-MCU-Car-Rally-2018-USW\Software\MiconCarRally\toolchain\tools\fdt_flash_tool\fdt_workspace_2017\fdt_workspace\default" 
 [BUILD_PHASES]
 [DEFINITION_PARSERS]
 [TOOL_ENVIRONMENT]
@@ -59,7 +59,7 @@
 "FDT_ResetPinSettings" "FFFFFFFF" 
 "FDT_UPMPinSettings" "FFFFFFFF" 
 "FDT_KernelResident" "FALSE" 
-"FDT_KernelPath" "E:\Users\Miguel\Dropbox2\Dropbox\Renesas-MCU-Car-Rally-2018-USW\Software\MiconCarRally\toolchain\tools\fdt_flash_tool\fdt_workspace\fdt_workspace\" 
+"FDT_KernelPath" "E:\Users\Miguel\Dropbox2\Dropbox\My-Uni-Assignments\Year 4\NG4D900 - MEng Group Project\Renesas-MCU-Car-Rally-2018-USW\Software\MiconCarRally\toolchain\tools\fdt_flash_tool\fdt_workspace_2017\fdt_workspace\" 
 "FDT_UserPinSettings" "FFFFFFFF" 
 "FDT_UserPinOutputs" "FFFFFFFF" 
 "FDT_ClockMode" "0" 
@@ -70,7 +70,7 @@
 "FDT_UseInternalKernel" "TRUE" 
 "FDT_BlockLockDisconnect" "1" 
 "FDT_BlockLockConnect" "1" 
-"FDT_Port" "COM11" 
+"FDT_Port" "COM9" 
 "FDT_CKP" "4" 
 "FDT_MessageLevel" "1" 
 "FDT_BootMode" "TRUE" 
@@ -94,7 +94,7 @@
 [ON_DEMAND_COMPONENTS_LOADED]
 [SYNC_SESSION_NAMES]
 [SESSIONS]
-"Default" "E:\Users\Miguel\Dropbox2\Dropbox\My-Uni-Assignments\Year 4\NG4D900 - MEng Group Project\Renesas-MCU-Car-Rally-2018-USW\Software\MiconCarRally\toolchain\tools\fdt_flash_tool\fdt_workspace\fdt_workspace\default.hsf" 0 
+"Default" "E:\Users\Miguel\Dropbox2\Dropbox\My-Uni-Assignments\Year 4\NG4D900 - MEng Group Project\Renesas-MCU-Car-Rally-2018-USW\Software\MiconCarRally\toolchain\tools\fdt_flash_tool\fdt_workspace_2017\fdt_workspace\default.hsf" 0 
 [GENERAL_DATA_SESSION_Default]
 [OPTIONS_Default]
 "" 0 

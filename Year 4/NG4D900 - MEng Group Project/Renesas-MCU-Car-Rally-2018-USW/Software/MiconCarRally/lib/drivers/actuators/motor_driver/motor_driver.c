@@ -9,9 +9,10 @@
 #include <stddef.h>
 #include <utils.h>
 #include <rtos_inc.h>
-#include "motor_driver.h"
 #include <drivers/actuators/servo/servo.h>
 #include <app_config.h>
+#include <pin_mapping.h>
+#include "motor_driver.h"
 
 motor_t * motor_init(enum MOTOR_CHANNEL channel) {
 	motor_t * ret = NULL;
@@ -105,17 +106,19 @@ static enum MOTOR_RETCODE motor_rpm_sensor_poll(motor_t * handle) {
 			handle->rpm_timestamp_triggered = false;
 		}
 	}
-	else if(rpmcounter_right_read()) {
-		if(handle->rpm_timestamp_triggered == false) {
-			handle->rpm_timestamp_triggered = true;
+	else {
+		if(rpmcounter_right_read()) {
+			if(handle->rpm_timestamp_triggered == false) {
+				handle->rpm_timestamp_triggered = true;
 
-			uint32_t current_time = rtos_time();
-			uint32_t elapsed_time = current_time - handle->rpm_timestamp_old;
-			handle->rpm_measured = 60.0f / ((float)elapsed_time / 1000.0f);
-			handle->rpm_timestamp_old = current_time;
+				uint32_t current_time = rtos_time();
+				uint32_t elapsed_time = current_time - handle->rpm_timestamp_old;
+				handle->rpm_measured = 60.0f / ((float)elapsed_time / 1000.0f);
+				handle->rpm_timestamp_old = current_time;
+			}
+		} else {
+			handle->rpm_timestamp_triggered = false;
 		}
-	} else {
-		handle->rpm_timestamp_triggered = false;
 	}
 
 	return MOTOR_OK;
@@ -125,8 +128,10 @@ static enum MOTOR_RETCODE motor_update(motor_t * handle, bool use_differential) 
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
+#if ENABLE_RPM_COUNTER == 1
 	/* Poll the RPM sensor for this given motor */
 	motor_rpm_sensor_poll(handle);
+#endif
 
 	if(!use_differential) {
 		/* Update motor WITHOUT differential */
@@ -192,15 +197,29 @@ static enum MOTOR_RETCODE motor_calculate_differential(motor_t * handle, float p
 		return MOTOR_ERR_INVAL_CHANNEL;
 
 	if(handle->side == MOTOR_CHANNEL_LEFT) {
-		if(pid_output < 0.0f)
+		if(pid_output < 0.0f) {
+
+#if ENABLE_RPM_COUNTER == 1
 			handle->deceleration = mapfloat(fabsf(pid_output), 0, SERVO_MAX_ANGLE, 0, mapfloat(handle->rpm_measured, 700, 1034, 0, handle->speed));
-		else
+#else
+			handle->deceleration = mapfloat(-pid_output, 0, SERVO_MAX_ANGLE, 0, handle->speed);
+#endif
+
+		} else {
 			handle->deceleration = 0.0f;
+		}
 	} else {
-		if(pid_output > 0.0f)
+		if(pid_output > 0.0f) {
+
+#if ENABLE_ANGLE_DIFFERENTIAL == 1
 			handle->deceleration = mapfloat(pid_output, 0, SERVO_MAX_ANGLE, 0, mapfloat(handle->rpm_measured, 900, 1304, 0, handle->speed));
-		else
+#else
+			handle->deceleration = mapfloat(pid_output, 0, SERVO_MAX_ANGLE, 0, handle->speed);
+#endif
+
+		} else {
 			handle->deceleration = 0.0f;
+		}
 	}
 	return MOTOR_OK;
 }

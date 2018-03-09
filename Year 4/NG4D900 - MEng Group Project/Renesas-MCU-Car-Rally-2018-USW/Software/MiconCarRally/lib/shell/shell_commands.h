@@ -125,7 +125,7 @@ int servo_control_sweep(int argc, char ** argv) {
 
 int go(int argc, char ** argv) {
 	/* Kick start the car! */
-	kickstart_car();
+	car_kickstart();
 	return 0;
 }
 
@@ -269,6 +269,23 @@ extern int packetman_connect_callback(int argc, char ** argv);
 extern int packetman_disconnect_callback(int argc, char ** argv);
 extern int packetman_keepalive_callback(int argc, char ** argv);
 
+int code_write(int argc, char ** argv) {
+	if(argc != 3)
+		return 1;
+
+	uint32_t addr = strtoul(argv[1], NULL, 0);
+	uint32_t val  = strtoul(argv[2], NULL, 0);
+
+	DEBUG("Addr: %i = %i", addr, val);
+
+	return 0;
+}
+
+int code_read(int argc, char ** argv) {
+
+	return 0;
+}
+
 extern bool log_pid;
 extern bool log_mode;
 extern bool log_speed;
@@ -327,7 +344,7 @@ cmd_t command_list[] = {
 	{"pc", prop_crank_tune,  PACKET_CMD},
 	{"ic", integ_crank_tune, PACKET_CMD},
 	{"dc", deriv_crank_tune, PACKET_CMD},
-	{"w",  int_windup_tune,  PACKET_CMD},
+	{"iw", int_windup_tune,  PACKET_CMD},
 #endif
 
 #if ENABLE_SOUND == 1
@@ -342,6 +359,9 @@ cmd_t command_list[] = {
 	{"connect",    packetman_connect_callback,    PACKET_CONNECT   },
 	{"disconnect", packetman_disconnect_callback, PACKET_DISCONNECT},
 	{"keepalive",  packetman_keepalive_callback,  PACKET_KEEPALIVE },
+
+	{"w", code_write, PACKET_CMD},
+	{"r", code_read,  PACKET_CMD},
 #endif
 
 	{"l3", log_set, PACKET_CMD},

@@ -6,19 +6,19 @@
  */
 
 #include <stdlib.h>
-#include <platform.h>
 #include <utils.h>
 #include <rtos_inc.h>
 #include <app_config.h>
+#include <pin_mapping.h>
 #include "servo.h"
 
 servo_t * servo_init(void) {
 	/* Create servo handle */
-	servo_t * ret     = (servo_t*)malloc(sizeof(servo_t));
-	ret->angle        = 0;
-	ret->angle_old    = 0;
-	ret->is_locked    = true;
-	ret->dev_handle   = spwm_create(SERVO_FREQ, SERVO_CENTER_ANGLE_DUTY, SPWM_MODE_BOTHLVL, 0, SPWM_DEV_SERVO);
+	servo_t * ret   = (servo_t*)malloc(sizeof(servo_t));
+	ret->angle      = 0;
+	ret->angle_old  = 0;
+	ret->is_locked  = true;
+	ret->dev_handle = spwm_create(SERVO_FREQ, SERVO_CENTER_ANGLE_DUTY, SPWM_MODE_BOTHLVL, 0, SPWM_DEV_SERVO);
 
 	/* Set servo PWN pin as output */
 	DIR_SERVO = 1;

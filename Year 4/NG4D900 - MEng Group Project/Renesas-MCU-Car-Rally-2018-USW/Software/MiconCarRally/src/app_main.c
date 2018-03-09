@@ -11,6 +11,7 @@
 #include <app_config.h>
 #include <app_car_control.h>
 #include <app_track_data.h>
+#include <pin_mapping.h>
 
 bool log_pid        = false;
 bool log_mode       = false;
@@ -51,7 +52,7 @@ void status_logger_task(void * args) {
 			unrec_patt_detected = false;
 		}
 
-		if(log_pid)
+		if(log_pid) {
 			DEBUG("P: %.2f I: %.2f D: %.2f    OUT: %.2f F: %.2f ERR: %.2f LERR: %.2f",
 					pid_controller_current->proportional,
 					pid_controller_current->integral,
@@ -61,17 +62,13 @@ void status_logger_task(void * args) {
 					pid_controller_current->error,
 					pid_controller_current->last_error
 			);
-
-		if(log_mode) {
-			int turn_counter_old = 0;
-
-			if(track.turn_counter != turn_counter_old) {
-				DEBUG("MODE: %s (%d) | OLD: %s (%d) [turn # %d]", mode_string_list[track.mode], track.mode, mode_string_list[track.last_mode], track.last_mode, track.turn_counter);
-				turn_counter_old = track.turn_counter;
-			}
 		}
 
-		if(log_speed)
+		if(log_mode) {
+			DEBUG("MODE: %s (%d) | OLD: %s (%d) [turn # %d]", mode_string_list[track.mode], track.mode, mode_string_list[track.last_mode], track.last_mode, track.turn_counter);
+		}
+
+		if(log_speed) {
 			DEBUG("Angle: %.2f  |  L: %.2f RPM (%d, %.2f duty)  |   R: %.2f RPM (%d, %.2f duty)",
 				pid_controller_current->output,
 				module_left_wheel->rpm_measured,
@@ -81,6 +78,7 @@ void status_logger_task(void * args) {
 				rpmcounter_right_read(),
 				module_right_wheel->speed
 			);
+		}
 
 #if ENABLE_TEMPLATE_GENERATION == 1
 		if(template_generator_is_finished())
@@ -129,8 +127,19 @@ void poller() {
 	suart_poll();
 #endif
 
-	/* Update PID control system of the car */
-	update_fast_control_variables();
+	/* Update the controls every 2 interrupt cycles. (For CPU execution speed reasons) */
+	static int control_update_delay = 0;
+	if(++control_update_delay >= 2) {
+		control_update_delay = 0;
+		/* Update car controls and logic */
+		if(module_left_wheel != NULL && module_right_wheel != NULL && module_servo != NULL) {
+			/* Update PID control system of the car */
+			uint8_t line_sensor = car_update_control();
+
+			/* Update FSM algorithm of the car */
+			car_algorithm_poll(line_sensor);
+		}
+	}
 
 #if ENABLE_DEBUG_LEDS == 1 && ENABLE_DEBUGGING
 	/* Update debug LEDs with Software PWM */
@@ -211,10 +220,7 @@ void main_app(void * args)
 	while(1)
 	{
 #if ENABLE_STARTSWITCH == 1  && ENABLE_MOTORS == 1 || ENABLE_SERVO == 1
-		/* Update FSM algorithm of the car */
-		car_algorithm_poll();
-
-		/* Handle the user switch key press event */
+		/* Handle the user switch key press event at startup */
 		if(start_switch_read() && !track.race_started) {
 			/* Only continue when the user releases the button */
 			while(start_switch_read())
@@ -223,7 +229,8 @@ void main_app(void * args)
 			/* Give the user a bit of time to release the button */
 			rtos_delay(50);
 
-			kickstart_car();
+			/* The race starts! */
+			car_kickstart();
 		}
 #endif
 		rtos_preempt();

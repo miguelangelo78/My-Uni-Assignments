@@ -22,62 +22,63 @@ piezo_t * module_piezo = NULL; /* Piezo buzzer module */
 #define READ_LINE(sensor_var) ((sensor_var = ltracker_read(MASK4_4, NULL)) || 1)
 
 ///////////////////////////////////////////////////////////////////////////////
-void update_fast_control_variables(void)
+uint8_t car_update_control(void)
 {
+	/* Read all 8 infra-red sensors at the front */
+	uint8_t line_sensor = ltracker_read(MASK4_4, NULL);
+
 	float pid_output = 0.0f;
 
 #if ENABLE_PID == 1
 	/* Switch to the correct PID controller, which depends on whether or not we are breaking/slowing down */
 	pid_controller_current = (module_left_wheel->is_braking || module_right_wheel->is_braking) ? pid_controller_crankmode : pid_controller_normal;
 
-	/* Recalculate PID with values that are being set by the RTOS */
+	/* Update PID feedback before recalculation */
 	if(!module_left_wheel->is_braking && !module_right_wheel->is_braking)
-		pid_update_feedback(pid_controller_current, map_sensor_to_angle(ltracker_read(MASK4_4, NULL)), 0);
+		pid_update_feedback(pid_controller_current, map_sensor_to_angle(line_sensor), 0);
 
+	/* Recalculate PID with new feedback */
 	pid_output = pid_control_recalculate(pid_controller_current);
 #endif
 
 #if ENABLE_SERVO == 1 && ENABLE_MOTORS == 1
-	/* Update the external systems respectively */
+	/* Now update the external systems according to the PID output */
 	if(!module_servo->is_sweeping) {
-		static int servo_update_ctr = 0;
-
-		if(servo_update_ctr++ > 905) {
-			servo_update_ctr = 0;
-
-			/* Update the servo's duty cycle */
+		/** 1- Update the servo's duty cycle (UPDATE RATE: 20 MS / 50 HZ) **/
+		if(rtos_time() % 20 == 0)
 			servo_ctrl(module_servo, pid_output);
+
+		/** 2- Update the motors' differential (UPDATE RATE: 0.02213 ms (~22.13 us) / ~45.18 kHz) **/
+		if(track.mode > MODE_WAIT_FOR_STARTSWITCH) {
+			if(!module_left_wheel->is_braking && !module_right_wheel->is_braking) {
+				/** NOTE: We can't update the two motors in 1 interrupt cycle.
+				 *  The microcontroller's FPU seems to have some issues with floating point numbers.
+				 *  For this reason, we're using the flag below to multiplex the update. **/
+				static bool update_left_motor = false;
+				motor_refresh_with_differential(update_left_motor ? module_left_wheel : module_right_wheel, pid_output);
+				update_left_motor = !update_left_motor;
+			}
+		} else {
+			/* Stop the car if we're not racing */
+			motor_ctrl2(module_left_wheel, module_right_wheel, 0);
 		}
 	} else {
 		/* Stop the car while the servo is sweeping */
-		motor_set_speed2(module_left_wheel, module_right_wheel, 0);
-	}
-
-	/* Also update the motors' differential */
-	if(track.mode > MODE_WAIT_FOR_STARTSWITCH && !module_left_wheel->is_braking && !module_right_wheel->is_braking) {
-		static bool update_right_motor = false;
-
-		if(update_right_motor)
-			motor_refresh_with_differential(module_left_wheel, pid_output);
-		else
-			motor_refresh_with_differential(module_right_wheel, pid_output);
-
-		update_right_motor = !update_right_motor;
+		motor_ctrl2(module_left_wheel, module_right_wheel, 0);
 	}
 #endif
+
+	return line_sensor;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void update_track_status(bool is_next_turn_a_lane_change)
+void update_track_status(void)
 {
-	track.is_turning_lane   = is_next_turn_a_lane_change;
-	track.is_turning_corner = !is_next_turn_a_lane_change;
-
 	/* Fetch the next incoming turn */
 	if(track.next_turn == NULL) {
 		track.next_turn = &track.incoming_turn[0];
 	} else {
-		if(++track.turn_counter >= LAP_MAX_TURNS) {
+		if(track.turn_counter >= LAP_MAX_TURNS) {
 			/* We have completed a lap */
 			track.turn_counter = 0;
 
@@ -87,11 +88,7 @@ void update_track_status(bool is_next_turn_a_lane_change)
 				motor_set_braking2(module_right_wheel, module_right_wheel, true);
 				motor_set_speed2(module_left_wheel, module_right_wheel, 0);
 
-				/* Play song signaling the end of the race */
-				while(piezo_play_song_async_backwards(module_piezo, tune_startup, arraysize(tune_startup), true) != PIEZO_SONG_DONE)
-					rtos_preempt();
-				while(piezo_play_song_async(module_piezo, tune_startup, arraysize(tune_startup), true) != PIEZO_SONG_DONE)
-					rtos_preempt();
+				/* TODO: Play song signaling the end of the race */
 			}
 		}
 		track.next_turn = &track.incoming_turn[track.turn_counter];
@@ -163,8 +160,7 @@ bool change_mode_on_line_detection(uint8_t sensor_data)
 		/* We found a white tape. Don't care which one for now,
 		 * all we know now is that we must slow down the wheels */
 		piezo_play(module_piezo, &note_turn_found, false);
-		update_track_status(track.next_turn->is_lane_change);
-		rtos_delay(50);
+		update_track_status();
 
 		if(track.intelligence_level != INTEL_SMART)
 			motor_set_braking2(module_left_wheel, module_right_wheel, true);
@@ -188,37 +184,24 @@ float map_sensor_to_angle(uint8_t sensor_data)
 	for(int i = 0; i < PATTERN_MAP_SIZE; i++)
 		if(sensor_data == track.pattern_map[i].pattern) {
 			if(track.mode != MODE_ACCIDENT) {
+#if ENABLE_DYNAMIC_PID == 1
+				/* Update the PID coefficients for every different pattern */
+				pid_change_constants(pid_controller_current, track.pattern_map[i].p, track.pattern_map[i].i, track.pattern_map[i].d);
+#endif
+
 				motor_set_speed(module_left_wheel,  track.pattern_map[i].desired_motor_left);
 				motor_set_speed(module_right_wheel, track.pattern_map[i].desired_motor_right);
 			}
 			return track.pattern_map[i].mapped_angle;
 		}
+
+	log_unrecognized_pattern(sensor_data);
+
 	return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void handle_normal_drive(uint8_t sensor_data, bool update_mode, bool update_motors)
-{
-	for(int i = 0; i < PATTERN_MAP_SIZE; i++) {
-		if(sensor_data == track.pattern_map[i].pattern) {
-#if ENABLE_DYNAMIC_PID == 1
-			/* Update the PID coefficients for every different pattern */
-			pid_change_constants(pid_controller_current, track.pattern_map[i].p, track.pattern_map[i].i, track.pattern_map[i].d);
-#endif
-
-			/* Update the mode (if necessary, depends on the map) */
-			if(update_mode)
-				change_to_new_mode(track.pattern_map[i].change_mode, MODE_NULL);
-
-			return;
-		}
-	}
-
-	log_unrecognized_pattern(sensor_data);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void kickstart_car(void) {
+void car_kickstart(void) {
 	if(track.mode == MODE_WAIT_FOR_STARTSWITCH) {
 		/* Kick start the car! */
 		spwm_set_frequency(module_left_wheel->dev_handle,  MOTOR_FREQ);
@@ -237,21 +220,15 @@ void kickstart_car(void) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void car_algorithm_poll(void)
+void car_algorithm_poll(uint8_t line_sensor)
 {
-	if(module_left_wheel == NULL || module_right_wheel == NULL || module_servo == NULL)
-		return;
-
-	/* We have finished the race. Do not update the controls anymore. */
+	/* We have finished the race. Do not update the logic anymore */
 	if(track.mode == MODE_RACE_COMPLETE)
 		return;
 
-	/* Read the infrared sensor with no mask */
-	uint8_t sensor_unmsk = ltracker_read(MASK4_4, NULL);
-
-	/* Check for off-track accidents */
+	/* Check for off-track accidents every 50 ms */
 	if(rtos_time() % 50 == 0) {
-		if(!track.is_turning_lane && track.mode > MODE_WAIT_FOR_STARTSWITCH && (sensor_unmsk == b11111111 || sensor_unmsk == b00000000)) {
+		if(!track.is_turning_lane && track.mode > MODE_WAIT_FOR_STARTSWITCH && (line_sensor == b11111111 || line_sensor == b00000000)) {
 			if(++track.line_misread_danger_counter >= 5)
 				change_to_new_mode(MODE_ACCIDENT, MODE_ACCIDENT);
 		} else {
@@ -266,11 +243,12 @@ void car_algorithm_poll(void)
 		{
 			/* Wait until the user presses the start button.
 			   Meanwhile, we'll lock the servo onto the line */
-			handle_normal_drive(sensor_unmsk, false, false);
 			break;
 		}
 		case MODE_ACCIDENT:
 		{
+			static bool module_piezo_playing_alert = false;
+
 			/* Completely stop the car and center the servo if all of the
 			 * sensors have been on/off for a certain amount of time */
 			motor_stop(module_left_wheel);
@@ -278,47 +256,101 @@ void car_algorithm_poll(void)
 			motor_set_braking2(module_left_wheel, module_left_wheel, false);
 			servo_ctrl(module_servo, 0);
 
-			/* Block the control system from updating its variables and alert the user of the event */
-			piezo_stop(module_piezo, true);
-
-			uint8_t start_switch = 0;
-
-			while(track.mode == MODE_ACCIDENT && !start_switch) {
-				piezo_play(module_piezo, &note_alert, false);
-				while(module_piezo->is_playing && track.mode != MODE_ACCIDENT && !(start_switch = start_switch_read()))
-					rtos_preempt();
-
-				for(int i = 0; i < 150 && !(start_switch = start_switch_read()); i++)
-					rtos_delay(1);
+			if(start_switch_read()) {
+				/* (The car better be back on the track when we reach this point...) */
+				change_to_next_mode(MODE_FOLLOW_NORMAL_TRACE);
+				piezo_stop(module_piezo, false);
+				module_piezo_playing_alert = false;
+			} else {
+				if(module_piezo->is_playing && !module_piezo_playing_alert) {
+					/* Stop the control system from updating its variables and alert the user of the event */
+					piezo_stop(module_piezo, false);
+				} else {
+					if(module_piezo_playing_alert) {
+						if(!module_piezo->is_playing && rtos_time() % 150 == 0)
+							module_piezo_playing_alert = false;
+					} else {
+						module_piezo_playing_alert = true;
+						piezo_play(module_piezo, &note_alert, false);
+					}
+				}
 			}
 
-			/* (The car better be back on the track when we reach this point...) */
-			change_to_next_mode(MODE_FOLLOW_NORMAL_TRACE);
 			break;
 		}
 		case MODE_FOLLOW_NORMAL_TRACE: ////APPLIES TO: BASIC|ADVANCED|SMART////////////////////////////////////////////////
 		{
 			/* Check for a white tape on the track */
-			if(!change_mode_on_line_detection(sensor_unmsk))
-				handle_normal_drive(sensor_unmsk, true, true); /* Drive the car normally */
+			if(!change_mode_on_line_detection(line_sensor)) {
+				/* Update the state based on the pattern map */
+				for(int i = 0; i < PATTERN_MAP_SIZE; i++) {
+					if(line_sensor == track.pattern_map[i].pattern) {
+						change_to_new_mode(track.pattern_map[i].change_mode, MODE_NULL);
+						break;
+					}
+				}
+			}
 			break;
 		}
 		case MODE_AVOID_RIGHT_BOUNDARY: ////APPLIES TO: BASIC|ADVANCED|SMART////////////////////////////////////////////////
 		case MODE_AVOID_LEFT_BOUNDARY:
 		{
-			if(change_mode_on_line_detection(sensor_unmsk))
+			if(change_mode_on_line_detection(line_sensor))
 				break;
 
-			if(track.mode == MODE_AVOID_RIGHT_BOUNDARY && check_right_boundary_recovery(sensor_unmsk))
+			if(track.mode == MODE_AVOID_RIGHT_BOUNDARY && check_right_boundary_recovery(line_sensor))
 				change_to_new_mode(MODE_FOLLOW_NORMAL_TRACE, MODE_NULL);
-			else if(track.mode == MODE_AVOID_LEFT_BOUNDARY && check_left_boundary_recovery(sensor_unmsk))
+			else if(track.mode == MODE_AVOID_LEFT_BOUNDARY && check_left_boundary_recovery(line_sensor))
 				change_to_new_mode(MODE_FOLLOW_NORMAL_TRACE, MODE_NULL);
 			break;
 		}
 		case MODE_FOUND_LEFT_TAPE: ////APPLIES TO: BASIC|ADVANCED|SMART////////////////////////////////////////////////
 		case MODE_FOUND_RIGHT_TAPE:
 		{
-			change_to_new_mode(get_next_turn_mode_from_intel(track.next_turn->is_lane_change), MODE_FOLLOW_NORMAL_TRACE);
+			/* Wait a certain amount of time on this 'transient' mode */
+			static uint8_t  sensor_data_accum = 0;
+			static uint32_t elapsed_time_ms      = 0;
+			static uint32_t old_rtos_time     = 0;
+			uint32_t tmp_rtos_time = rtos_time();
+
+			sensor_data_accum |= ltracker_read(MASK3_3, NULL);
+
+			if(old_rtos_time != tmp_rtos_time) {
+				elapsed_time_ms++;
+				old_rtos_time = tmp_rtos_time;
+			}
+
+			if(elapsed_time_ms >= TAPE_DETECTION_TIMEOUT_MS) {
+				bool line_misdetected = true;
+
+				/* Check if we detected the line properly */
+				if(sensor_data_accum == b11100111 && !track.next_turn->is_lane_change) {
+					/* Check crossline */
+					line_misdetected = false;
+				} else if(line_misdetected && (sensor_data_accum & b00001111) && track.next_turn->is_lane_change && track.next_turn->direction == TURN_RIGHT) {
+					/* Check lane change to the right */
+					line_misdetected = false;
+				} else if(line_misdetected && (sensor_data_accum & b11110000) && track.next_turn->is_lane_change && track.next_turn->direction == TURN_LEFT) {
+					/* Check lane change to the left */
+					line_misdetected = false;
+				}
+
+				/* Now change the algorithm state */
+				if(line_misdetected == false) {
+					/* The tape was successfully detected */
+					track.turn_counter++;
+					change_to_new_mode(get_next_turn_mode_from_intel(track.next_turn->is_lane_change), MODE_FOLLOW_NORMAL_TRACE);
+				}
+				else {
+					/* We misdetected a tape */
+					change_to_new_mode(MODE_FOLLOW_NORMAL_TRACE, MODE_FOLLOW_NORMAL_TRACE);
+				}
+
+				elapsed_time_ms   = 0;
+				old_rtos_time     = 0;
+				sensor_data_accum = 0;
+			}
+
 			break;
 		}
 		case MODE_ALIGN_BOUNDARY: ////APPLIES TO: ADVANCED////////////////////////////////////////////////
@@ -331,55 +363,47 @@ void car_algorithm_poll(void)
 			if(track.intelligence_level == INTEL_BASIC) {
 				/* Drive the car slowly until it reaches the other side of the track where the line begins again */
 
+				static uint8_t turn_lane_state = 0;
 				float limit_speed = track.next_turn->is_lane_change && track.next_turn->direction == TURN_LEFT ? 20 : 40;
 
-				while(READ_LINE(sensor_unmsk)) {
-					if(sensor_unmsk == 0) break;
-					else pid_update_feedback(pid_controller_current, map_sensor_to_angle(sensor_unmsk), 0);
+				switch(turn_lane_state) {
+				case 0: /* Wait until we reach the 'line break' */
+					if(line_sensor == 0) turn_lane_state++;
+					else pid_update_feedback(pid_controller_current, map_sensor_to_angle(line_sensor), 0);
 					motor_ctrl_with_differential2(module_left_wheel, module_right_wheel, limit_speed, pid_controller_current->output);
-					rtos_preempt();
-				}
-
-				if(track.next_turn->direction == TURN_LEFT) {
-					/* Change the lane to the left */
-					while(READ_LINE(sensor_unmsk)) {
-						if(sensor_unmsk & b11111000) break;
+					track.is_turning_lane   = true;
+					track.is_turning_corner = false;
+					break;
+				case 1: /* Change the lane to the left/right */
+					if(track.next_turn->direction == TURN_LEFT) { /* Change to the left lane */
+						if(line_sensor & b11111000) turn_lane_state++;
 						else pid_update_feedback(pid_controller_current, 0, -15);
-						motor_ctrl_with_differential2(module_left_wheel, module_right_wheel, limit_speed, pid_controller_current->output);
-						rtos_preempt();
+					} else { /* Change to the right lane */
+						if(line_sensor & b00011111) turn_lane_state++;
+						else pid_update_feedback(pid_controller_current, 0, 15);
 					}
-
-					while(READ_LINE(sensor_unmsk)) {
-						if(sensor_unmsk == b00001100) break;
+					motor_ctrl_with_differential2(module_left_wheel, module_right_wheel, limit_speed, pid_controller_current->output);
+					break;
+				case 2: /* Try to catch the beginning of the line on the other side */
+					if(track.next_turn->direction == TURN_LEFT) { /* Catch the line on the left lane */
+						if(line_sensor == b00001100) turn_lane_state++;
 						else pid_update_feedback(pid_controller_current, 0, 10);
-						motor_ctrl_with_differential2(module_left_wheel, module_right_wheel, limit_speed, pid_controller_current->output);
-						rtos_preempt();
-					}
-				} else {
-					/* Change the lane to the right */
-					while(READ_LINE(sensor_unmsk)) {
-						if(sensor_unmsk & b00011111) break;
-						else pid_update_feedback(pid_controller_current, 0, 10);
-						motor_ctrl_with_differential2(module_left_wheel, module_right_wheel, limit_speed, pid_controller_current->output);
-						rtos_preempt();
-					}
-
-				while(READ_LINE(sensor_unmsk)) {
-						if(sensor_unmsk == b00110000) break;
+					} else { /* Catch the line on the right lane */
+						if(line_sensor == b00110000) turn_lane_state++;
 						else pid_update_feedback(pid_controller_current, 0, -10);
-						motor_ctrl_with_differential2(module_left_wheel, module_right_wheel, limit_speed, pid_controller_current->output);
-						rtos_preempt();
 					}
+					break;
+				case 3:
+					/* Done lane change */
+					track.is_turning_lane = false;
+					motor_set_speed(module_left_wheel,  module_left_wheel->speed_old);
+					motor_set_speed(module_right_wheel, module_right_wheel->speed_old);
+					motor_set_braking2(module_left_wheel, module_right_wheel, false);
+					change_to_next_mode(MODE_FOLLOW_NORMAL_TRACE);
+					piezo_play(module_piezo, &note_turn_found, false);
+					turn_lane_state = 0;
+					break;
 				}
-
-				/* Done lane change */
-				track.is_turning_lane = false;
-				motor_set_speed(module_left_wheel, module_left_wheel->speed_old);
-				motor_set_speed(module_right_wheel, module_right_wheel->speed_old);
-				motor_set_braking2(module_left_wheel, module_right_wheel, false);
-				pid_reset(pid_controller_current);
-				change_to_next_mode(MODE_FOLLOW_NORMAL_TRACE);
-				piezo_play(module_piezo, &note_turn_found, true);
 			} else { ////ADVANCED MODE
 				/// UNIMPLEMENTED
 			}
@@ -387,48 +411,44 @@ void car_algorithm_poll(void)
 		}
 		case MODE_TURNING_CORNER: ////APPLIES TO: BASIC|ADVANCED////////////////////////////////////////////////
 		{
+			static uint8_t turn_corner_state = 0;
 			float limit_speed = 20;
 
 			/* Drive the car through a 90 degree corner (we don't know the direction though, at least in this intel mode) */
-			pid_reset(pid_controller_current);
 
-			while(READ_LINE(sensor_unmsk)) {
-				if(check_leftline(sensor_unmsk) || sensor_unmsk == b11100000)
-					break;
-				else if(check_rightline(sensor_unmsk) || sensor_unmsk == b00000111)
-					break;
-				else
-					pid_update_feedback(pid_controller_current, map_sensor_to_angle(sensor_unmsk), 0);
+			switch(turn_corner_state) {
+			case 0: /* Drive slowly until we reach the corner */
+				if(check_leftline(line_sensor) || line_sensor == b11100000)       turn_corner_state++;
+				else if(check_rightline(line_sensor) || line_sensor == b00000111) turn_corner_state++;
+				else pid_update_feedback(pid_controller_current, map_sensor_to_angle(line_sensor), 0);
 				motor_ctrl_with_differential2(module_left_wheel, module_right_wheel, limit_speed, pid_controller_current->output);
-				rtos_preempt();
-			}
-
-			if(track.next_turn->direction == TURN_RIGHT) {
-				while(READ_LINE(sensor_unmsk)) {
-					if(sensor_unmsk == b00011000) break;
+				track.is_turning_lane   = false;
+				track.is_turning_corner = true;
+				break;
+			case 1:
+				if(track.next_turn->direction == TURN_RIGHT) {
+					if(line_sensor == b00011000) turn_corner_state++;
 					else pid_update_feedback(pid_controller_current, 0, 90);
 					motor_ctrl(module_left_wheel, module_left_wheel->max_speed);
 					motor_ctrl(module_right_wheel, 0);
-					rtos_preempt();
-				}
-			} else {
-				while(READ_LINE(sensor_unmsk)) {
-					if(sensor_unmsk == b01100000) break;
+				} else {
+					if(line_sensor == b00011000) turn_corner_state++;
 					else pid_update_feedback(pid_controller_current, 0, -90);
 					motor_ctrl(module_right_wheel, module_right_wheel->max_speed);
 					motor_ctrl(module_left_wheel, 0);
-					rtos_preempt();
 				}
+				break;
+			case 2:
+				/* Done 90 deg corner */
+				track.is_turning_corner = false;
+				motor_set_speed(module_left_wheel,  module_left_wheel->speed_old);
+				motor_set_speed(module_right_wheel, module_right_wheel->speed_old);
+				motor_set_braking2(module_left_wheel, module_right_wheel, false);
+				change_to_next_mode(MODE_FOLLOW_NORMAL_TRACE);
+				piezo_play(module_piezo, &note_turn_found, false);
+				turn_corner_state = 0;
+				break;
 			}
-
-			/* Done 90 deg corner */
-			track.is_turning_corner = false;
-			motor_set_speed(module_left_wheel, module_left_wheel->speed_old);
-			motor_set_speed(module_right_wheel, module_right_wheel->speed_old);
-			motor_set_braking2(module_left_wheel, module_right_wheel, false);
-			pid_reset(pid_controller_current);
-			change_to_next_mode(MODE_FOLLOW_NORMAL_TRACE);
-			piezo_play(module_piezo, &note_turn_found, true);
 
 			break;
 		}
@@ -439,10 +459,9 @@ void car_algorithm_poll(void)
 			uint8_t sensor_data = ltracker_read(MASK4_4, &motors_updated);
 
 			/* Keep driving until we reach the end of the 'blind' data set */
-			handle_normal_drive(sensor_data, false, !motors_updated);
+			// xxx UNIMPLEMENTED xxx handle_normal_drive(sensor_data, false, !motors_updated); xxx UNIMPLEMENTED xxx
 			break;
 		}
 	}
 }
 ///// END - MAIN CONTROL FINITE STATE MACHINE /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-

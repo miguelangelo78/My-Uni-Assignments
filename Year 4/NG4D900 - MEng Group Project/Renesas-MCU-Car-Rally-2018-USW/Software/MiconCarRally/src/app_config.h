@@ -8,14 +8,13 @@
 #ifndef LIB_GLOBALS_H_
 #define LIB_GLOBALS_H_
 
-#include <platform.h>
-
 /******** FEATURES SUPPORTED ********/
 #define ENABLE_DEBUGGING           (1)
 #define ENABLE_COMMUNICATIONS      (1)
 #define ENABLE_SPWM                (1)
 #define ENABLE_MOTORS              (1)
 #define ENABLE_MOTORS_SAFEMODE     (1)
+#define ENABLE_RPM_COUNTER         (0)
 #define ENABLE_SERVO               (1)
 #define ENABLE_ACCELEROMETER       (0)
 #define ENABLE_SOUND               (1)
@@ -31,9 +30,15 @@
 #define ENABLE_REMOTE_CONTROL_MODE (1)
 /************************************/
 
+/*** CAR VERSION ****/
+#define CAR_YEAR 2017
+/********************/
+
+#include <platform.h>
+#include <pin_mapping.h>
+
 /******** RTOS APPLICATION DEFINITIONS **************************************************************************/
 #define APP_CFG_POLLFREQ OS_CFG_TICK_RATE_HZ /* Frequency of the polling                                        */
-
 /** INFO: RTOS tasks allocated:
  * 0- main_app            @ src/app_main.c line 132
  * 1- suart_rx_cbk_dspchr @ lib/drivers/communications/protocols/suart/suart.c line 372
@@ -52,9 +57,9 @@
 /****************************************************************************************************************/
 
 /********* PID CONTROLLER DEFINITIONS ***************************/
-#define HANDLE_KP       5   /* Normal operation P coefficient */
-#define HANDLE_KI       0.5 /* Normal operation I coefficient */
-#define HANDLE_KD       37  /* Normal operation D coefficient */
+#define HANDLE_KP       2.25 /* Normal operation P coefficient */
+#define HANDLE_KI       0.75 /* Normal operation I coefficient */
+#define HANDLE_KD       37   /* Normal operation D coefficient */
 
 #define CRANK_HANDLE_KP 5   /* Crank operation P coefficient  */
 #define CRANK_HANDLE_KI 0.5 /* Crank operation I coefficient  */
@@ -62,6 +67,10 @@
 
 #define INT_WIND_PERIOD 100 /* The period at which the integral is reset */
 /****************************************************************/
+
+/********* TIMEOUT DEFINITIONS ******************************************************************************************/
+#define TAPE_DETECTION_TIMEOUT_MS 200 /* How long shall we wait before the car finishes processing the first white tape */
+/************************************************************************************************************************/
 
 /********* ALGORITHM FSM DEFINITIONS ****************************/
 enum MODE {
@@ -74,7 +83,7 @@ enum MODE {
 	MODE_FOUND_RIGHT_TAPE,     /* (6)  We have encountered the white tape on the right side of the track                                                 */
 	MODE_ALIGN_BOUNDARY,       /* (7)  We are currently aligning the car with the left/right side of the track                                           */
 	MODE_TURNING_LANE,         /* (8)  We are currently turning the car through a lane change in basic or advanced mode                                  */
-	MODE_TURNING_CORNER,       /* (9) We are currently turning the car through a 90 degree corner in basic or advanced mode                              */
+	MODE_TURNING_CORNER,       /* (9)  We are currently turning the car through a 90 degree corner in basic or advanced mode                             */
 	MODE_TURNING_CORNER_BLIND, /* (10) We are currently turning the car through a lane change/90 degree blindly in smart mode                            */
 	MODE_ACCIDENT,             /* (11) We have gone off track. Wait until the user puts the car back on the track and presses the button                 */
 	MODE_RACE_COMPLETE,        /* (12) We have completed the race                                                                                        */

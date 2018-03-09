@@ -1,0 +1,6 @@
+workspace "E:\Users\Miguel\Dropbox2\Dropbox\My-Uni-Assignments\Year 4\NG4D900 - MEng Group Project\Renesas-MCU-Car-Rally-2018-USW\Software\MiconCarRally\toolchain\tools\fdt_flash_tool\fdt_workspace_2017\fdt_workspace.aws"
+disconnect reset
+connect com9
+download "E:\Users\Miguel\Dropbox2\Dropbox\My-Uni-Assignments\Year 4\NG4D900 - MEng Group Project\Renesas-MCU-Car-Rally-2018-USW\Software\MiconCarRally\Build\MiconCarRally.mot"|user
+disconnect reset
+exit 

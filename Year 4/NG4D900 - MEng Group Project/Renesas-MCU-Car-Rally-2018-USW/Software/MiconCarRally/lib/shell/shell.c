@@ -140,7 +140,7 @@ void shell_task(void * args) {
 
 					/* Free arguments */
 					for(int j = 0; j < spaces_found; j++)
-						free(argv[i]);
+						free(argv[j]);
 					free(argv);
 					break;
 				}

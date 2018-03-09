@@ -16,9 +16,21 @@
 #define SERVO_MIN_ANGLE         (-(SERVO_ANGLE_RANGE / 2))
 #define SERVO_CENTER_ANGLE      (0)
 #define SERVO_MAX_ANGLE         (SERVO_ANGLE_RANGE / 2)
+
+#if CAR_YEAR == 2018
+
 #define SERVO_MIN_ANGLE_DUTY    (10.0f)
 #define SERVO_CENTER_ANGLE_DUTY (8.255f)
 #define SERVO_MAX_ANGLE_DUTY    (6.51f)
+
+#elif CAR_YEAR == 2017
+
+#define SERVO_MIN_ANGLE_DUTY    (10.0f)
+#define SERVO_CENTER_ANGLE_DUTY (7.5f)
+#define SERVO_MAX_ANGLE_DUTY    (5.0f)
+
+#endif
+
 
 enum SERVO_RETCODE {
 	SERVO_OK,

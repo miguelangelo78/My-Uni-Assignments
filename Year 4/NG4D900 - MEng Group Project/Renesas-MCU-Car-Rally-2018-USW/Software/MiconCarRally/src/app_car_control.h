@@ -12,6 +12,9 @@
 #include <stddef.h>
 #include <utils.h>
 
+#include <app_config.h>
+#include <app_template_generator.h>
+
 #include <math/pid/pid.h>
 #include <actuators/servo/servo.h>
 #include <sensors/ltracker/ltracker.h>
@@ -21,9 +24,6 @@
 #include <sound/tunes.h>
 #include <onchip/led.h>
 #include <onchip/switch.h>
-
-#include <app_config.h>
-#include <app_template_generator.h>
 
 /* Read white tape on both sides of the track */
 #define check_crossline(sensor_data) ((sensor_data & MASK3_3) == b11100111)
@@ -57,10 +57,10 @@ extern pid_t   * pid_controller_current;
 extern float     pid_output;
 extern piezo_t * module_piezo;
 
-void  kickstart_car(void);
-void  car_algorithm_poll(void);
-void  update_fast_control_variables(void);
-float map_sensor_to_angle(uint8_t sensor_data);
-void  log_unrecognized_pattern(uint8_t pattern);
+void    car_kickstart(void);
+void    car_algorithm_poll(uint8_t line_sensor);
+uint8_t car_update_control(void);
+float   map_sensor_to_angle(uint8_t sensor_data);
+void    log_unrecognized_pattern(uint8_t pattern);
 
 #endif /* SRC_APP_CAR_CONTROL_H_ */

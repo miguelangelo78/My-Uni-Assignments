@@ -29,6 +29,6 @@
 [DEFAULT_DEBUG_FORMAT]
 "" 
 [FLASH_DETAILS]
-"1228.800049" 8 4 "C" 0 "COM11" 38400 1 "RX600 Series" 1 0 0 0 1 0 1 "E:\Users\Miguel\Dropbox2\Dropbox\Renesas-MCU-Car-Rally-2018-USW\Software\MiconCarRally\toolchain\tools\fdt_flash_tool\fdt_workspace\fdt_workspace\" "" "" "" "" 
+"1228.800049" 8 4 "C" 0 "COM11" 38400 1 "RX600 Series" 1 0 0 0 1 0 1 "E:\Users\Miguel\Dropbox2\Dropbox\My-Uni-Assignments\Year 4\NG4D900 - MEng Group Project\Renesas-MCU-Car-Rally-2018-USW\Software\MiconCarRally\toolchain\tools\fdt_flash_tool\fdt_workspace_2018\fdt_workspace\" "" "" "" "" 
 [BREAKPOINTS]
 [END]

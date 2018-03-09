@@ -5,12 +5,7 @@
  *      Author: Miguel
  */
 
-#ifndef LIB_PIN_MAPPING_H_
-#define LIB_PIN_MAPPING_H_
-
 #include <iodefine.h>
-
-#define CAR_YEAR 2018
 
 /************************************/
 /******** MCU's Debug LEDs **********/
@@ -162,4 +157,3 @@
 #define DAT_SUART_RX PORT9.PORT.BIT.B4
 /*************************************/
 
-#endif /* LIB_PIN_MAPPING_H_ */
