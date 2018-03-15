@@ -15,6 +15,7 @@
 bool is_piezo_init = false;
 
 enum MIDI_LUT midi_lut_list[] = {
+#if ENABLE_SOUND == 1
 	A0, B0,
 	C1, D1, E1, F1, G1, A1, B1,
 	C2, D2, E2, F2, G2, A2, B2,
@@ -24,6 +25,9 @@ enum MIDI_LUT midi_lut_list[] = {
 	C6, D6, E6, F6, G6, A6, B6,
 	C7, D7, E7, F7, G7, A7, B7,
 	C8
+#else
+	MIDI_NULL
+#endif
 };
 
 static void piezo_player(void * args) {
@@ -54,7 +58,12 @@ piezo_t * piezo_init(void) {
 	if(is_piezo_init)
 		return NULL;
 
-	spwm_t * dev_handle = spwm_create(SOUND_MAX_FREQ, 0, SPWM_MODE_BOTHLVL, 0, SPWM_DEV_PIEZO);
+	spwm_t * dev_handle = NULL;
+
+#if ENABLE_SOUND == 1
+	dev_handle = spwm_create(SOUND_MAX_FREQ, 0, SPWM_MODE_BOTHLVL, 0, SPWM_DEV_PIEZO);
+#endif
+
 	if(dev_handle == NULL)
 		return NULL;
 

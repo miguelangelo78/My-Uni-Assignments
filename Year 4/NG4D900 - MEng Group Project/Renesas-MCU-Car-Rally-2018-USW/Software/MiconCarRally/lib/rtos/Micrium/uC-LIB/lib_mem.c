@@ -124,9 +124,11 @@ static  void          Mem_SegCreateCritical    (const  CPU_CHAR      *p_name,
                                                        CPU_SIZE_T     padding_align,
                                                        CPU_SIZE_T     size);
 
+#if (LIB_MEM_CFG_HEAP_SIZE > 0)
 static  MEM_SEG      *Mem_SegOverlapChkCritical(       CPU_ADDR       seg_base_addr,
                                                        CPU_SIZE_T     size,
                                                        LIB_ERR       *p_err);
+#endif
 
 static  void         *Mem_SegAllocInternal     (const  CPU_CHAR      *p_name,
                                                        MEM_SEG       *p_seg,
@@ -1234,11 +1236,10 @@ void  *Mem_SegAllocHW (const  CPU_CHAR    *p_name,
                               CPU_SIZE_T  *p_bytes_reqd,
                               LIB_ERR     *p_err)
 {
-    CPU_SIZE_T   padding_align;
-    void        *p_blk;
+    void * p_blk = 0;
 
-
-    padding_align = (p_seg != DEF_NULL) ? p_seg->PaddingAlign : Mem_SegHeap.PaddingAlign;
+#if (LIB_MEM_CFG_HEAP_SIZE > 0)
+    CPU_SIZE_T padding_align = (p_seg != DEF_NULL) ? p_seg->PaddingAlign : Mem_SegHeap.PaddingAlign;
 
     p_blk = Mem_SegAllocInternal(p_name,
                                  p_seg,
@@ -1247,6 +1248,7 @@ void  *Mem_SegAllocHW (const  CPU_CHAR    *p_name,
                                  padding_align,
                                  p_bytes_reqd,
                                  p_err);
+#endif
 
     return (p_blk);
 }
@@ -1880,7 +1882,8 @@ void  Mem_DynPoolCreateHW (const  CPU_CHAR      *p_name,
                                   CPU_SIZE_T     blk_qty_max,
                                   LIB_ERR       *p_err)
 {
-    CPU_SIZE_T  blk_padding_align;
+#if (LIB_MEM_CFG_HEAP_SIZE > 0)
+	CPU_SIZE_T  blk_padding_align;
 
 
     blk_padding_align = (p_seg != DEF_NULL) ? p_seg->PaddingAlign : Mem_SegHeap.PaddingAlign;
@@ -1894,6 +1897,7 @@ void  Mem_DynPoolCreateHW (const  CPU_CHAR      *p_name,
                               blk_qty_init,
                               blk_qty_max,
                               p_err);
+#endif
 }
 
 
@@ -2305,6 +2309,7 @@ static  void  Mem_SegCreateCritical(const  CPU_CHAR    *p_name,
 }
 
 
+#if (LIB_MEM_CFG_HEAP_SIZE > 0)
 /*
 *********************************************************************************************************
 *                                      Mem_SegOverlapChkCritical()
@@ -2364,7 +2369,7 @@ static  MEM_SEG  *Mem_SegOverlapChkCritical (CPU_ADDR     seg_base_addr,
 
     return (DEF_NULL);
 }
-
+#endif
 
 /*
 *********************************************************************************************************

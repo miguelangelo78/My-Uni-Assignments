@@ -59,10 +59,10 @@ float pid_control_recalculate(pid_t * pid_handle) {
 	if(pid_handle->output > pid_handle->max_val)
 		pid_handle->output = pid_handle->max_val;
 
-	static int ctr = 0;
-	if(ctr++ % pid_handle->integral_windup_period == 0) {
+	static int intwind_delay_ctr = 0;
+	if(intwind_delay_ctr++ % pid_handle->integral_windup_period == 0) {
 		pid_handle->integral = 0;
-		ctr = 0;
+		intwind_delay_ctr = 0;
 	}
 
 	pid_handle->last_error = pid_handle->error;

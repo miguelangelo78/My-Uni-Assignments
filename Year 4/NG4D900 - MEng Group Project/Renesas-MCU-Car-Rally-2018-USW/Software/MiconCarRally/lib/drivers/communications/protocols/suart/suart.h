@@ -60,13 +60,12 @@ enum SUART_ERRCODE suart_tx_sync(suart_t * handle, uint8_t byte);
 enum SUART_ERRCODE suart_tx_buff(suart_t * handle, uint8_t * buff, uint32_t bufflen);
 enum SUART_ERRCODE suart_tx_buff_sync(suart_t * handle, uint8_t * buff, uint32_t bufflen);
 enum SUART_ERRCODE suart_printstr(suart_t * handle, char * str);
-enum SUART_ERRCODE suart_printf(suart_t * handle, char * fmt, ...);
 
 #define suart_printch(handle, ch) suart_tx_sync(handle, ch)
 
 void      suart_poll(void);
 suart_t * suart_init(uint32_t baudrate, suart_rx_cback_t rx_cback_ptr, uint32_t tx_bufflen, uint32_t rx_bufflen);
 
-int stdin_available(); /** Declared in <top>/lib/clib/stdio_redirect.c **/
+int stdin_available(void); /** Declared in <top>/lib/clib/stdio_redirect.c **/
 
 #endif /* LIB_DRIVERS_COMMUNICATIONS_PROTOCOLS_SUART_SUART_H_ */

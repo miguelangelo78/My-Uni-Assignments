@@ -123,37 +123,31 @@ bool change_mode_on_line_detection(uint8_t sensor_data)
 	/* Check crossline tape which covers both lanes */
 	if((ret = check_crossline(sensor_data))) {
 #if ENABLE_TEMPLATE_GENERATION == 1
-		template_generator_begin();
-#else
 		if(ENABLE_DIPSWITCH && is_in_template_generation_mode())
 			template_generator_begin();
 		else
-			change_to_new_mode(get_next_turn_mode_from_intel(false), MODE_FOLLOW_NORMAL_TRACE);
 #endif
+			change_to_new_mode(get_next_turn_mode_from_intel(false), MODE_FOLLOW_NORMAL_TRACE);
 	}
 
 	/* Check white tape which covers only the right lane */
 	if(!ret && (ret = check_rightline(sensor_data))) {
 #if ENABLE_TEMPLATE_GENERATION == 1
-		template_generator_begin();
-#else
 		if(ENABLE_DIPSWITCH && is_in_template_generation_mode())
 			template_generator_begin();
 		else
-			change_to_new_mode(MODE_FOUND_RIGHT_TAPE, MODE_NULL);
 #endif
+			change_to_new_mode(MODE_FOUND_RIGHT_TAPE, MODE_NULL);
 	}
 
 	/* Check white tape which covers only the left lane */
 	if(!ret && (ret = check_leftline(sensor_data))) {
 #if ENABLE_TEMPLATE_GENERATION == 1
-		template_generator_begin();
-#else
 		if(ENABLE_DIPSWITCH && is_in_template_generation_mode())
 			template_generator_begin();
 		else
-			change_to_new_mode(MODE_FOUND_LEFT_TAPE, MODE_NULL);
 #endif
+			change_to_new_mode(MODE_FOUND_LEFT_TAPE, MODE_NULL);
 	}
 
 	if(ret) {
@@ -169,8 +163,6 @@ bool change_mode_on_line_detection(uint8_t sensor_data)
 	}
 
 #if ENABLE_TEMPLATE_GENERATION == 1
-	template_generator_update(sensor_data);
-#else
 	if(ENABLE_DIPSWITCH && is_in_template_generation_mode())
 		template_generator_update(sensor_data);
 #endif

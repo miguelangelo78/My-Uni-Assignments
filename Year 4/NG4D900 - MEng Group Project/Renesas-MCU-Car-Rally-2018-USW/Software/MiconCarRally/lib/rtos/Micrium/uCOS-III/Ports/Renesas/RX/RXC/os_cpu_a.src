@@ -122,7 +122,7 @@
 ;                      b) Switch to the highest priority task.
 ;*********************************************************************************************************
 
-    .SECTION    P, CODE
+    .SECTION    PBTLDR, CODE
     .GLB        _OSStartHighRdy
 
 _OSStartHighRdy:
@@ -224,7 +224,7 @@ _OSStartHighRdy:
 ;                                                                         HIGH MEMORY
 ;*********************************************************************************************************
 
-    .SECTION    P, CODE
+    .SECTION    PBTLDR, CODE
     .GLB        _OSCtxSwISR
 
 _OSCtxSwISR:

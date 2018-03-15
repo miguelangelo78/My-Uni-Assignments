@@ -5,6 +5,7 @@
 
 #include <communications/protocols/suart/suart.h>
 #include <communications/protocols/packetman/packetman.h>
+#include <bootloader/bootloader.h>
 #include <debug.h>
 #include <shell.h>
 
@@ -73,17 +74,14 @@ void status_logger_task(void * args) {
 				pid_controller_current->output,
 				module_left_wheel->rpm_measured,
 				rpmcounter_left_read(),
-				module_left_wheel->speed,
+				module_left_wheel->dev_handle->match_counter,
 				module_right_wheel->rpm_measured,
 				rpmcounter_right_read(),
-				module_right_wheel->speed
+				module_right_wheel->dev_handle->match_counter
 			);
 		}
 
 #if ENABLE_TEMPLATE_GENERATION == 1
-		if(template_generator_is_finished())
-			template_generator_dump();
-#else
 		if(ENABLE_DIPSWITCH && is_in_template_generation_mode() && template_generator_is_finished())
 			template_generator_dump();
 #endif
@@ -120,13 +118,7 @@ void status_logger_task(void * args) {
 }
 
 ////EXECUTION FREQUENCY = ~45.18 kHz///////////////////////////////////////////
-void poller() {
-
-#if ENABLE_COMMUNICATIONS == 1
-	/* Update Software UART */
-	suart_poll();
-#endif
-
+void user_poller(void) {
 	/* Update the controls every 2 interrupt cycles. (For CPU execution speed reasons) */
 	static int control_update_delay = 0;
 	if(++control_update_delay >= 2) {
@@ -141,7 +133,7 @@ void poller() {
 		}
 	}
 
-#if ENABLE_DEBUG_LEDS == 1 && ENABLE_DEBUGGING
+#if ENABLE_DEBUG_LEDS == 1 && ENABLE_DEBUGGING == 1
 	/* Update debug LEDs with Software PWM */
 	if(!packetman_is_connected())
 		debug_leds_update_pwm();
@@ -152,6 +144,25 @@ void poller() {
 	spwm_poll_all();
 #endif
 }
+
+#pragma section BTLDR
+////EXECUTION FREQUENCY = ~45.18 kHz///////////////////////////////////////////
+void kernel_poller(void) {
+
+#if ENABLE_COMMUNICATIONS == 1
+	/* Update Software UART */
+	suart_poll();
+
+	if(is_bootloader_busy) {
+		/* Brute force the motors to stop (since we don't have PWM available right now) */
+		DAT_MOTOR_L = DAT_MOTOR_R = 0;
+	} else {
+		/* Serve the user now that we've served the kernel */
+		user_poller();
+	}
+#endif
+}
+#pragma section
 
 ///////////////////////////////////////////////////////////////////////////////
 void main_app(void * args)
@@ -240,7 +251,7 @@ void main_app(void * args)
 void main(void)
 {
 	/* Install fast poller for the Software UART protocol */
-	OS_FastTickRegister(poller, true);
+	OS_FastTickRegister(kernel_poller, true);
 
 	/* Launch RTOS which starts with a main application / task */
 	rtos_launch(main_app);

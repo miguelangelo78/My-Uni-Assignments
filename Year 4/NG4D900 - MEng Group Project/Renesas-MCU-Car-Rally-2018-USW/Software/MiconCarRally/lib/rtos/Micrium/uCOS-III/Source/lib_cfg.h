@@ -109,12 +109,12 @@
 */
 
                                                         /* Configure memory allocation feature (see Note #1) :          */
-#define  LIB_MEM_CFG_ALLOC_EN           DEF_ENABLED
+#define  LIB_MEM_CFG_ALLOC_EN           DEF_DISABLED
                                                         /*   DEF_DISABLED     Memory allocation DISABLED                */
                                                         /*   DEF_ENABLED      Memory allocation ENABLED                 */
 
 
-#define  LIB_MEM_CFG_HEAP_SIZE             1u * 1024u   /* Configure heap memory size         [see Note #2a].           */
+#define  LIB_MEM_CFG_HEAP_SIZE             0            /* Configure heap memory size         [see Note #2a].           */
 
 #if 0                                                   /* Configure heap memory base address (see Note #2b).           */
 #define  LIB_MEM_CFG_HEAP_BASE_ADDR       0x00000000u

@@ -8,6 +8,7 @@
 #include "tunes.h"
 
 note_t tune_startup[] = {
+#if ENABLE_SOUND == 1
 	{D5, 80 },
 	{E5, 80 },
 	{F5, 80 },
@@ -17,9 +18,13 @@ note_t tune_startup[] = {
 	{B6, 80 },
 	{E7, 80 },
 	{G7, 200}
+#else
+	{MIDI_NULL, 0}
+#endif
 };
 
 note_t tune_connected[] = {
+#if ENABLE_SOUND == 1
 	{D5, 100},
 	{0,  80 },
 	{E5, 100},
@@ -29,6 +34,9 @@ note_t tune_connected[] = {
 	{C4, 100},
 	{0,  80 },
 	{G4, 220}
+#else
+	{MIDI_NULL, 0}
+#endif
 };
 
 note_t note_startswitch = { C8, 250 };

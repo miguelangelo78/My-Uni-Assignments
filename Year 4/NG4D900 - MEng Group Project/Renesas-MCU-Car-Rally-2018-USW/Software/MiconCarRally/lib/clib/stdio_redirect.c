@@ -12,6 +12,7 @@
 #include <rtos_inc.h>
 #include <drivers/communications/protocols/suart/suart.h>
 #include <drivers/onchip/led.h>
+#include <bootloader/bootloader.h>
 #include <app_config.h>
 
 suart_t * module_iostream; /* Pointer to the software UART module handle */
@@ -71,9 +72,13 @@ int read(int fd, const void *buf, size_t count) {
 
 	/* And now echo the received data back into stdout */
 	for(int i = 0; i < count; i++) {
-		debug_leds_update(1);
+		if(!is_bootloader_busy) /* (Don't want to use the LEDs if the MCU is flashing its own ROM) */
+			debug_leds_update(1);
+
 		putchar(((uint8_t*)buf)[i]);
-		debug_leds_reset(1);
+
+		if(!is_bootloader_busy) /* (Don't want to use the LEDs if the MCU is flashing its own ROM) */
+			debug_leds_reset(1);
 	}
 
 	return count;
@@ -90,6 +95,6 @@ int stdin_push_buffer(int fd, const void* buf, size_t count) {
 	return count;
 }
 
-int stdin_available() {
+int stdin_available(void) {
 	return stdin_fifo->buff_fifo_sz;
 }

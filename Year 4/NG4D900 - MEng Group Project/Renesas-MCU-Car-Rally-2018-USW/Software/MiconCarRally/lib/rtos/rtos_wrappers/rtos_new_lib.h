@@ -11,8 +11,26 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <rtos_inc.h>
+#include <app_config.h>
 
-#define RTOS_MAX_TIMEOUT_COUNTERS 10
+/* Generalized task / process properties */
+#define RTOS_MAX_TIMEOUT_COUNTERS 2
+#define KMAIN_STACKSIZE           96
+#ifndef RTOS_PROCESS_STACKSIZE
+#define RTOS_PROCESS_STACKSIZE 256
+#endif
+#ifndef RTOS_PROCESS_DEFAULTPRIORITY
+#define RTOS_PROCESS_DEFAULTPRIORITY 5
+#endif
+#ifndef RTOS_PROCESS_MAXCOUNT
+#define RTOS_PROCESS_MAXCOUNT 5
+#endif
+
+typedef struct {
+	OS_TCB       tcb;
+	CPU_STK_SIZE stacksize;
+	CPU_STK      stack[RTOS_PROCESS_STACKSIZE];
+} process_t;
 
 void rtos_spawn_task_args_quanta(char * proc_name, OS_TASK_PTR task_ptr, void * args, uint16_t quanta);
 void rtos_spawn_task_args(char * proc_name, OS_TASK_PTR task_ptr, void * args);

@@ -5,6 +5,9 @@
  *      Author: Miguel
  */
 
+#include <app_config.h>
+#if ENABLE_TEMPLATE_GENERATION == 1
+
 #include <debug.h>
 #include <app_template_generator.h>
 
@@ -53,3 +56,5 @@ bool template_generator_dump(void) {
 
 	return false;
 }
+
+#endif

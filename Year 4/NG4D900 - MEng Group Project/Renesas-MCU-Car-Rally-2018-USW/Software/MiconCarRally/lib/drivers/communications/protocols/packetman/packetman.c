@@ -18,6 +18,7 @@
 #include <sound/piezo.h>
 #include <sound/tunes.h>
 #include <shell/shell.h>
+#include <bootloader/bootloader.h>
 #include "packetman.h"
 #include "packet_types.h"
 #include "data_packer.h"
@@ -143,7 +144,8 @@ void packetman_on_bluetooth_rx(uint8_t * buff, uint32_t bufflen) {
 			/* Redirect packet to the application data router */
 			for(int i = 0; i < command_count; i++) {
 				if(rx_packet->payloadType == command_list[i].packet_compatibility) {
-					debug_leds_update(3);
+					if(!is_bootloader_busy)
+						debug_leds_update(3);
 
 					if(rx_packet->payloadType == PACKET_CMD) {
 						/* Route this packet to the shell packet router function */
@@ -212,7 +214,8 @@ void packetman_send_packet(void * payload_data, enum PacketType payload_type) {
 	enum STREAM_MODE old_stream_mode = stream_mode;
 	stream_mode = STREAM_PACKET;
 
-	debug_leds_update(2);
+	if(!is_bootloader_busy)
+		debug_leds_update(2);
 
 	/* Send the header first in big endian format */
 	for(int i = 0; i < PACKET_HEADER_SIZE; i += sizeof(int))
@@ -296,7 +299,8 @@ void update_communication(void) {
 
 	switch(++update_delta) {
 	case PERIOD_KEEPALIVE: {
-		debug_leds_reset_all();
+		if(!is_bootloader_busy)
+			debug_leds_reset_all();
 
 		/* Restart the update cycle */
 		update_delta = 0;
@@ -337,7 +341,7 @@ void update_communication(void) {
 	}
 
 	/* Play a tune when there's a connection and disconnection event */
-	if(module_piezo && !module_piezo->is_playing) {
+	if(!is_bootloader_busy && module_piezo && !module_piezo->is_playing) {
 		if(play_connected_tune)
 			play_connected_tune = piezo_play_song_async(module_piezo, tune_connected, arraysize(tune_connected), false) != PIEZO_SONG_DONE;
 		else if(play_disconnected_tune)

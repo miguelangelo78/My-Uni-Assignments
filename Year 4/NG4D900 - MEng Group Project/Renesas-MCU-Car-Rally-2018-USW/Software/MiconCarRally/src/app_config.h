@@ -8,6 +8,10 @@
 #ifndef LIB_GLOBALS_H_
 #define LIB_GLOBALS_H_
 
+/*** CAR VERSION ****/
+#define CAR_YEAR 2018
+/********************/
+
 /******** FEATURES SUPPORTED ********/
 #define ENABLE_DEBUGGING           (1)
 #define ENABLE_COMMUNICATIONS      (1)
@@ -17,7 +21,11 @@
 #define ENABLE_RPM_COUNTER         (0)
 #define ENABLE_SERVO               (1)
 #define ENABLE_ACCELEROMETER       (0)
+#if CAR_YEAR == 2018
 #define ENABLE_SOUND               (1)
+#else
+#define ENABLE_SOUND               (0)
+#endif
 #define ENABLE_PID                 (1)
 #define ENABLE_DYNAMIC_PID         (0)
 #define ENABLE_STARTSWITCH         (1)
@@ -30,15 +38,22 @@
 #define ENABLE_REMOTE_CONTROL_MODE (1)
 /************************************/
 
-/*** CAR VERSION ****/
-#define CAR_YEAR 2017
-/********************/
-
 #include <platform.h>
 #include <pin_mapping.h>
 
 /******** RTOS APPLICATION DEFINITIONS **************************************************************************/
-#define APP_CFG_POLLFREQ OS_CFG_TICK_RATE_HZ /* Frequency of the polling                                        */
+#define APP_CFG_POLLFREQ             OS_CFG_TICK_RATE_HZ /* Frequency of the polling                            */
+#define RTOS_PROCESS_STACKSIZE       150
+#define RTOS_PROCESS_DEFAULTPRIORITY 5
+#if ENABLE_SOUND == 0
+#if ENABLE_STATUS_LOGGER == 0
+#define RTOS_PROCESS_MAXCOUNT 3
+#else
+#define RTOS_PROCESS_MAXCOUNT 4
+#endif
+#else
+#define RTOS_PROCESS_MAXCOUNT 5
+#endif
 /** INFO: RTOS tasks allocated:
  * 0- main_app            @ src/app_main.c line 132
  * 1- suart_rx_cbk_dspchr @ lib/drivers/communications/protocols/suart/suart.c line 372

@@ -9,9 +9,15 @@
 #define LIB_DRIVERS_SOUND_TUNES_H_
 
 #include "piezo.h"
+#include <app_config.h>
 
+#if ENABLE_SOUND == 1
 extern note_t tune_startup[9];
 extern note_t tune_connected[9];
+#else
+extern note_t tune_startup[1];
+extern note_t tune_connected[1];
+#endif
 extern note_t note_startswitch;
 extern note_t note_alert;
 extern note_t note_turn_found;

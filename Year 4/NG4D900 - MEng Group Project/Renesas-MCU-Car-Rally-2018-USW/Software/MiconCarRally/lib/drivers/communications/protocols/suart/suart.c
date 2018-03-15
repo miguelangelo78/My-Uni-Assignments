@@ -15,6 +15,7 @@
 #include <communications/protocols/suart/suart.h>
 #include <rtos/Micrium/uCOS-III/Source/os_cfg_app.h>
 #include <onchip/led.h>
+#include <bootloader/bootloader.h>
 #include <app_config.h>
 
 #if (1) /**** REGION: SUART DRIVER PRIVATE IMPLEMENTATION ****/
@@ -151,7 +152,7 @@ void suart_tx_poll(suart_t * chan) {
 		case 0: /* Send start bit */
 			DAT_SUART_TX = 0;
 			chan->tx_delta_polls++;
-			if(packetman_get_comms_status() <= STREAM_BYTE)
+			if(!is_bootloader_busy && packetman_get_comms_status() <= STREAM_BYTE)
 				debug_leds_update(0);
 			break;
 		case 9: /* Send stop bit and finish transmission */
@@ -166,7 +167,7 @@ void suart_tx_poll(suart_t * chan) {
 				/* Send next byte on the FIFO queue / buffer */
 				chan->tx_fifo->buff_fifo_idx++;
 			}
-			if(packetman_get_comms_status() <= STREAM_BYTE)
+			if(!is_bootloader_busy && packetman_get_comms_status() <= STREAM_BYTE)
 				debug_leds_reset(0);
 			break;
 		default: /* Send 'nth' data bit */
@@ -313,20 +314,6 @@ enum SUART_ERRCODE suart_tx_buff_sync(suart_t * handle, uint8_t * buff, uint32_t
 
 enum SUART_ERRCODE suart_printstr(suart_t * handle, char * str) {
 	return suart_tx_buff_sync(handle, (uint8_t*)str, strlen(str));
-}
-
-enum SUART_ERRCODE suart_printf(suart_t * handle, char * fmt, ...) {
-	static char printf_buff[128];
-	int ret = -1;
-	va_list args;
-	va_start(args, fmt);
-	ret = vsprintf(printf_buff, fmt, args);
-	va_end(args);
-	if(ret != -1) {
-		return suart_tx_buff_sync(handle, (uint8_t*)printf_buff, strlen(printf_buff));
-	} else {
-		return SUART_ERR_BADTX;
-	}
 }
 
 void stdio_init(suart_t * iostream_device);

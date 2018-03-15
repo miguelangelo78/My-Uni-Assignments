@@ -16,31 +16,13 @@
 #include <app_config.h>
 #include <app_car_control.h>
 
-extern cmd_t command_list[];
-extern int   command_count;
+extern const cmd_t command_list[];
+extern int         command_count;
 
 /*****************************************/
 /* Implementation of the shell functions */
 /*   (Create new shell functions here)   */
 /*****************************************/
-int console_clear(int argc, char ** argv) {
-	putchar(27);
-	printf("[2J");
-	putchar(27);
-	printf("[H");
-
-	return 0;
-}
-
-int help(int argc, char ** argv) {
-	puts("\nHELP: supported commands");
-
-	for(int i = 0; i < command_count; i++)
-		if(command_list[i].packet_compatibility == PACKET_CMD)
-			printf("%d - %s\n", i + 1, command_list[i].command);
-
-	return 0;
-}
 
 #include <actuators/servo/servo.h>
 #include <actuators/motor_driver/motor_driver.h>
@@ -51,37 +33,18 @@ extern servo_t * module_servo;
 
 int dc_motor_control(int argc, char ** argv) {
 	if(argc < 2) {
-		DEBUG("Usage: motor <left|right|all> <rpm|[-100..100]>");
+		DEBUG("Usage: motor <left|right|all> <[-100..100]>");
 		return 1;
 	}
 
 	if(!strcmp(argv[1], "left")) {
-
-		if(!strcmp(argv[2], "rpm")) {
-			float rpm_measured_copy = module_left_wheel->rpm_measured;
-			DEBUG("Left RPM: %d", rpm_measured_copy);
-		} else {
-			motor_ctrl(module_left_wheel, atof(argv[2]));
-		}
+		motor_ctrl(module_left_wheel, atof(argv[2]));
 	} else if(!strcmp(argv[1], "right")) {
-
-		if(!strcmp(argv[2], "rpm")) {
-			float rpm_measured_copy = module_right_wheel->rpm_measured;
-			DEBUG("Right RPM: %d", rpm_measured_copy);
-		} else {
-			motor_ctrl(module_right_wheel, atof(argv[2]));
-		}
+		motor_ctrl(module_right_wheel, atof(argv[2]));
 	} else if(!strcmp(argv[1], "all")) {
-
-		if(!strcmp(argv[2], "rpm")) {
-			float rpm_left_measured_copy  = module_left_wheel->rpm_measured;
-			float rpm_right_measured_copy = module_right_wheel->rpm_measured;
-			DEBUG("Left RPM: %d | Right RPM: %d", rpm_left_measured_copy, rpm_right_measured_copy);
-		} else {
-			float speed = atof(argv[2]);
-			motor_ctrl(module_left_wheel,  speed);
-			motor_ctrl(module_right_wheel, speed);
-		}
+		float speed = atof(argv[2]);
+		motor_ctrl(module_left_wheel,  speed);
+		motor_ctrl(module_right_wheel, speed);
 	}
 
 	return 0;
@@ -96,13 +59,11 @@ int servo_control(int argc, char ** argv) {
 	if(argc == 3) {
 		if(!strcmp(argv[2], "hz")) {
 			spwm_set_frequency(module_servo->dev_handle, atof(argv[1]));
-			DEBUG("FREQ: %d", module_servo->dev_handle->max_counter);
 		} else {
 			servo_ctrl(module_servo, atof(argv[1]));
 		}
 	} else {
 		servo_ctrl(module_servo, atof(argv[1]));
-		DEBUG("ANGLE: %.2f deg (%.2f%)", module_servo->angle, module_servo->dev_handle->duty_cycle);
 	}
 
 	return 0;
@@ -264,28 +225,7 @@ int change_to_rc_mode(int argc, char ** argv) {
 }
 #endif
 
-/* Prototypes declared in 'lib/drivers/communications/protocols/packetman/packetman.c' */
-extern int packetman_connect_callback(int argc, char ** argv);
-extern int packetman_disconnect_callback(int argc, char ** argv);
-extern int packetman_keepalive_callback(int argc, char ** argv);
-
-int code_write(int argc, char ** argv) {
-	if(argc != 3)
-		return 1;
-
-	uint32_t addr = strtoul(argv[1], NULL, 0);
-	uint32_t val  = strtoul(argv[2], NULL, 0);
-
-	DEBUG("Addr: %i = %i", addr, val);
-
-	return 0;
-}
-
-int code_read(int argc, char ** argv) {
-
-	return 0;
-}
-
+/* Prototypes declared in 'src/app_main.c' */
 extern bool log_pid;
 extern bool log_mode;
 extern bool log_speed;
@@ -313,14 +253,46 @@ int speed_set(int argc, char ** argv) {
 	}
 }
 
+#pragma section BTLDR
+#pragma section C CBTLDR
+
+/* Prototypes declared in 'lib/drivers/communications/protocols/packetman/packetman.c' */
+extern int packetman_connect_callback(int argc, char ** argv);
+extern int packetman_disconnect_callback(int argc, char ** argv);
+extern int packetman_keepalive_callback(int argc, char ** argv);
+
+/* Prototypes declared in 'lib/bootloader/bootloader.c' */
+extern int bootloader_write(int argc, char ** argv);
+extern int bootloader_read(int argc, char ** argv);
+extern int bootloader_reset(int argc, char ** argv);
+
+int console_clear(int argc, char ** argv) {
+	putchar(27);
+	printf("[2J");
+	putchar(27);
+	printf("[H");
+
+	return 0;
+}
+
+int help(int argc, char ** argv) {
+	puts("\nHELP: supported commands");
+
+	for(int i = 0, j = 1; i < command_count; i++)
+		if((*(uint32_t*)command_list[i].command_function != 0xFFFFFFFF) && (*(uint32_t*)command_list[i].command_function != NULL) && command_list[i].packet_compatibility == PACKET_CMD)
+			printf("%d - %s\n", j++, command_list[i].command);
+
+	return 0;
+}
+
 /*****************************************/
 
 /***************************************/
 /* Add the newly created commands here */
 /***************************************/
-cmd_t command_list[] = {
-	{"help",     help,          PACKET_CMD},
-	{"clear",    console_clear, PACKET_CMD},
+const cmd_t command_list[] = {
+	{"help",  help,          PACKET_CMD},
+	{"clear", console_clear, PACKET_CMD},
 
 #if ENABLE_STARTSWITCH == 1
 	{"g", go,   PACKET_CMD},
@@ -360,8 +332,8 @@ cmd_t command_list[] = {
 	{"disconnect", packetman_disconnect_callback, PACKET_DISCONNECT},
 	{"keepalive",  packetman_keepalive_callback,  PACKET_KEEPALIVE },
 
-	{"w", code_write, PACKET_CMD},
-	{"r", code_read,  PACKET_CMD},
+	{"w",     bootloader_write, PACKET_CMD},
+	{"reset", bootloader_reset, PACKET_CMD},
 #endif
 
 	{"l3", log_set, PACKET_CMD},
@@ -373,5 +345,7 @@ cmd_t command_list[] = {
 	SHELL_NULL_COMMAND
 };
 /***************************************/
+
+#pragma section
 
 #endif /* LIB_SHELL_SHELL_COMMANDS_H_ */

@@ -6,47 +6,34 @@
  */
 
 #include <stdlib.h>
+#include <lib_mem.h>
 #include <rtos_wrappers/rtos_new_lib.h>
 
-/******************************************************************************************************************************************
- * TODO: PROPERLY ALLOCATE THE STACK WITH MALLOC! THIS SOLUTION IS UTTERLY TERRIBLE! I NEED TO FIND OUT WHY MALLOC IS BREAKING THE STACKS *
- *****************************************************************************************************************************************/
+/* Main process after RTOS launches */
+CPU_STK  mainStk[KMAIN_STACKSIZE];
+OS_TCB   mainTCB;
 
-/* Main task / process properties */
-#define KMAIN_STACKSIZE 128
-CPU_STK mainStk[KMAIN_STACKSIZE];
-OS_TCB  mainTCB;
+/* Extra processes already available for the user */
+process_t rtos_procs[RTOS_PROCESS_MAXCOUNT];
+uint8_t   rtos_proc_idx = 0;
 
-/* Generalized task / process properties */
-#define PROCESS_STACKSIZE       300
-#define PROCESS_DEFAULTPRIORITY 5
-#define PROCESS_MAXCOUNT        5
-
-typedef struct {
-	OS_TCB       tcb;
-	CPU_STK_SIZE stacksize;
-	CPU_STK      stack[PROCESS_STACKSIZE];
-} process_t;
-
-process_t procs[PROCESS_MAXCOUNT];
-uint8_t   proc_i = 0;
-
-uint32_t rtos_time_ms = 0;
+/* Timeout as an RTOS service for interrupt routines */
 uint16_t rtos_timeout_ms[RTOS_MAX_TIMEOUT_COUNTERS];
+uint32_t rtos_time_ms = 0;
 
 void rtos_spawn_task_args_quanta(char * proc_name, OS_TASK_PTR task_ptr, void * args, uint16_t quanta) {
 	OS_ERR err;
 
-	if(proc_i >= PROCESS_MAXCOUNT) return;
+	if(rtos_proc_idx >= RTOS_PROCESS_MAXCOUNT) return;
 
-	process_t * proc = &procs[proc_i++];
-	proc->stacksize = PROCESS_STACKSIZE;
+	process_t * proc = &rtos_procs[rtos_proc_idx++];
+	proc->stacksize = RTOS_PROCESS_STACKSIZE;
 
 	OSTaskCreate((OS_TCB     *) &proc->tcb,
                  (CPU_CHAR   *) proc_name,
                  (OS_TASK_PTR ) task_ptr,
                  (void       *) args,
-                 (OS_PRIO     ) PROCESS_DEFAULTPRIORITY,
+                 (OS_PRIO     ) RTOS_PROCESS_DEFAULTPRIORITY,
                  (CPU_STK    *) &proc->stack[0],
                  (CPU_STK_SIZE) proc->stacksize / 10u,
                  (CPU_STK_SIZE) proc->stacksize,

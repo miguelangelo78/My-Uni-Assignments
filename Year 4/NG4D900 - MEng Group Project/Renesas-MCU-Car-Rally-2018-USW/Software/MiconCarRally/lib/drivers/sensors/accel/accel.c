@@ -29,7 +29,10 @@ accel_t * accel_init(void) {
 		return NULL;
 
 	/* Allocate and create two PWM handles for the x-y axis */
-	accel_t * ret = (accel_t*)malloc(sizeof(accel_t));
+	accel_t * ret = NULL;
+
+#if ENABLE_ACCELEROMETER == 1
+	ret = (accel_t*)malloc(sizeof(accel_t));
 	ret->dev_handle_x = spwm_create(200, 50, SPWM_MODE_BOTHLVL | SPWM_MODE_REPEAT | SPWM_MODE_PININPUT, xaxis_pin_callback, SPWM_DEV_ACCELX);
 	ret->dev_handle_y = spwm_create(200, 50, SPWM_MODE_BOTHLVL | SPWM_MODE_REPEAT | SPWM_MODE_PININPUT, yaxis_pin_callback, SPWM_DEV_ACCELY);
 
@@ -37,6 +40,7 @@ accel_t * accel_init(void) {
 	DIR_ACCEL_X = DIR_ACCEL_Y = 0;
 
 	is_accel_init = true;
+#endif
 
 	return ret;
 }

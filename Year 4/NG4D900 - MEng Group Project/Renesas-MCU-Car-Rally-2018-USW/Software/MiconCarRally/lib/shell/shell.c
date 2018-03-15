@@ -13,6 +13,9 @@
 #include "shell.h"
 #include "shell_commands.h"
 
+#pragma section BTLDR
+#pragma section C CBTLDR
+
 bool is_shell_init = false;
 bool reset_shell   = false;
 int  command_count = 0;
@@ -26,11 +29,11 @@ static void unrecognized_command(char * user_input) {
 	help(0, NULL);
 }
 
-static void prompt() {
+static void prompt(void) {
 	printf("\ncar> ");
 }
 
-static void banner() {
+static void banner(void) {
 	console_clear(0, NULL);
 	printf(" _       __     __                        \n\
 | |     / /__  / /________  ____ ___  ___ \n\
@@ -40,7 +43,7 @@ static void banner() {
                                           \n");
 }
 
-void shell_init() {
+void shell_init(void) {
 	if(is_shell_init)
 		return;
 
@@ -58,6 +61,9 @@ void shell_init() {
 
 void shell_task(void * args) {
 
+	static const char shell_msg1[] = "(ALERT: TEMPLATE MODE IS ENABLED)";
+	static const char shell_msg2[] = "Type 'help' to display the supported commands.";
+
 	while(1) {
 		/* Initialize the shell */
 		shell_init();
@@ -65,16 +71,20 @@ void shell_task(void * args) {
 		/* Show initialization message to the user */
 		banner();
 
+		if((uint8_t)((dipswitch_read() & 0x8) >> 3))
+			puts(shell_msg1);
+
 		/* Tell the user what command he can type to show all of the commands the car supports */
-		puts("Type 'help' to display the supported commands.");
+		puts(shell_msg2);
 
 		while(!reset_shell) {
 			/* Print the command prompt */
 			prompt();
 
 			/* Read user input */
-			char option[32];
-			scanf("%32[^\r]", option);
+			static char option[32];
+			static const char option_fmt[] = "%32[^\r]";
+			scanf(option_fmt, option);
 			getchar();
 
 			/* Find out the length of the command the user just inputted */
@@ -134,7 +144,7 @@ void shell_task(void * args) {
 					/* And finally run the command */
 					int retcode;
 					if((retcode = command_list[i].command_function(spaces_found, argv))) {
-						static char retcode_error_msg[] = "\n\n(SHELL): ret code %d\n";
+						static const char retcode_error_msg[] = "\n\n(SHELL): ret code %d\n";
 						printf(retcode_error_msg, retcode);
 					}
 

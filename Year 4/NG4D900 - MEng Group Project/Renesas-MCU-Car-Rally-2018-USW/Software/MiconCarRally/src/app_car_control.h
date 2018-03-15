@@ -12,6 +12,8 @@
 #include <stddef.h>
 #include <utils.h>
 
+#include <rtos_inc.h>
+
 #include <app_config.h>
 #include <app_template_generator.h>
 

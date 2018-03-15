@@ -16,8 +16,8 @@
 /************************************/
 #define SPWM_FREQ_TO_PRESC(hz) ((APP_CFG_POLLFREQ) / (hz)) /* Get prescaler value from frequency */
 
-bool     spwm_initialized   = false;
-uint32_t spwm_alloc_channel = 0;
+bool             spwm_initialized   = false;
+uint32_t         spwm_alloc_channel = 0;
 volatile spwm_t  spwm_channels[SPWM_MAX_CHANNEL_COUNT];
 volatile uint8_t spwm_poll_idx = 0;
 
@@ -26,18 +26,24 @@ void spwm_poll_trigger(spwm_t * chan, bool level) {
 	if(chan->mode & SPWM_MODE_PININPUT) {
 		/** NOTE: WE ONLY SUPPORT THESE PINS IN THIS LIBRARY FOR THIS MCU IN PARTICULAR **/
 		switch(chan->pin) {
+#if ENABLE_ACCELEROMETER == 1
 		case SPWM_DEV_ACCELX: pinsample = INP_ACCEL_X; break; /* X-Axis accelerometer */
 		case SPWM_DEV_ACCELY: pinsample = INP_ACCEL_Y; break; /* Y-Axis accelerometer */
+#endif
+		default: break;
 		}
 	} else {
 		/** NOTE: WE ONLY SUPPORT THESE PINS IN THIS LIBRARY FOR THIS MCU IN PARTICULAR **/
 		switch(chan->pin) {
 		case SPWM_DEV_DBGLED2:    DAT_DBG_LED2 = level; break; /* RX packet LED */
 		case SPWM_DEV_DBGLED3:    DAT_DBG_LED3 = level; break; /* TX packet LED */
+#if ENABLE_SOUND == 1
 		case SPWM_DEV_PIEZO:      DAT_PIEZO    = level; break; /* Piezo buzzer  */
+#endif
 		case SPWM_DEV_SERVO:      DAT_SERVO    = level; break; /* Servo motor   */
 		case SPWM_DEV_LEFTMOTOR:  DAT_MOTOR_L  = level; break; /* Left  motor   */
 		case SPWM_DEV_RIGHTMOTOR: DAT_MOTOR_R  = level; break; /* Right motor   */
+		default: break;
 		}
 	}
 

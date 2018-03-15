@@ -88,6 +88,7 @@ enum MOTOR_RETCODE motor_reset(motor_t * handle) {
 	return MOTOR_OK;
 }
 
+#if ENABLE_RPM_COUNTER == 1
 static enum MOTOR_RETCODE motor_rpm_sensor_poll(motor_t * handle) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
@@ -123,6 +124,7 @@ static enum MOTOR_RETCODE motor_rpm_sensor_poll(motor_t * handle) {
 
 	return MOTOR_OK;
 }
+#endif
 
 static enum MOTOR_RETCODE motor_update(motor_t * handle, bool use_differential) {
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
@@ -184,11 +186,15 @@ static enum MOTOR_RETCODE motor_update(motor_t * handle, bool use_differential) 
 
 	handle->is_stopped = newRPM == 0.0f;
 
-	if(!handle->is_stopped)
-		spwm_set_duty(handle->dev_handle, newRPM);
-	else
+	if(!handle->is_stopped) {
+		if(handle->side == MOTOR_CHANNEL_LEFT) {
+			spwm_set_duty(handle->dev_handle, newRPM);
+		} else {
+			spwm_set_duty(handle->dev_handle, newRPM * (CAR_YEAR == 2018 ? 0.57f : 1.0f));
+		}
+	} else {
 		spwm_set_duty(handle->dev_handle, 0);
-
+	}
 	return MOTOR_OK;
 }
 
@@ -196,8 +202,12 @@ static enum MOTOR_RETCODE motor_calculate_differential(motor_t * handle, float p
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
+	static bool left_wheel_diff_updated = false;
+
 	if(handle->side == MOTOR_CHANNEL_LEFT) {
 		if(pid_output < 0.0f) {
+
+			left_wheel_diff_updated = true;
 
 #if ENABLE_RPM_COUNTER == 1
 			handle->deceleration = mapfloat(fabsf(pid_output), 0, SERVO_MAX_ANGLE, 0, mapfloat(handle->rpm_measured, 700, 1034, 0, handle->speed));
@@ -209,9 +219,16 @@ static enum MOTOR_RETCODE motor_calculate_differential(motor_t * handle, float p
 			handle->deceleration = 0.0f;
 		}
 	} else {
+
 		if(pid_output > 0.0f) {
 
-#if ENABLE_ANGLE_DIFFERENTIAL == 1
+			if(left_wheel_diff_updated) {
+				left_wheel_diff_updated = false;
+				handle->deceleration = 0.0f;
+				return MOTOR_OK;
+			}
+
+#if ENABLE_RPM_COUNTER == 1
 			handle->deceleration = mapfloat(pid_output, 0, SERVO_MAX_ANGLE, 0, mapfloat(handle->rpm_measured, 900, 1304, 0, handle->speed));
 #else
 			handle->deceleration = mapfloat(pid_output, 0, SERVO_MAX_ANGLE, 0, handle->speed);
@@ -220,7 +237,11 @@ static enum MOTOR_RETCODE motor_calculate_differential(motor_t * handle, float p
 		} else {
 			handle->deceleration = 0.0f;
 		}
+
+		left_wheel_diff_updated = false;
 	}
+	left_wheel_diff_updated = false;
+
 	return MOTOR_OK;
 }
 
