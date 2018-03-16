@@ -37,9 +37,11 @@ void spwm_poll_trigger(spwm_t * chan, bool level) {
 		switch(chan->pin) {
 		case SPWM_DEV_DBGLED2:    DAT_DBG_LED2 = level; break; /* RX packet LED */
 		case SPWM_DEV_DBGLED3:    DAT_DBG_LED3 = level; break; /* TX packet LED */
+
 #if ENABLE_SOUND == 1
 		case SPWM_DEV_PIEZO:      DAT_PIEZO    = level; break; /* Piezo buzzer  */
 #endif
+
 		case SPWM_DEV_SERVO:      DAT_SERVO    = level; break; /* Servo motor   */
 		case SPWM_DEV_LEFTMOTOR:  DAT_MOTOR_L  = level; break; /* Left  motor   */
 		case SPWM_DEV_RIGHTMOTOR: DAT_MOTOR_R  = level; break; /* Right motor   */

@@ -230,7 +230,7 @@ void main_app(void * args)
 
 	while(1)
 	{
-#if ENABLE_STARTSWITCH == 1  && ENABLE_MOTORS == 1 || ENABLE_SERVO == 1
+#if ENABLE_STARTSWITCH == 1 && (ENABLE_MOTORS == 1 || ENABLE_SERVO == 1)
 		/* Handle the user switch key press event at startup */
 		if(start_switch_read() && !track.race_started) {
 			/* Only continue when the user releases the button */

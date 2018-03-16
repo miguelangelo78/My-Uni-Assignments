@@ -54,7 +54,7 @@ enum STREAM_MODE {
 	STREAM_PACKET
 };
 
-void packetman_init();
+void packetman_init(void);
 void packetman_on_bluetooth_rx(uint8_t * buff, uint32_t bufflen);
 void packetman_send_packet(void * payload_data, enum PacketType payload_type);
 enum STREAM_MODE packetman_get_comms_status(void);

@@ -5,14 +5,16 @@
  *      Author: Miguel
  */
 
-#include <stddef.h>
+#include "bootloader.h"
+
+#if ENABLE_BOOTLOADER == 1
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <debug.h>
 #include <rtos_inc.h>
 #include <onchip/r_flash_rx/r_flash_rx_if.h>
-#include "bootloader.h"
 
 #define ENABLE_INTERRUPTS()  set_psw(get_psw() | ( 0x00010000))
 #define DISABLE_INTERRUPTS() set_psw(get_psw() & (~0x00010000))
@@ -107,3 +109,9 @@ int bootloader_write(int argc, char ** argv) {
 
 	return 0;
 }
+
+#else
+
+const bool is_bootloader_busy = false;
+
+#endif

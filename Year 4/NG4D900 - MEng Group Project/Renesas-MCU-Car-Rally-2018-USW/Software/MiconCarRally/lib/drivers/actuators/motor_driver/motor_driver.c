@@ -202,12 +202,8 @@ static enum MOTOR_RETCODE motor_calculate_differential(motor_t * handle, float p
 	if(!handle || handle->side >= MOTOR_CHANNEL__COUNT)
 		return MOTOR_ERR_INVAL_CHANNEL;
 
-	static bool left_wheel_diff_updated = false;
-
 	if(handle->side == MOTOR_CHANNEL_LEFT) {
 		if(pid_output < 0.0f) {
-
-			left_wheel_diff_updated = true;
 
 #if ENABLE_RPM_COUNTER == 1
 			handle->deceleration = mapfloat(fabsf(pid_output), 0, SERVO_MAX_ANGLE, 0, mapfloat(handle->rpm_measured, 700, 1034, 0, handle->speed));
@@ -221,12 +217,7 @@ static enum MOTOR_RETCODE motor_calculate_differential(motor_t * handle, float p
 	} else {
 
 		if(pid_output > 0.0f) {
-
-			if(left_wheel_diff_updated) {
-				left_wheel_diff_updated = false;
-				handle->deceleration = 0.0f;
-				return MOTOR_OK;
-			}
+			handle->deceleration = 0.0f;
 
 #if ENABLE_RPM_COUNTER == 1
 			handle->deceleration = mapfloat(pid_output, 0, SERVO_MAX_ANGLE, 0, mapfloat(handle->rpm_measured, 900, 1304, 0, handle->speed));
@@ -237,10 +228,7 @@ static enum MOTOR_RETCODE motor_calculate_differential(motor_t * handle, float p
 		} else {
 			handle->deceleration = 0.0f;
 		}
-
-		left_wheel_diff_updated = false;
 	}
-	left_wheel_diff_updated = false;
 
 	return MOTOR_OK;
 }
@@ -250,6 +238,14 @@ enum MOTOR_RETCODE motor_stop(motor_t * handle) {
 		return MOTOR_ERR_INVAL_CHANNEL;
 
 	return motor_ctrl(handle, 0);
+}
+
+enum MOTOR_RETCODE motor_stop2(motor_t * left_motor, motor_t * right_motor) {
+	enum MOTOR_RETCODE ret;
+	if((ret = motor_stop(left_motor)) != MOTOR_OK)
+		return ret;
+
+	return motor_stop(right_motor);
 }
 
 enum MOTOR_RETCODE motor_resume(motor_t * handle) {

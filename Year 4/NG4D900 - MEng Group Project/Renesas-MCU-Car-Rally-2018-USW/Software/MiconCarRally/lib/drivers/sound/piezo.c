@@ -69,7 +69,7 @@ piezo_t * piezo_init(void) {
 
 	piezo_t * ret = (piezo_t*)malloc(sizeof(piezo_t));
 	ret->note.duration = 0;
-	ret->note.pitch    = 0;
+	ret->note.pitch    = 0.0f;
 	ret->is_playing    = false;
 	ret->dev_handle    = dev_handle;
 
@@ -81,7 +81,7 @@ piezo_t * piezo_init(void) {
 	DAT_PIEZO_GND = 0;
 
 	/* Set volume to 100% */
-	piezo_set_volume(ret, 100);
+	piezo_set_volume(ret, 100.0f);
 
 	/* Create task that handles the actual tune playback */
 	rtos_spawn_task_args("piezo_player", piezo_player, ret);
@@ -164,12 +164,12 @@ enum PIEZO_RETCODE piezo_stop(piezo_t * handle, bool stop_and_wait) {
 	return PIEZO_OK;
 }
 
-enum PIEZO_RETCODE piezo_set_volume(piezo_t * handle, uint8_t volume) {
+enum PIEZO_RETCODE piezo_set_volume(piezo_t * handle, float volume) {
 	if(!handle) return PIEZO_ERR;
 
 	handle->volume = volume;
 
-	spwm_set_duty(handle->dev_handle, (volume * 50) / 100);
+	spwm_set_duty(handle->dev_handle, (volume * 50.0f) / 100.0f);
 
 	return PIEZO_OK;
 }

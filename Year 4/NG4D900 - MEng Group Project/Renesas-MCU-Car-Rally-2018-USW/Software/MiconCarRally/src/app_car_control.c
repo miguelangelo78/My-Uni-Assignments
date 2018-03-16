@@ -54,9 +54,11 @@ uint8_t car_update_control(void)
 				/** NOTE: We can't update the two motors in 1 interrupt cycle.
 				 *  The microcontroller's FPU seems to have some issues with floating point numbers.
 				 *  For this reason, we're using the flag below to multiplex the update. **/
-				static bool update_left_motor = false;
-				motor_refresh_with_differential(update_left_motor ? module_left_wheel : module_right_wheel, pid_output);
-				update_left_motor = !update_left_motor;
+				//static bool update_left_motor = false;
+				//motor_refresh_with_differential(update_left_motor ? module_left_wheel : module_right_wheel, pid_output);
+				motor_refresh_with_differential(module_left_wheel , pid_output);
+				motor_refresh_with_differential(module_right_wheel, pid_output);
+				//update_left_motor = !update_left_motor;
 			}
 		} else {
 			/* Stop the car if we're not racing */
@@ -85,7 +87,7 @@ void update_track_status(void)
 			/* Check if we have completed all laps */
 			if(++track.laps_completed >= LAP_MAX_COUNT) {
 				track.mode = MODE_RACE_COMPLETE;
-				motor_set_braking2(module_right_wheel, module_right_wheel, true);
+				motor_set_braking2(module_left_wheel, module_right_wheel, true);
 				motor_set_speed2(module_left_wheel, module_right_wheel, 0);
 
 				/* TODO: Play song signaling the end of the race */
@@ -207,7 +209,7 @@ void car_kickstart(void) {
 		/* Alert the user of the event */
 		piezo_play(module_piezo, &note_startswitch, false);
 
-		DEBUG("\n>>>>>>>>>>>>>>\n>> !! GO !! <<\n>>>>>>>>>>>>>>");
+		DEBUG(">> GO <<");
 	}
 }
 
@@ -243,9 +245,8 @@ void car_algorithm_poll(uint8_t line_sensor)
 
 			/* Completely stop the car and center the servo if all of the
 			 * sensors have been on/off for a certain amount of time */
-			motor_stop(module_left_wheel);
-			motor_stop(module_right_wheel);
-			motor_set_braking2(module_left_wheel, module_left_wheel, false);
+			motor_stop2(module_left_wheel, module_right_wheel);
+			motor_set_braking2(module_left_wheel, module_right_wheel, false);
 			servo_ctrl(module_servo, 0);
 
 			if(start_switch_read()) {

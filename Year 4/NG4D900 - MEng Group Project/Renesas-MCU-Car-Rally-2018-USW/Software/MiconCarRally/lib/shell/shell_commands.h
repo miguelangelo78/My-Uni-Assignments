@@ -80,7 +80,7 @@ int servo_control_sweep(int argc, char ** argv) {
 		return 1;
 	}
 
-	servo_sweep(module_servo, -90, 90, atoi(argv[1]), atof(argv[2]), true);
+	servo_sweep(module_servo, -90.0f, 90.0f, (uint32_t)atoi(argv[1]), atof(argv[2]), true);
 	return 0;
 }
 
@@ -169,7 +169,7 @@ int play_tune(int argc, char ** argv) {
 	}
 
 	note_t note;
-	note.pitch    = atoi(argv[1]);
+	note.pitch    = (float)atoi(argv[1]);
 	note.duration = atoi(argv[2]);
 	piezo_play(module_piezo, &note, true);
 
@@ -332,8 +332,10 @@ const cmd_t command_list[] = {
 	{"disconnect", packetman_disconnect_callback, PACKET_DISCONNECT},
 	{"keepalive",  packetman_keepalive_callback,  PACKET_KEEPALIVE },
 
+#if ENABLE_BOOTLOADER == 1
 	{"w",     bootloader_write, PACKET_CMD},
 	{"reset", bootloader_reset, PACKET_CMD},
+#endif
 #endif
 
 	{"l3", log_set, PACKET_CMD},

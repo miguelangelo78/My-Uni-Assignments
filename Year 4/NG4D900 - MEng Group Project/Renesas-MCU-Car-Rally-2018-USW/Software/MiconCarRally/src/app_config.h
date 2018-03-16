@@ -9,12 +9,15 @@
 #define LIB_GLOBALS_H_
 
 /*** CAR VERSION ****/
+#ifndef CAR_YEAR
 #define CAR_YEAR 2018
+#endif
 /********************/
 
 /******** FEATURES SUPPORTED ********/
 #define ENABLE_DEBUGGING           (1)
 #define ENABLE_COMMUNICATIONS      (1)
+#define ENABLE_BOOTLOADER          (1)
 #define ENABLE_SPWM                (1)
 #define ENABLE_MOTORS              (1)
 #define ENABLE_MOTORS_SAFEMODE     (1)

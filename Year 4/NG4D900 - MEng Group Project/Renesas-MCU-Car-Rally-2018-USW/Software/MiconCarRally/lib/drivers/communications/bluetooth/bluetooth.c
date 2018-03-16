@@ -12,7 +12,7 @@
 
 suart_t * module_bluetooth;
 
-void bluetooth_init() {
+void bluetooth_init(void) {
 	/* Create and initialize HC-06 Bluetooth module */
 	module_bluetooth = suart_init(
 		PACKETMAN_BAUDRATE,

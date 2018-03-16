@@ -57,6 +57,7 @@ motor_t *          motor_init(enum MOTOR_CHANNEL channel);
 motor_t *          motor_init_safe(enum MOTOR_CHANNEL channel, bool enable_safemode);
 enum MOTOR_RETCODE motor_reset(motor_t * handle);
 enum MOTOR_RETCODE motor_stop(motor_t * handle);
+enum MOTOR_RETCODE motor_stop2(motor_t * left_motor, motor_t * right_motor);
 enum MOTOR_RETCODE motor_resume(motor_t * handle);
 enum MOTOR_RETCODE motor_ctrl(motor_t * handle, float speed_percentage);
 enum MOTOR_RETCODE motor_ctrl2(motor_t * left_motor, motor_t * right_motor, float speed_percentage);

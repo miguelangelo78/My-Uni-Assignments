@@ -53,16 +53,13 @@ void shell_init(void) {
 		command_count++;
 
 		for(int j = 0; j < strlen(command_list[i].command); j++)
-			command_list[i].command[j] = tolower(command_list[i].command[j]);
+			command_list[i].command[j] = (char)tolower(command_list[i].command[j]);
 	}
 
 	is_shell_init = true;
 }
 
 void shell_task(void * args) {
-
-	static const char shell_msg1[] = "(ALERT: TEMPLATE MODE IS ENABLED)";
-	static const char shell_msg2[] = "Type 'help' to display the supported commands.";
 
 	while(1) {
 		/* Initialize the shell */
@@ -72,10 +69,10 @@ void shell_task(void * args) {
 		banner();
 
 		if((uint8_t)((dipswitch_read() & 0x8) >> 3))
-			puts(shell_msg1);
+			puts("(ALERT: TEMPLATE MODE IS ENABLED)");
 
 		/* Tell the user what command he can type to show all of the commands the car supports */
-		puts(shell_msg2);
+		puts("Type 'help' to display the supported commands.");
 
 		while(!reset_shell) {
 			/* Print the command prompt */
@@ -83,12 +80,11 @@ void shell_task(void * args) {
 
 			/* Read user input */
 			static char option[32];
-			static const char option_fmt[] = "%32[^\r]";
-			scanf(option_fmt, option);
+			scanf("%32[^\r]", option);
 			getchar();
 
 			/* Find out the length of the command the user just inputted */
-			int option_length = strlen(option);
+			size_t option_length = strlen(option);
 			for(int i = 0; i < option_length; i++) {
 				if(option[i] == ' ') {
 					option_length = i;
@@ -96,7 +92,7 @@ void shell_task(void * args) {
 				}
 
 				/* Convert substring (the command string only) into lower case while we're at it */
-				option[i] = tolower(option[i]);
+				option[i] = (char)tolower(option[i]);
 			}
 
 			/* Count how many space characters this string has */
@@ -143,10 +139,8 @@ void shell_task(void * args) {
 
 					/* And finally run the command */
 					int retcode;
-					if((retcode = command_list[i].command_function(spaces_found, argv))) {
-						static const char retcode_error_msg[] = "\n\n(SHELL): ret code %d\n";
-						printf(retcode_error_msg, retcode);
-					}
+					if((retcode = command_list[i].command_function(spaces_found, argv)))
+						printf("\n\n(SHELL): ret code %d\n", retcode);
 
 					/* Free arguments */
 					for(int j = 0; j < spaces_found; j++)

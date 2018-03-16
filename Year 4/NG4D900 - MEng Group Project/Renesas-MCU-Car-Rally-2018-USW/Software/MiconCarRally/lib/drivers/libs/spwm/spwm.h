@@ -45,19 +45,20 @@ enum SPWM_MODE {
 
 /* What devices are using the Software PWM library */
 enum SPWM_DEVALLOC {
-	SPWM_DEV_DBGLED2,    /* MCU's LED2 for displaying reception of packets      */
-	SPWM_DEV_DBGLED3,    /* MCU's LED2 for displaying transmission of packets   */
+	SPWM_DEV_DBGLED2    = 0, /* MCU's LED2 for displaying reception of packets      */
+	SPWM_DEV_DBGLED3    = 1, /* MCU's LED2 for displaying transmission of packets   */
 
 #if ENABLE_SOUND == 1
-	SPWM_DEV_PIEZO,      /* A piezo buzzer for playing tunes in any given event */
+	SPWM_DEV_PIEZO      = 2, /* A piezo buzzer for playing tunes in any given event */
 #endif
-	SPWM_DEV_SERVO,      /* The servo motor                                     */
-	SPWM_DEV_LEFTMOTOR,  /* The left  motor of the car                          */
-	SPWM_DEV_RIGHTMOTOR, /* The right motor of the car                          */
+
+	SPWM_DEV_SERVO      = 3, /* The servo motor                                     */
+	SPWM_DEV_LEFTMOTOR  = 4, /* The left  motor of the car                          */
+	SPWM_DEV_RIGHTMOTOR = 5, /* The right motor of the car                          */
 
 #if ENABLE_ACCELEROMETER == 1
-	SPWM_DEV_ACCELX,     /* The X axis of the accelerometer                     */
-	SPWM_DEV_ACCELY,     /* The Y axis of the accelerometer                     */
+	SPWM_DEV_ACCELX     = 6, /* The X axis of the accelerometer                     */
+	SPWM_DEV_ACCELY     = 7, /* The Y axis of the accelerometer                     */
 #endif
 
 	SPWM_DEV__COUNT      /* How many devices are being used for Software PWM    */

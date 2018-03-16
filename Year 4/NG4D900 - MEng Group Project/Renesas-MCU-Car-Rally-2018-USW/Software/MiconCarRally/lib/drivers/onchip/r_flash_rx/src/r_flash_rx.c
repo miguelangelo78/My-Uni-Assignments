@@ -33,6 +33,9 @@
 /***********************************************************************************************************************
 Includes   <System Includes> , "Project Includes"
 ***********************************************************************************************************************/
+#include <app_config.h>
+#if ENABLE_BOOTLOADER == 1
+
 #include "r_flash_rx_if.h"
 #include "r_flash_rx.h"
 #include "r_flash_fcu.h"
@@ -339,3 +342,5 @@ bool flash_softwareUnlock(int32_t * const plock)
 
 
 #pragma section /* end FLASH SECTION FRAM */
+
+#endif

@@ -1,6 +1,14 @@
 @cd "%~dp0"
 @echo off
 
+SET PATH=%Toolchain%;%Util%;%PATH%
+
+@cd ..\..\..\Build
+
+@make -j all DEFINE_CAR_YEAR=-define=CAR_YEAR=2017
+
+@cd "%~dp0"
+
 SET fdt_exe="C:\Program Files (x86)\Renesas\FDT4.09\fdt.exe"
 SET fdt_script=fdt_workspace_2017\fdt_script.fsf
 
@@ -13,6 +21,7 @@ IF [%1]==[] GOTO NOARG
 @echo disconnect reset>>%fdt_script%
 @echo exit >> fdt_workspace_2017\fdt_script2.fsf>>%fdt_script%
 
+@echo.
 @echo - Flashing program ...
 
 @%fdt_exe% /DISCRETESTARTUP "w4fRun \"fdt_workspace_2017\fdt_script.w4f\""

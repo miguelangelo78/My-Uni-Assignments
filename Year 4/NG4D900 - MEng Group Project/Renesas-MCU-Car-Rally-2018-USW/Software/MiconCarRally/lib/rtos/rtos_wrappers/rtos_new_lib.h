@@ -15,7 +15,7 @@
 
 /* Generalized task / process properties */
 #define RTOS_MAX_TIMEOUT_COUNTERS 2
-#define KMAIN_STACKSIZE           96
+#define KMAIN_STACKSIZE           128
 #ifndef RTOS_PROCESS_STACKSIZE
 #define RTOS_PROCESS_STACKSIZE 256
 #endif

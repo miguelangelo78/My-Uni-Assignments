@@ -47,6 +47,9 @@
 Includes   <System Includes> , "Project Includes"
 ********************************************************************************************************************/
 /* Includes board and MCU related header files. */
+#include <app_config.h>
+#if ENABLE_BOOTLOADER == 1
+
 #include "r_flash_rx_if.h"
 #if (FLASH_TYPE == FLASH_TYPE_2)
 #include <machine.h>
@@ -2907,3 +2910,4 @@ End of function notify_peripheral_clock
 #endif
 
 #pragma section // end FLASH_SECTION_ROM
+#endif
