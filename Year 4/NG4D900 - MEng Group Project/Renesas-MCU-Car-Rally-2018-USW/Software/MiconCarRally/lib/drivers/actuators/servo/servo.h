@@ -19,9 +19,9 @@
 
 #if CAR_YEAR == 2018
 
-#define SERVO_MIN_ANGLE_DUTY    (10.0f)
-#define SERVO_CENTER_ANGLE_DUTY (8.255f)
-#define SERVO_MAX_ANGLE_DUTY    (6.51f)
+#define SERVO_MIN_ANGLE_DUTY    (9.80f)
+#define SERVO_CENTER_ANGLE_DUTY (8.10f)
+#define SERVO_MAX_ANGLE_DUTY    (6.40f)
 
 #elif CAR_YEAR == 2017
 

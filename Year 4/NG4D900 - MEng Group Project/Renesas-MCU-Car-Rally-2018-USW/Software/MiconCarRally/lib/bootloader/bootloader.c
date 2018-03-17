@@ -26,14 +26,6 @@ bool    is_bootloader_busy = false;
 extern process_t rtos_procs[RTOS_PROCESS_MAXCOUNT];
 extern OS_TCB    mainTCB;
 
-extern int console_clear(int argc, char ** argv);
-
-int bootloader_reset(int argc, char ** argv) {
-	console_clear(0, NULL);
-	CPU_RESET();
-	return 0;
-}
-
 int bootloader_write(int argc, char ** argv) {
 	if(argc != 3)
 		return 1;

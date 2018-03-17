@@ -56,12 +56,12 @@ int servo_control(int argc, char ** argv) {
 		return 1;
 	}
 
+	/* Disable car controls for this amount of time (ms) */
+	track.timeout_disable_control = 2500;
+
 	if(argc == 3) {
-		if(!strcmp(argv[2], "hz")) {
-			spwm_set_frequency(module_servo->dev_handle, atof(argv[1]));
-		} else {
-			servo_ctrl(module_servo, atof(argv[1]));
-		}
+		if(!strcmp(argv[2], "hz")) spwm_set_frequency(module_servo->dev_handle, atof(argv[1]));
+		else                       servo_ctrl(module_servo, atof(argv[1]));
 	} else {
 		servo_ctrl(module_servo, atof(argv[1]));
 	}
@@ -71,6 +71,7 @@ int servo_control(int argc, char ** argv) {
 
 int servo_control_sweep(int argc, char ** argv) {
 	if(argc == 1) {
+		track.timeout_disable_control = 2500; /* Disable car controls for this amount of time (ms) */
 		servo_sweep(module_servo, -90, 90, 3, 1, false);
 		return 0;
 	}
@@ -80,6 +81,7 @@ int servo_control_sweep(int argc, char ** argv) {
 		return 1;
 	}
 
+	track.timeout_disable_control = 2500; /* Disable car controls for this amount of time (ms) */
 	servo_sweep(module_servo, -90.0f, 90.0f, (uint32_t)atoi(argv[1]), atof(argv[2]), true);
 	return 0;
 }
@@ -275,6 +277,12 @@ int console_clear(int argc, char ** argv) {
 	return 0;
 }
 
+int cpu_reset(int argc, char ** argv) {
+	console_clear(0, NULL);
+	CPU_RESET();
+	return 0;
+}
+
 int help(int argc, char ** argv) {
 	puts("\nHELP: supported commands");
 
@@ -293,6 +301,7 @@ int help(int argc, char ** argv) {
 const cmd_t command_list[] = {
 	{"help",  help,          PACKET_CMD},
 	{"clear", console_clear, PACKET_CMD},
+	{"reset", cpu_reset,     PACKET_CMD},
 
 #if ENABLE_STARTSWITCH == 1
 	{"g", go,   PACKET_CMD},
@@ -334,7 +343,6 @@ const cmd_t command_list[] = {
 
 #if ENABLE_BOOTLOADER == 1
 	{"w",     bootloader_write, PACKET_CMD},
-	{"reset", bootloader_reset, PACKET_CMD},
 #endif
 #endif
 

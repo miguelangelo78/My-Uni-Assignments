@@ -96,12 +96,14 @@ static enum MOTOR_RETCODE motor_rpm_sensor_poll(motor_t * handle) {
 	if(handle->side == MOTOR_CHANNEL_LEFT) {
 		if(rpmcounter_left_read()) {
 			if(handle->rpm_timestamp_triggered == false) {
+				uint32_t current_time           = rtos_time();
+				uint32_t elapsed_time           = current_time - handle->rpm_timestamp_old;
+				handle->rpm_measured            = 60.0f / ((float)elapsed_time / 1000.0f);
+				handle->rpm_timestamp_old       = current_time;
 				handle->rpm_timestamp_triggered = true;
 
-				uint32_t current_time = rtos_time();
-				uint32_t elapsed_time = current_time - handle->rpm_timestamp_old;
-				handle->rpm_measured = 60.0f / ((float)elapsed_time / 1000.0f);
-				handle->rpm_timestamp_old = current_time;
+				if(handle->rpm_measured > MOTOR_MAX_RPM_SPEED) handle->rpm_measured = MOTOR_MAX_RPM_SPEED;
+				if(handle->rpm_measured < 0.0f)                handle->rpm_measured = 0.0f;
 			}
 		} else {
 			handle->rpm_timestamp_triggered = false;
@@ -110,12 +112,14 @@ static enum MOTOR_RETCODE motor_rpm_sensor_poll(motor_t * handle) {
 	else {
 		if(rpmcounter_right_read()) {
 			if(handle->rpm_timestamp_triggered == false) {
+				uint32_t current_time           = rtos_time();
+				uint32_t elapsed_time           = current_time - handle->rpm_timestamp_old;
+				handle->rpm_measured            = 60.0f / ((float)elapsed_time / 1000.0f);
+				handle->rpm_timestamp_old       = current_time;
 				handle->rpm_timestamp_triggered = true;
 
-				uint32_t current_time = rtos_time();
-				uint32_t elapsed_time = current_time - handle->rpm_timestamp_old;
-				handle->rpm_measured = 60.0f / ((float)elapsed_time / 1000.0f);
-				handle->rpm_timestamp_old = current_time;
+				if(handle->rpm_measured > MOTOR_MAX_RPM_SPEED) handle->rpm_measured = MOTOR_MAX_RPM_SPEED;
+				if(handle->rpm_measured < 0.0f)                handle->rpm_measured = 0.0f;
 			}
 		} else {
 			handle->rpm_timestamp_triggered = false;
@@ -184,17 +188,8 @@ static enum MOTOR_RETCODE motor_update(motor_t * handle, bool use_differential) 
 		else            DAT_MOTOR_RD = 1; /* Rotate backwards */
 	}
 
-	handle->is_stopped = newRPM == 0.0f;
+	spwm_set_duty(handle->dev_handle, ((handle->is_stopped = (newRPM == 0.0f))) ? 0.0f : fabsf(newRPM));
 
-	if(!handle->is_stopped) {
-		if(handle->side == MOTOR_CHANNEL_LEFT) {
-			spwm_set_duty(handle->dev_handle, newRPM);
-		} else {
-			spwm_set_duty(handle->dev_handle, newRPM * (CAR_YEAR == 2018 ? 0.57f : 1.0f));
-		}
-	} else {
-		spwm_set_duty(handle->dev_handle, 0);
-	}
 	return MOTOR_OK;
 }
 
@@ -206,7 +201,7 @@ static enum MOTOR_RETCODE motor_calculate_differential(motor_t * handle, float p
 		if(pid_output < 0.0f) {
 
 #if ENABLE_RPM_COUNTER == 1
-			handle->deceleration = mapfloat(fabsf(pid_output), 0, SERVO_MAX_ANGLE, 0, mapfloat(handle->rpm_measured, 700, 1034, 0, handle->speed));
+			handle->deceleration = mapfloat(fabsf(pid_output), 0, SERVO_MAX_ANGLE, 0, mapfloat(handle->rpm_measured, MOTOR_DEADBAND, MOTOR_MAX_RPM_SPEED, 0, handle->speed));
 #else
 			handle->deceleration = mapfloat(-pid_output, 0, SERVO_MAX_ANGLE, 0, handle->speed);
 #endif
@@ -220,7 +215,7 @@ static enum MOTOR_RETCODE motor_calculate_differential(motor_t * handle, float p
 			handle->deceleration = 0.0f;
 
 #if ENABLE_RPM_COUNTER == 1
-			handle->deceleration = mapfloat(pid_output, 0, SERVO_MAX_ANGLE, 0, mapfloat(handle->rpm_measured, 900, 1304, 0, handle->speed));
+			handle->deceleration = mapfloat(pid_output, 0, SERVO_MAX_ANGLE, 0, mapfloat(handle->rpm_measured, MOTOR_DEADBAND, MOTOR_MAX_RPM_SPEED, 0, handle->speed));
 #else
 			handle->deceleration = mapfloat(pid_output, 0, SERVO_MAX_ANGLE, 0, handle->speed);
 #endif

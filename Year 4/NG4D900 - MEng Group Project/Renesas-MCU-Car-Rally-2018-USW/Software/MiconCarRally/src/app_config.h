@@ -17,11 +17,15 @@
 /******** FEATURES SUPPORTED ********/
 #define ENABLE_DEBUGGING           (1)
 #define ENABLE_COMMUNICATIONS      (1)
-#define ENABLE_BOOTLOADER          (1)
+#define ENABLE_BOOTLOADER          (0)
 #define ENABLE_SPWM                (1)
 #define ENABLE_MOTORS              (1)
 #define ENABLE_MOTORS_SAFEMODE     (1)
+#if CAR_YEAR == 2018
 #define ENABLE_RPM_COUNTER         (0)
+#else
+#define ENABLE_RPM_COUNTER         (0)
+#endif
 #define ENABLE_SERVO               (1)
 #define ENABLE_ACCELEROMETER       (0)
 #if CAR_YEAR == 2018
@@ -75,15 +79,21 @@
 /****************************************************************************************************************/
 
 /********* PID CONTROLLER DEFINITIONS ***************************/
+#if CAR_YEAR == 2018
+#define HANDLE_KP       0.1  /* Normal operation P coefficient */
+#define HANDLE_KI       4.5  /* Normal operation I coefficient */
+#define HANDLE_KD       37   /* Normal operation D coefficient */
+#else
 #define HANDLE_KP       2.25 /* Normal operation P coefficient */
 #define HANDLE_KI       0.75 /* Normal operation I coefficient */
 #define HANDLE_KD       37   /* Normal operation D coefficient */
+#endif
 
 #define CRANK_HANDLE_KP 5   /* Crank operation P coefficient  */
 #define CRANK_HANDLE_KI 0.5 /* Crank operation I coefficient  */
 #define CRANK_HANDLE_KD 37  /* Crank operation D coefficient  */
 
-#define INT_WIND_PERIOD 100 /* The period at which the integral is reset */
+#define INT_WIND_PERIOD 10  /* The period at which the integral is reset */
 /****************************************************************/
 
 /********* TIMEOUT DEFINITIONS ******************************************************************************************/
@@ -112,7 +122,7 @@ enum MODE {
 /********* RACING / TRACK DEFINITIONS ******************************************************************/
 #define LAP_MAX_COUNT             5   /* How many laps will we make                                    */
 #define LAP_MAX_TURNS             8   /* How many 90 degree / lane change turns exist on the track     */
-#define PATTERN_MAP_SIZE          21  /* Total amount of sensor patterns we are going to try to match  */
+#define PATTERN_MAP_SIZE          19  /* Total amount of sensor patterns we are going to try to match  */
 #define TEMPLATE_MAX_SAMPLES      300 /* How many samples shall we use when generating a template line */
 #define FAKE_LINEDATA_MAX_SAMPLES 1   /* How many fake line data samples in total shall we use         */
 /** NOTE: it's possible to use less samples through the variable 'fake_line_data_max_count' ************/
@@ -192,6 +202,8 @@ typedef struct {
 	bool rcmode_persistant;
 
 	bool race_started;
+
+	uint32_t timeout_disable_control;
 } track_t;
 /******************************************************************************************************/
 

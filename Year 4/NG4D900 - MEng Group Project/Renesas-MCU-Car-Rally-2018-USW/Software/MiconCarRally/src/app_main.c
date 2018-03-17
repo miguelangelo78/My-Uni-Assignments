@@ -74,10 +74,10 @@ void status_logger_task(void * args) {
 				pid_controller_current->output,
 				module_left_wheel->rpm_measured,
 				rpmcounter_left_read(),
-				module_left_wheel->dev_handle->match_counter,
+				module_left_wheel->dev_handle->new_duty_cycle,
 				module_right_wheel->rpm_measured,
 				rpmcounter_right_read(),
-				module_right_wheel->dev_handle->match_counter
+				module_right_wheel->dev_handle->new_duty_cycle
 			);
 		}
 
@@ -119,7 +119,7 @@ void status_logger_task(void * args) {
 
 ////EXECUTION FREQUENCY = ~45.18 kHz///////////////////////////////////////////
 void user_poller(void) {
-	/* Update the controls every 2 interrupt cycles. (For CPU execution speed reasons) */
+	/* Update the controls every 2 interrupt cycles. (For CPU execution speed reasons (FPU's fault)) */
 	static int control_update_delay = 0;
 	if(++control_update_delay >= 2) {
 		control_update_delay = 0;
@@ -245,6 +245,9 @@ void main_app(void * args)
 		}
 #endif
 		rtos_preempt();
+
+		if(track.timeout_disable_control > 0)
+			track.timeout_disable_control--;
 	}
 }
 

@@ -10,13 +10,14 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <app_config.h>
 #include <libs/spwm/spwm.h>
 
 #define MOTOR_MAX_RPM_SPEED   (2000)
 #define MOTOR_MAX_PWM_SPEED   (100.0f) /* Expressed in % from 0 to 100               */
-#define MOTOR_SAFE_MODE_LEVEL (90.0f)  /* Expressed in % from 0 to 100               */
+#define MOTOR_SAFE_MODE_LEVEL (100.0f) /* Expressed in % from 0 to 100               */
 #define MOTOR_DEADBAND        (0)      /* TODO: We need to find the value for this   */
-#define MOTOR_LEFT_INVERSE    (0)      /* Is the rotation of the left wheel reversed */
+#define MOTOR_LEFT_INVERSE    (1)      /* Is the rotation of the left wheel reversed */
 #define MOTOR_RIGHT_INVERSE   (0)      /* Is the rotation of the left wheel reversed */
 
 enum MOTOR_RETCODE {

@@ -45,20 +45,14 @@ uint8_t car_update_control(void)
 	/* Now update the external systems according to the PID output */
 	if(!module_servo->is_sweeping) {
 		/** 1- Update the servo's duty cycle (UPDATE RATE: 20 MS / 50 HZ) **/
-		if(rtos_time() % 20 == 0)
+		if(!track.timeout_disable_control && rtos_time() % 20 == 0)
 			servo_ctrl(module_servo, pid_output);
 
 		/** 2- Update the motors' differential (UPDATE RATE: 0.02213 ms (~22.13 us) / ~45.18 kHz) **/
-		if(track.mode > MODE_WAIT_FOR_STARTSWITCH) {
+		if(track.mode > MODE_WAIT_FOR_STARTSWITCH && !track.timeout_disable_control) {
 			if(!module_left_wheel->is_braking && !module_right_wheel->is_braking) {
-				/** NOTE: We can't update the two motors in 1 interrupt cycle.
-				 *  The microcontroller's FPU seems to have some issues with floating point numbers.
-				 *  For this reason, we're using the flag below to multiplex the update. **/
-				//static bool update_left_motor = false;
-				//motor_refresh_with_differential(update_left_motor ? module_left_wheel : module_right_wheel, pid_output);
 				motor_refresh_with_differential(module_left_wheel , pid_output);
 				motor_refresh_with_differential(module_right_wheel, pid_output);
-				//update_left_motor = !update_left_motor;
 			}
 		} else {
 			/* Stop the car if we're not racing */
@@ -183,8 +177,12 @@ float map_sensor_to_angle(uint8_t sensor_data)
 				pid_change_constants(pid_controller_current, track.pattern_map[i].p, track.pattern_map[i].i, track.pattern_map[i].d);
 #endif
 
+#if CAR_YEAR != 2017 && CAR_YEAR != 2018
 				motor_set_speed(module_left_wheel,  track.pattern_map[i].desired_motor_left);
 				motor_set_speed(module_right_wheel, track.pattern_map[i].desired_motor_right);
+#else
+				motor_set_speed2(module_left_wheel, module_right_wheel, 100.0f);
+#endif
 			}
 			return track.pattern_map[i].mapped_angle;
 		}
