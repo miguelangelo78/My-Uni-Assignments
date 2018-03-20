@@ -35,6 +35,11 @@
 #endif
 #define ENABLE_PID                 (1)
 #define ENABLE_DYNAMIC_PID         (0)
+#if CAR_YEAR == 2018
+#define ENABLE_DYNAMIC_MOMENTUM    (1)
+#else
+#define ENABLE_DYNAMIC_MOMENTUM    (0)
+#endif
 #define ENABLE_STARTSWITCH         (1)
 #define ENABLE_DIPSWITCH           (1)
 #define ENABLE_MOTOR_CTRL_LEDS     (1)
@@ -80,20 +85,19 @@
 
 /********* PID CONTROLLER DEFINITIONS ***************************/
 #if CAR_YEAR == 2018
-#define HANDLE_KP       0.1  /* Normal operation P coefficient */
-#define HANDLE_KI       4.5  /* Normal operation I coefficient */
-#define HANDLE_KD       37   /* Normal operation D coefficient */
+#define PID_KP       1.19   /* Normal operation P coefficient */
+#define PID_KI       0.00   /* Normal operation I coefficient */
+#define PID_KD       -150   /* Normal operation D coefficient */
 #else
-#define HANDLE_KP       2.25 /* Normal operation P coefficient */
-#define HANDLE_KI       0.75 /* Normal operation I coefficient */
-#define HANDLE_KD       37   /* Normal operation D coefficient */
+#define PID_KP       1.1    /* Normal operation P coefficient */
+#define PID_KI       0.0012 /* Normal operation I coefficient */
+#define PID_KD       -180   /* Normal operation D coefficient */
 #endif
 
-#define CRANK_HANDLE_KP 5   /* Crank operation P coefficient  */
-#define CRANK_HANDLE_KI 0.5 /* Crank operation I coefficient  */
-#define CRANK_HANDLE_KD 37  /* Crank operation D coefficient  */
+#define INT_WIND_PERIOD 10  /* The period (ms) at which the integral is reset */
 
-#define INT_WIND_PERIOD 10  /* The period at which the integral is reset */
+#define MOMENTUM_EASE_ENABLE_THRESHOLD  11297 /* Counter threshold which enables the dynamic momentum ease feature  */
+#define MOMENTUM_EASE_DISABLE_THRESHOLD 7000  /* Counter threshold which disables the dynamic momentum ease feature */
 /****************************************************************/
 
 /********* TIMEOUT DEFINITIONS ******************************************************************************************/
@@ -144,6 +148,7 @@ typedef struct {
 	float     desired_motor_right;
 	float     p, i, d;
 	enum MODE change_mode;
+	int8_t    delta_momentum;
 } pattern_map_t;
 
 typedef struct {
@@ -204,6 +209,11 @@ typedef struct {
 	bool race_started;
 
 	uint32_t timeout_disable_control;
+
+	int  momentum_counter;
+	bool momentum_map_triggered;
+
+	bool servo_override;
 } track_t;
 /******************************************************************************************************/
 

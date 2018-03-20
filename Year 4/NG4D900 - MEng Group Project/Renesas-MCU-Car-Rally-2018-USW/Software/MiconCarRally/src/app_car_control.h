@@ -53,9 +53,7 @@ extern motor_t * module_left_wheel;
 extern motor_t * module_right_wheel;
 extern servo_t * module_servo;
 extern accel_t * module_accel;
-extern pid_t   * pid_controller_normal;
-extern pid_t   * pid_controller_crankmode;
-extern pid_t   * pid_controller_current;
+extern pid_t   * pid_controller;
 extern float     pid_output;
 extern piezo_t * module_piezo;
 

@@ -13,9 +13,9 @@
 #include <libs/spwm/spwm.h>
 
 #define SERVO_ANGLE_RANGE       (180)
-#define SERVO_MIN_ANGLE         (-(SERVO_ANGLE_RANGE / 2))
+#define SERVO_MIN_ANGLE         ((int8_t)(-(SERVO_ANGLE_RANGE / 2)))
 #define SERVO_CENTER_ANGLE      (0)
-#define SERVO_MAX_ANGLE         (SERVO_ANGLE_RANGE / 2)
+#define SERVO_MAX_ANGLE         ((int8_t)(SERVO_ANGLE_RANGE / 2))
 
 #if CAR_YEAR == 2018
 
@@ -43,19 +43,19 @@ enum SERVO_RETCODE {
 
 typedef struct {
 	spwm_t * dev_handle;
-	float    angle;
-	float    angle_old;
+	int8_t   angle;
+	int8_t   angle_old;
 	bool     is_locked;
 	bool     is_sweeping;
 } servo_t;
 
 servo_t *          servo_init(void);
 enum SERVO_RETCODE servo_reset(servo_t * handle);
-enum SERVO_RETCODE servo_ctrl(servo_t * handle, float angle);
-enum SERVO_RETCODE servo_accum_ctrl(servo_t * handle, float sum_angle);
+enum SERVO_RETCODE servo_ctrl(servo_t * handle, int8_t angle);
+enum SERVO_RETCODE servo_accum_ctrl(servo_t * handle, int8_t sum_angle);
 enum SERVO_RETCODE servo_center(servo_t * handle);
 enum SERVO_RETCODE servo_lock(servo_t * handle);
 enum SERVO_RETCODE servo_unlock(servo_t * handle);
-enum SERVO_RETCODE servo_sweep(servo_t * handle, float min_angle, float max_angle, uint32_t delay, float increment, bool from_cur_angle);
+enum SERVO_RETCODE servo_sweep(servo_t * handle, int8_t min_angle, int8_t max_angle, uint32_t delay, int8_t increment, bool from_cur_angle);
 
 #endif /* LIB_DRIVERS_ACTUATORS_SERVO_SERVO_H_ */

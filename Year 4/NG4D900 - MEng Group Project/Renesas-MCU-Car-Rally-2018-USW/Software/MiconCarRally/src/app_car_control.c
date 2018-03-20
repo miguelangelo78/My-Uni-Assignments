@@ -12,12 +12,9 @@ motor_t * module_left_wheel  = NULL; /* Left  DC Motor module */
 motor_t * module_right_wheel = NULL; /* Right DC Motor module */
 servo_t * module_servo       = NULL; /* Servo module          */
 accel_t * module_accel       = NULL; /* Accelerometer module  */
+piezo_t * module_piezo       = NULL; /* Piezo buzzer module   */
 
-pid_t * pid_controller_normal    = NULL; /* PID for controlling the servo angle and the DC motor differential */
-pid_t * pid_controller_crankmode = NULL; /* PID for controlling each DC motor while in brake mode             */
-pid_t * pid_controller_current   = NULL; /* What current PID controller are we using at any given time        */
-
-piezo_t * module_piezo = NULL; /* Piezo buzzer module */
+pid_t * pid_controller    = NULL; /* PID for controlling the servo angle and the DC motor differential */
 
 #define READ_LINE(sensor_var) ((sensor_var = ltracker_read(MASK4_4, NULL)) || 1)
 
@@ -27,32 +24,29 @@ uint8_t car_update_control(void)
 	/* Read all 8 infra-red sensors at the front */
 	uint8_t line_sensor = ltracker_read(MASK4_4, NULL);
 
-	float pid_output = 0.0f;
+	int pid_output = 0;
 
 #if ENABLE_PID == 1
-	/* Switch to the correct PID controller, which depends on whether or not we are breaking/slowing down */
-	pid_controller_current = (module_left_wheel->is_braking || module_right_wheel->is_braking) ? pid_controller_crankmode : pid_controller_normal;
-
 	/* Update PID feedback before recalculation */
-	if(!module_left_wheel->is_braking && !module_right_wheel->is_braking)
-		pid_update_feedback(pid_controller_current, map_sensor_to_angle(line_sensor), 0);
+	//if(!module_left_wheel->is_braking && !module_right_wheel->is_braking)
+	pid_update_feedback(pid_controller, map_sensor_to_angle(line_sensor), 0);
 
 	/* Recalculate PID with new feedback */
-	pid_output = pid_control_recalculate(pid_controller_current);
+	pid_output = pid_control_recalculate(pid_controller);
 #endif
 
 #if ENABLE_SERVO == 1 && ENABLE_MOTORS == 1
 	/* Now update the external systems according to the PID output */
 	if(!module_servo->is_sweeping) {
 		/** 1- Update the servo's duty cycle (UPDATE RATE: 20 MS / 50 HZ) **/
-		if(!track.timeout_disable_control && rtos_time() % 20 == 0)
+		if(!track.timeout_disable_control && !track.servo_override && rtos_time() % 20 == 0)
 			servo_ctrl(module_servo, pid_output);
 
 		/** 2- Update the motors' differential (UPDATE RATE: 0.02213 ms (~22.13 us) / ~45.18 kHz) **/
 		if(track.mode > MODE_WAIT_FOR_STARTSWITCH && !track.timeout_disable_control) {
 			if(!module_left_wheel->is_braking && !module_right_wheel->is_braking) {
-				motor_refresh_with_differential(module_left_wheel , pid_output);
-				motor_refresh_with_differential(module_right_wheel, pid_output);
+				motor_refresh_with_differential(module_left_wheel , (float)pid_output);
+				motor_refresh_with_differential(module_right_wheel, (float)pid_output);
 			}
 		} else {
 			/* Stop the car if we're not racing */
@@ -154,8 +148,6 @@ bool change_mode_on_line_detection(uint8_t sensor_data)
 
 		if(track.intelligence_level != INTEL_SMART)
 			motor_set_braking2(module_left_wheel, module_right_wheel, true);
-
-		pid_reset(pid_controller_crankmode);
 	}
 
 #if ENABLE_TEMPLATE_GENERATION == 1
@@ -174,12 +166,36 @@ float map_sensor_to_angle(uint8_t sensor_data)
 			if(track.mode != MODE_ACCIDENT) {
 #if ENABLE_DYNAMIC_PID == 1
 				/* Update the PID coefficients for every different pattern */
-				pid_change_constants(pid_controller_current, track.pattern_map[i].p, track.pattern_map[i].i, track.pattern_map[i].d);
+				pid_change_constants(pid_controller, track.pattern_map[i].p, track.pattern_map[i].i, track.pattern_map[i].d);
 #endif
 
-#if CAR_YEAR != 2017 && CAR_YEAR != 2018
-				motor_set_speed(module_left_wheel,  track.pattern_map[i].desired_motor_left);
-				motor_set_speed(module_right_wheel, track.pattern_map[i].desired_motor_right);
+#if ENABLE_DYNAMIC_MOMENTUM == 1
+				if(track.momentum_map_triggered && !track.servo_override) {
+					motor_set_speed(module_left_wheel,  track.pattern_map[i].desired_motor_left);
+					motor_set_speed(module_right_wheel, track.pattern_map[i].desired_motor_right);
+				} else {
+					motor_set_speed2(module_left_wheel, module_right_wheel, 100.0f);
+				}
+
+				if(!track.momentum_map_triggered) {
+					if(track.momentum_counter >= MOMENTUM_EASE_ENABLE_THRESHOLD)
+						track.momentum_map_triggered = true;
+				} else {
+					if(track.momentum_counter <= MOMENTUM_EASE_DISABLE_THRESHOLD)
+						track.momentum_map_triggered = false;
+				}
+
+				if(!track.servo_override) {
+					track.momentum_counter += track.pattern_map[i].delta_momentum;
+					if(track.momentum_counter <= 0)
+						track.momentum_counter = 0;
+					if(track.momentum_counter >= MOMENTUM_EASE_ENABLE_THRESHOLD * 2)
+						track.momentum_counter = MOMENTUM_EASE_ENABLE_THRESHOLD * 2;
+				} else {
+					track.momentum_counter       = 0;
+					track.momentum_map_triggered = false;
+				}
+
 #else
 				motor_set_speed2(module_left_wheel, module_right_wheel, 100.0f);
 #endif
@@ -220,7 +236,9 @@ void car_algorithm_poll(uint8_t line_sensor)
 
 	/* Check for off-track accidents every 50 ms */
 	if(rtos_time() % 50 == 0) {
-		if(!track.is_turning_lane && track.mode > MODE_WAIT_FOR_STARTSWITCH && (line_sensor == b11111111 || line_sensor == b00000000)) {
+		if(!track.is_turning_lane && !track.is_turning_corner && track.mode > MODE_WAIT_FOR_STARTSWITCH &&
+			(line_sensor == b11111111 || line_sensor == b00000000))
+		{
 			if(++track.line_misread_danger_counter >= 5)
 				change_to_new_mode(MODE_ACCIDENT, MODE_ACCIDENT);
 		} else {
@@ -355,41 +373,51 @@ void car_algorithm_poll(uint8_t line_sensor)
 				/* Drive the car slowly until it reaches the other side of the track where the line begins again */
 
 				static uint8_t turn_lane_state = 0;
-				float limit_speed = track.next_turn->is_lane_change && track.next_turn->direction == TURN_LEFT ? 20 : 40;
+				float limit_speed = track.next_turn->is_lane_change && track.next_turn->direction == TURN_LEFT ? 20 : 20;
 
 				switch(turn_lane_state) {
 				case 0: /* Wait until we reach the 'line break' */
 					if(line_sensor == 0) turn_lane_state++;
-					else pid_update_feedback(pid_controller_current, map_sensor_to_angle(line_sensor), 0);
-					motor_ctrl_with_differential2(module_left_wheel, module_right_wheel, limit_speed, pid_controller_current->output);
+					else pid_update_feedback(pid_controller, map_sensor_to_angle(line_sensor), 0);
+					motor_ctrl_with_differential2(module_left_wheel, module_right_wheel, limit_speed, pid_controller->output);
 					track.is_turning_lane   = true;
 					track.is_turning_corner = false;
 					break;
 				case 1: /* Change the lane to the left/right */
 					if(track.next_turn->direction == TURN_LEFT) { /* Change to the left lane */
-						if(line_sensor & b11111000) turn_lane_state++;
-						else pid_update_feedback(pid_controller_current, 0, -15);
+						if(line_sensor & b11111000) {
+							motor_set_speed(module_left_wheel,    module_left_wheel->speed_old);
+							motor_set_speed(module_right_wheel,   module_right_wheel->speed_old);
+							motor_set_braking2(module_left_wheel, module_right_wheel, false);
+							track.servo_override = false;
+							turn_lane_state++;
+						} else {
+							track.servo_override = true;
+							servo_ctrl(module_servo, -45);
+						}
 					} else { /* Change to the right lane */
-						if(line_sensor & b00011111) turn_lane_state++;
-						else pid_update_feedback(pid_controller_current, 0, 15);
+						if(line_sensor & b00011111) {
+							motor_set_speed(module_left_wheel,    module_left_wheel->speed_old);
+							motor_set_speed(module_right_wheel,   module_right_wheel->speed_old);
+							motor_set_braking2(module_left_wheel, module_right_wheel, false);
+							track.servo_override = false;
+							turn_lane_state++;
+					} else {
+							servo_ctrl(module_servo, 45);
+						}
 					}
-					motor_ctrl_with_differential2(module_left_wheel, module_right_wheel, limit_speed, pid_controller_current->output);
+					motor_ctrl_with_differential2(module_left_wheel, module_right_wheel, limit_speed, pid_controller->output);
 					break;
 				case 2: /* Try to catch the beginning of the line on the other side */
 					if(track.next_turn->direction == TURN_LEFT) { /* Catch the line on the left lane */
 						if(line_sensor == b00001100) turn_lane_state++;
-						else pid_update_feedback(pid_controller_current, 0, 10);
 					} else { /* Catch the line on the right lane */
 						if(line_sensor == b00110000) turn_lane_state++;
-						else pid_update_feedback(pid_controller_current, 0, -10);
 					}
 					break;
 				case 3:
 					/* Done lane change */
-					track.is_turning_lane = false;
-					motor_set_speed(module_left_wheel,  module_left_wheel->speed_old);
-					motor_set_speed(module_right_wheel, module_right_wheel->speed_old);
-					motor_set_braking2(module_left_wheel, module_right_wheel, false);
+					track.is_turning_lane  = false;
 					change_to_next_mode(MODE_FOLLOW_NORMAL_TRACE);
 					piezo_play(module_piezo, &note_turn_found, false);
 					turn_lane_state = 0;
@@ -403,28 +431,33 @@ void car_algorithm_poll(uint8_t line_sensor)
 		case MODE_TURNING_CORNER: ////APPLIES TO: BASIC|ADVANCED////////////////////////////////////////////////
 		{
 			static uint8_t turn_corner_state = 0;
-			float limit_speed = 20;
+			float limit_speed = 5;
 
 			/* Drive the car through a 90 degree corner (we don't know the direction though, at least in this intel mode) */
 
 			switch(turn_corner_state) {
 			case 0: /* Drive slowly until we reach the corner */
-				if(check_leftline(line_sensor) || line_sensor == b11100000)       turn_corner_state++;
-				else if(check_rightline(line_sensor) || line_sensor == b00000111) turn_corner_state++;
-				else pid_update_feedback(pid_controller_current, map_sensor_to_angle(line_sensor), 0);
-				motor_ctrl_with_differential2(module_left_wheel, module_right_wheel, limit_speed, pid_controller_current->output);
+				if(line_sensor == 0) turn_corner_state++;
+				else pid_update_feedback(pid_controller, map_sensor_to_angle(line_sensor), 0);
+				motor_ctrl_with_differential2(module_left_wheel, module_right_wheel, limit_speed, pid_controller->output);
 				track.is_turning_lane   = false;
 				track.is_turning_corner = true;
 				break;
 			case 1:
 				if(track.next_turn->direction == TURN_RIGHT) {
 					if(line_sensor == b00011000) turn_corner_state++;
-					else pid_update_feedback(pid_controller_current, 0, 90);
+					else {
+						track.servo_override = true;
+						servo_ctrl(module_servo, 90);
+					}
 					motor_ctrl(module_left_wheel, module_left_wheel->max_speed);
 					motor_ctrl(module_right_wheel, 0);
 				} else {
 					if(line_sensor == b00011000) turn_corner_state++;
-					else pid_update_feedback(pid_controller_current, 0, -90);
+					else {
+						track.servo_override = true;
+						servo_ctrl(module_servo, -90);
+					}
 					motor_ctrl(module_right_wheel, module_right_wheel->max_speed);
 					motor_ctrl(module_left_wheel, 0);
 				}
@@ -432,6 +465,7 @@ void car_algorithm_poll(uint8_t line_sensor)
 			case 2:
 				/* Done 90 deg corner */
 				track.is_turning_corner = false;
+				track.servo_override  = false;
 				motor_set_speed(module_left_wheel,  module_left_wheel->speed_old);
 				motor_set_speed(module_right_wheel, module_right_wheel->speed_old);
 				motor_set_braking2(module_left_wheel, module_right_wheel, false);

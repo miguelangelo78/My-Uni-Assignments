@@ -14,7 +14,7 @@
 #include <pin_mapping.h>
 #include <rtos_inc.h>
 
-pid_t * pid_new_controller(float kp, float ki, float kd, float min_val, float max_val, uint32_t integral_windup_period) {
+pid_t * pid_new_controller(float kp, float ki, float kd, int min_val, int max_val, uint32_t integral_windup_period) {
 	pid_t * ret = (pid_t*)malloc(sizeof(pid_t));
 
 	ret->feedback = 0.0f;
@@ -32,45 +32,40 @@ pid_t * pid_new_controller(float kp, float ki, float kd, float min_val, float ma
 	ret->output       = 0.0f;
 	ret->min_val      = min_val;
 	ret->max_val      = max_val;
-	ret->integral_windup_period = integral_windup_period;
+	ret->integral_windup_period         = 0;
+	ret->integral_windup_period_default = integral_windup_period;
 
 	ret->init = true;
 
 	return ret;
 }
 
-float pid_control_recalculate(pid_t * pid_handle) {
+int pid_control_recalculate(pid_t * pid_handle) {
 	if(!pid_handle)
-		return 0.0f;
+		return 0;
 
 	pid_handle->error        = pid_handle->target   - pid_handle->feedback;
-	pid_handle->proportional = pid_handle->kp       * pid_handle->error;
-	pid_handle->integral     = pid_handle->integral + pid_handle->error;
-	pid_handle->derivative   = pid_handle->error    - pid_handle->last_error;
+	pid_handle->proportional = pid_handle->kp       * (float)pid_handle->error;
+	pid_handle->integral     = pid_handle->ki       * (pid_handle->integral + (float)pid_handle->error);
+	pid_handle->derivative   = (pid_handle->error > pid_handle->last_error) ?
+								-pid_handle->kd * (float)(pid_handle->error - pid_handle->last_error) :
+								 pid_handle->kd * (float)(pid_handle->last_error - pid_handle->error);
 
-	pid_handle->output =
-		pid_handle->proportional                 +
-		pid_handle->ki * pid_handle->integral    +
-		pid_handle->kd * pid_handle->derivative;
+	/* Limit the integral value */
+	if(pid_handle->integral <= pid_handle->min_val) pid_handle->integral = pid_handle->min_val;
+	if(pid_handle->integral >= pid_handle->max_val) pid_handle->integral = pid_handle->max_val;
+
+	pid_handle->output       = (int)(pid_handle->proportional + pid_handle->integral + pid_handle->derivative);
+	pid_handle->last_error   = pid_handle->error;
 
 	/* Limit the output value */
-	if(pid_handle->output < pid_handle->min_val)
-		pid_handle->output = pid_handle->min_val;
-	if(pid_handle->output > pid_handle->max_val)
-		pid_handle->output = pid_handle->max_val;
-
-	static int intwind_delay_ctr = 0;
-	if(intwind_delay_ctr++ % pid_handle->integral_windup_period == 0) {
-		pid_handle->integral = 0;
-		intwind_delay_ctr = 0;
-	}
-
-	pid_handle->last_error = pid_handle->error;
+	if(pid_handle->output <= pid_handle->min_val) pid_handle->output = pid_handle->min_val;
+	if(pid_handle->output >= pid_handle->max_val) pid_handle->output = pid_handle->max_val;
 
 	return pid_handle->output;
 }
 
-bool pid_update_feedback(pid_t * pid_handle, float new_feedback, float target) {
+bool pid_update_feedback(pid_t * pid_handle, int new_feedback, int target) {
 	if(!pid_handle)
 		return false;
 

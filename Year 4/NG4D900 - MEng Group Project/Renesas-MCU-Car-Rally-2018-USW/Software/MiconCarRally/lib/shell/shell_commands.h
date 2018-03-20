@@ -17,19 +17,11 @@
 #include <app_car_control.h>
 
 extern const cmd_t command_list[];
-extern int         command_count;
 
 /*****************************************/
 /* Implementation of the shell functions */
 /*   (Create new shell functions here)   */
 /*****************************************/
-
-#include <actuators/servo/servo.h>
-#include <actuators/motor_driver/motor_driver.h>
-
-extern motor_t * module_left_wheel;
-extern motor_t * module_right_wheel;
-extern servo_t * module_servo;
 
 int dc_motor_control(int argc, char ** argv) {
 	if(argc < 2) {
@@ -60,10 +52,10 @@ int servo_control(int argc, char ** argv) {
 	track.timeout_disable_control = 2500;
 
 	if(argc == 3) {
-		if(!strcmp(argv[2], "hz")) spwm_set_frequency(module_servo->dev_handle, atof(argv[1]));
-		else                       servo_ctrl(module_servo, atof(argv[1]));
+		if(!strcmp(argv[2], "hz")) spwm_set_frequency(module_servo->dev_handle, atoi(argv[1]));
+		else                       servo_ctrl(module_servo, atoi(argv[1]));
 	} else {
-		servo_ctrl(module_servo, atof(argv[1]));
+		servo_ctrl(module_servo, atoi(argv[1]));
 	}
 
 	return 0;
@@ -82,7 +74,7 @@ int servo_control_sweep(int argc, char ** argv) {
 	}
 
 	track.timeout_disable_control = 2500; /* Disable car controls for this amount of time (ms) */
-	servo_sweep(module_servo, -90.0f, 90.0f, (uint32_t)atoi(argv[1]), atof(argv[2]), true);
+	servo_sweep(module_servo, -90, 90, (uint32_t)atoi(argv[1]), atoi(argv[2]), true);
 	return 0;
 }
 
@@ -115,54 +107,29 @@ int stop(int argc, char ** argv) {
 	return 0;
 }
 
-#include <math/pid/pid.h>
-extern pid_t * pid_controller_normal;    /* PID for controlling the servo angle and the DC motor differential */
-extern pid_t * pid_controller_crankmode; /* PID for controlling each DC motor while in crank mode             */
-
 int prop_tune(int argc, char ** argv) {
-	if(argc == 2) pid_controller_normal->kp = atof(argv[1]);
+	if(argc == 2) pid_controller->kp = atof(argv[1]);
 	else          return 1;
 	return 0;
 }
 
 int integ_tune(int argc, char ** argv) {
-	if(argc == 2) pid_controller_normal->ki = atof(argv[1]);
+	if(argc == 2) pid_controller->ki = atof(argv[1]);
 	else          return 1;
 	return 0;
 }
 
 int deriv_tune(int argc, char ** argv) {
-	if(argc == 2) pid_controller_normal->kd = atof(argv[1]);
-	else          return 1;
-	return 0;
-}
-
-int prop_crank_tune(int argc, char ** argv) {
-	if(argc == 2) pid_controller_crankmode->kp = atof(argv[1]);
-	else          return 1;
-	return 0;
-}
-
-int integ_crank_tune(int argc, char ** argv) {
-	if(argc == 2) pid_controller_crankmode->ki = atof(argv[1]);
-	else          return 1;
-	return 0;
-}
-
-int deriv_crank_tune(int argc, char ** argv) {
-	if(argc == 2) pid_controller_crankmode->kd = atof(argv[1]);
+	if(argc == 2) pid_controller->kd = atof(argv[1]);
 	else          return 1;
 	return 0;
 }
 
 int int_windup_tune(int argc, char ** argv) {
-	if(argc == 2) pid_controller_crankmode->integral_windup_period = atoi(argv[1]);
+	if(argc == 2) pid_controller->integral_windup_period = atoi(argv[1]);
 	else          return 1;
 	return 0;
 }
-
-#include <sound/piezo.h>
-extern piezo_t * module_piezo;
 
 int play_tune(int argc, char ** argv) {
 	if(argc < 3) {
@@ -268,6 +235,8 @@ extern int bootloader_write(int argc, char ** argv);
 extern int bootloader_read(int argc, char ** argv);
 extern int bootloader_reset(int argc, char ** argv);
 
+extern int command_count;
+
 int console_clear(int argc, char ** argv) {
 	putchar(27);
 	printf("[2J");
@@ -322,9 +291,6 @@ const cmd_t command_list[] = {
 	{"p",  prop_tune,        PACKET_CMD},
 	{"i",  integ_tune,       PACKET_CMD},
 	{"d",  deriv_tune,       PACKET_CMD},
-	{"pc", prop_crank_tune,  PACKET_CMD},
-	{"ic", integ_crank_tune, PACKET_CMD},
-	{"dc", deriv_crank_tune, PACKET_CMD},
 	{"iw", int_windup_tune,  PACKET_CMD},
 #endif
 

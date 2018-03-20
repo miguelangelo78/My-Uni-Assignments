@@ -11,40 +11,44 @@
 #include <utils.h>
 #include <app_config.h>
 
+#define TRACK_TYPE 1 /* Options: 0: FULL, 1: TEST1 */
+
 track_t track = {
 	.intelligence_level = { INTEL_BASIC },
 	.mode               = { MODE_WAIT_FOR_STARTSWITCH },
 	.next_mode          = { MODE_FOLLOW_NORMAL_TRACE  },
 	.next_turn          = NULL,
+	.servo_override     = { false },
+	.momentum_counter   = { 0 },
+	.momentum_map_triggered = { false},
 	.line_misread_danger_counter = { 0 },
 
 	/* What patterns shall we match and how should we react to them */
 	.pattern_map = {
-		{b00011000,  0,  100, 100, 5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE },
-		{b00010000,  0,  100, 100, 5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE },
-		{b00001000,  0,  100, 100, 5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE },
-		{b00100000,  7,  80,  80,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE },
-		{b01000000,  10, 70,  70,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE },
-		//{b10000000,  10, 70,  70,  5, 0.1, 100000, MODE_AVOID_LEFT_BOUNDARY },
-		//{b00000001,  10, 70,  70,  5, 0.1, 100000, MODE_AVOID_RIGHT_BOUNDARY},
-		{b00000010, -10, 70,  70,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE },
-		{b00000100, -7,  80,  80,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE },
-		{b00011100, -5,  90,  90,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE },
-		{b00001100, -7,  80,  80,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE },
-		{b00001110, -10, 80,  80,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE },
-		{b00000110, -15, 80,  80,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE },
-		{b00000111, -25, 85,  85,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE },
-		{b00000011, -30, 80,  80,  5, 0.1, 100000, MODE_AVOID_RIGHT_BOUNDARY},
-		{b00111000,  5,  90,  90,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE },
-		{b00110000,  7,  80,  80,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE },
-		{b01110000,  10, 80,  80,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE },
-		{b01100000,  15, 80,  80,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE },
-		{b11100000,  25, 85,  85,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE },
-		{b11000000,  30, 80,  80,  5, 0.1, 100000, MODE_AVOID_LEFT_BOUNDARY }
+		{b00011000,  0,  100, 100, 5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE,   1 },
+		{b00010000,  0,  100, 100, 5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE,   1 },
+		{b00001000,  0,  100, 100, 5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE,   1 },
+		{b00100000,  29, 80,  80,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE,  -3 },
+		{b01000000,  45, 70,  70,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE,  -4 },
+		{b00000010, -50, 70,  70,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE,  -4,},
+		{b00000100, -29, 80,  80,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE,  -3 },
+		{b00011100, -14, 90,  90,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE,  -1 },
+		{b00001100, -18, 80,  80,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE,  -2 },
+		{b00001110, -29, 80,  80,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE,  -3 },
+		{b00000110, -40, 80,  80,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE,  -4 },
+		{b00000111, -50, 85,  85,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE,  -5 },
+		{b00000011, -55, 80,  80,  5, 0.1, 100000, MODE_AVOID_RIGHT_BOUNDARY, -6 },
+		{b00111000,  7,  90,  90,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE,  -1 },
+		{b00110000,  19, 80,  80,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE,  -2 },
+		{b01110000,  29, 80,  80,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE,  -3 },
+		{b01100000,  40, 80,  80,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE,  -4 },
+		{b11100000,  45, 85,  85,  5, 0.1, 100000, MODE_FOLLOW_NORMAL_TRACE,  -5 },
+		{b11000000,  55, 80,  80,  5, 0.1, 100000, MODE_AVOID_LEFT_BOUNDARY,  -6 }
 	},
 
 	/* Which turn will we encounter next */
 	.incoming_turn = {
+#if TRACK_TYPE == 0
 		/* 1st turn: lane change to the right */
 		{
 			.is_lane_change = true,
@@ -93,6 +97,38 @@ track_t track = {
 			.is_lane_change = false,
 			.direction = TURN_RIGHT,
 		},
+#elif TRACK_TYPE == 1
+		/* 1st turn: lane change to the right */
+		{
+			.is_lane_change = true,
+			.direction = TURN_RIGHT,
+		},
+
+		/* 2nd turn: lane change to the left */
+		{
+			.is_lane_change = true,
+			.direction = TURN_LEFT,
+		},
+
+
+		/* 3rd turn: 90 deg corner to the right */
+		{
+			.is_lane_change = false,
+			.direction = TURN_RIGHT,
+		},
+
+		/* 4th turn: 90 deg corner to the right */
+		{
+			.is_lane_change = false,
+			.direction = TURN_LEFT,
+		},
+
+		/* 5th turn: 90 deg corner to the left */
+		{
+			.is_lane_change = false,
+			.direction = TURN_LEFT,
+		}
+#endif
 	},
 };
 

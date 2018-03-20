@@ -54,14 +54,14 @@ void status_logger_task(void * args) {
 		}
 
 		if(log_pid) {
-			DEBUG("P: %.2f I: %.2f D: %.2f    OUT: %.2f F: %.2f ERR: %.2f LERR: %.2f",
-					pid_controller_current->proportional,
-					pid_controller_current->integral,
-					pid_controller_current->derivative,
-					pid_controller_current->output,
-					pid_controller_current->feedback,
-					pid_controller_current->error,
-					pid_controller_current->last_error
+			DEBUG("P: %.2f I: %.2f D: %.2f    OUT: %d F: %d ERR: %d LERR: %d",
+					pid_controller->proportional,
+					pid_controller->integral,
+					pid_controller->derivative,
+					pid_controller->output,
+					pid_controller->feedback,
+					pid_controller->error,
+					pid_controller->last_error
 			);
 		}
 
@@ -70,8 +70,8 @@ void status_logger_task(void * args) {
 		}
 
 		if(log_speed) {
-			DEBUG("Angle: %.2f  |  L: %.2f RPM (%d, %.2f duty)  |   R: %.2f RPM (%d, %.2f duty)",
-				pid_controller_current->output,
+			DEBUG("Angle: %d  |  L: %.2f RPM (%d, %.2f duty)  |   R: %.2f RPM (%d, %.2f duty)",
+				pid_controller->output,
 				module_left_wheel->rpm_measured,
 				rpmcounter_left_read(),
 				module_left_wheel->dev_handle->new_duty_cycle,
@@ -192,10 +192,8 @@ void main_app(void * args)
 #endif
 
 #if ENABLE_PID == 1
-	/* Create and initialize all PID controllers */
-	pid_controller_normal    = pid_new_controller(HANDLE_KP,       HANDLE_KI,       HANDLE_KD,       SERVO_MIN_ANGLE, SERVO_MAX_ANGLE, INT_WIND_PERIOD);
-	pid_controller_crankmode = pid_new_controller(CRANK_HANDLE_KP, CRANK_HANDLE_KI, CRANK_HANDLE_KD, SERVO_MIN_ANGLE, SERVO_MAX_ANGLE, INT_WIND_PERIOD);
-	pid_controller_current   = pid_controller_normal;
+	/* Create and initialize PID controller */
+	pid_controller = pid_new_controller(PID_KP, PID_KI, PID_KD, SERVO_MIN_ANGLE, SERVO_MAX_ANGLE, INT_WIND_PERIOD);
 #endif
 
 #if ENABLE_SOUND == 1
@@ -245,6 +243,13 @@ void main_app(void * args)
 		}
 #endif
 		rtos_preempt();
+
+#if ENABLE_PID == 1
+		if(pid_controller && pid_controller->integral_windup_period++ >=  pid_controller->integral_windup_period_default) {
+			pid_controller->integral_windup_period = 0;
+			pid_controller->integral = 0;
+		}
+#endif
 
 		if(track.timeout_disable_control > 0)
 			track.timeout_disable_control--;
