@@ -18,6 +18,7 @@ bool log_pid        = false;
 bool log_mode       = false;
 bool log_speed      = false;
 bool log_unrec_patt = false;
+bool log_momentum   = false;
 
 uint8_t unrec_patt          = 0xFF;
 bool    unrec_patt_detected = false;
@@ -46,6 +47,10 @@ void status_logger_task(void * args) {
 #endif
 
 	while(1) {
+
+		if(log_momentum) {
+			DEBUG("Momentum: %d | Trigger counter: %d | Triggered: %d", track.momentum_counter, track.momentum_map_trigger_counter, track.momentum_map_triggered)
+		}
 
 		if(log_unrec_patt && unrec_patt_detected) {
 			DEBUG("UNRECOGNIZED PATTERN: %d", unrec_patt);
@@ -80,6 +85,25 @@ void status_logger_task(void * args) {
 				module_right_wheel->dev_handle->new_duty_cycle
 			);
 		}
+
+#if ENABLE_SOUND == 1
+		/* Play 'lap finished' tune */
+		static int old_laps = 0;
+
+		if(old_laps != track.laps_completed) {
+			if(module_piezo) {
+				while(module_piezo->is_playing)
+					rtos_preempt();
+
+				while(piezo_play_song_async(module_piezo, tune_lap_finished, arraysize(tune_lap_finished), false) != PIEZO_SONG_DONE) {
+					while(module_piezo->is_playing)
+						rtos_preempt();
+				}
+			}
+
+			old_laps = track.laps_completed;
+		}
+#endif
 
 #if ENABLE_TEMPLATE_GENERATION == 1
 		if(ENABLE_DIPSWITCH && is_in_template_generation_mode() && template_generator_is_finished())

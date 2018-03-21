@@ -39,6 +39,16 @@ note_t tune_connected[] = {
 #endif
 };
 
+note_t tune_lap_finished[] = {
+#if ENABLE_SOUND == 1
+	{C6, 100},
+	{C7, 100},
+	{C8, 100}
+#else
+	{MIDI_NULL, 0}
+#endif
+};
+
 note_t note_startswitch = { C8, 250 };
 note_t note_alert       = { C8, 75  };
 note_t note_turn_found  = { C8, 100 };

@@ -85,9 +85,9 @@
 
 /********* PID CONTROLLER DEFINITIONS ***************************/
 #if CAR_YEAR == 2018
-#define PID_KP       1.19   /* Normal operation P coefficient */
-#define PID_KI       0.00   /* Normal operation I coefficient */
-#define PID_KD       -150   /* Normal operation D coefficient */
+#define PID_KP       1.2  //1.22 /* Normal operation P coefficient */
+#define PID_KI       0.00  /* Normal operation I coefficient */
+#define PID_KD       -90  //-110 /* Normal operation D coefficient */
 #else
 #define PID_KP       1.1    /* Normal operation P coefficient */
 #define PID_KI       0.0012 /* Normal operation I coefficient */
@@ -96,13 +96,26 @@
 
 #define INT_WIND_PERIOD 10  /* The period (ms) at which the integral is reset */
 
-#define MOMENTUM_EASE_ENABLE_THRESHOLD  11297 /* Counter threshold which enables the dynamic momentum ease feature  */
-#define MOMENTUM_EASE_DISABLE_THRESHOLD 7000  /* Counter threshold which disables the dynamic momentum ease feature */
+#define MOMENTUM_EASE_ENABLE_THRESHOLD  9000 /* Counter threshold which enables the dynamic momentum ease feature  */
+#define MOMENTUM_EASE_DISABLE_THRESHOLD 1000 /* Counter threshold which disables the dynamic momentum ease feature */
+
 /****************************************************************/
 
-/********* TIMEOUT DEFINITIONS ******************************************************************************************/
-#define TAPE_DETECTION_TIMEOUT_MS 200 /* How long shall we wait before the car finishes processing the first white tape */
-/************************************************************************************************************************/
+/********* BRAKE DEFINITIONS ************************************/
+#if CAR_YEAR == 2018
+#define BRAKE_CORNER_SPEED_PERCENTAGE 10
+#else
+#define BRAKE_CORNER_SPEED_PERCENTAGE 40
+#endif
+
+#if CAR_YEAR == 2018
+#define BRAKE_LANE_CHANGE_NOMOMENTUM   15
+#define BRAKE_LANE_CHANGE_WITHMOMENTUM 15
+#else
+#define BRAKE_LANE_CHANGE_NOMOMENTUM   40
+#define BRAKE_LANE_CHANGE_WITHMOMENTUM 40
+#endif
+/****************************************************************/
 
 /********* ALGORITHM FSM DEFINITIONS ****************************/
 enum MODE {
@@ -124,8 +137,10 @@ enum MODE {
 /****************************************************************/
 
 /********* RACING / TRACK DEFINITIONS ******************************************************************/
+#define TRACK_TYPE                2   /* Options: 0: FULL, 1: TEST1, 2: TEST2, 3: TEST3                */
 #define LAP_MAX_COUNT             5   /* How many laps will we make                                    */
-#define LAP_MAX_TURNS             8   /* How many 90 degree / lane change turns exist on the track     */
+#define LAP_MAX_TURNS             7   /* How many 90 degree / lane change turns exist on the track     */
+#define FLOOR_IS_ON               1   /* The floor reflects the sensor's IR light (1) or not (0)       */
 #define PATTERN_MAP_SIZE          19  /* Total amount of sensor patterns we are going to try to match  */
 #define TEMPLATE_MAX_SAMPLES      300 /* How many samples shall we use when generating a template line */
 #define FAKE_LINEDATA_MAX_SAMPLES 1   /* How many fake line data samples in total shall we use         */
@@ -170,6 +185,8 @@ typedef struct {
 	fake_line_data_t    fake_line_data[FAKE_LINEDATA_MAX_SAMPLES];
 	uint16_t            fake_line_data_max_count;
 	uint16_t            fake_line_data_index;
+	uint8_t             corner_fetch_pattern;
+	float               corner_brake_speed;
 } turn_t;
 
 enum INTEL {
@@ -211,6 +228,7 @@ typedef struct {
 	uint32_t timeout_disable_control;
 
 	int  momentum_counter;
+	int  momentum_map_trigger_counter;
 	bool momentum_map_triggered;
 
 	bool servo_override;

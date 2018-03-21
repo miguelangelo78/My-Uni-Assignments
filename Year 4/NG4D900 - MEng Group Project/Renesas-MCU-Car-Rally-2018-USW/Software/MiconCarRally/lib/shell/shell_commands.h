@@ -199,9 +199,12 @@ extern bool log_pid;
 extern bool log_mode;
 extern bool log_speed;
 extern bool log_unrec_patt;
+extern bool log_momentum;
 
 int log_set(int argc, char ** argv) {
-	if(!strcmp(argv[0], "l3"))
+	if(!strcmp(argv[0], "l4"))
+		log_momentum = !log_momentum;
+	else if(!strcmp(argv[0], "l3"))
 		log_unrec_patt = !log_unrec_patt;
 	else if(!strcmp(argv[0], "l2"))
 		log_speed = !log_speed;
@@ -312,6 +315,7 @@ const cmd_t command_list[] = {
 #endif
 #endif
 
+	{"l4", log_set, PACKET_CMD},
 	{"l3", log_set, PACKET_CMD},
 	{"l2", log_set, PACKET_CMD},
 	{"l1", log_set, PACKET_CMD},

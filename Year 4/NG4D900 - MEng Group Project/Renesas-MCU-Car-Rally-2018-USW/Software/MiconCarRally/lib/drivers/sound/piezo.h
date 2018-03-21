@@ -56,4 +56,6 @@ enum PIEZO_RETCODE piezo_set_volume(piezo_t * handle, float volume);
 enum MIDI_LUT      midi_lut(uint8_t tone_index);
 uint16_t           midi_lut_count(void);
 
+extern enum MIDI_LUT midi_lut_list[53];
+
 #endif /* LIB_DRIVERS_SOUND_PIEZO_H_ */

@@ -15,7 +15,7 @@
 
 #define MOTOR_MAX_RPM_SPEED   (2000)
 #if CAR_YEAR == 2018
-#define MOTOR_MAX_PWM_SPEED   (60.0f) /* Expressed in % from 0 to 100               */
+#define MOTOR_MAX_PWM_SPEED   (80.0f) /* Expressed in % from 0 to 100               */
 #else
 #define MOTOR_MAX_PWM_SPEED   (80.0f) /* Expressed in % from 0 to 100               */
 #endif
