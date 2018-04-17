@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,21 +22,20 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.helper.StaticLabelsFormatter;
+import com.jjoe64.graphview.GridLabelRenderer;
+import com.jjoe64.graphview.LegendRenderer;
+import com.jjoe64.graphview.ValueDependentColor;
+import com.jjoe64.graphview.Viewport;
+import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.OnDataPointTapListener;
-import com.jjoe64.graphview.series.PointsGraphSeries;
 import com.jjoe64.graphview.series.Series;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
-
-import java.text.NumberFormat;
 
 public class ScorecardActivity extends AppCompatActivity {
 
@@ -60,7 +58,7 @@ public class ScorecardActivity extends AppCompatActivity {
 		tabLayout.setTabTextColors(Color.parseColor("#bababa"), Color.parseColor("#ffffff"));
 
 		ViewPager viewpager_container = findViewById(R.id.viewpager_container);
-		viewpager_container.setAdapter(new CustomFragmentPagerAdapter(this, getSupportFragmentManager()));
+		viewpager_container.setAdapter(new CustomFragmentPagerAdapter(this, getSupportFragmentManager(), topic_index));
 		viewpager_container.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 		tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewpager_container));
 
@@ -71,6 +69,7 @@ public class ScorecardActivity extends AppCompatActivity {
 
 		private static final String ARG_POSITION = "position";
 		public Context context;
+		private int topic_index;
 
 		public CustomFragment() {}
 
@@ -78,11 +77,14 @@ public class ScorecardActivity extends AppCompatActivity {
 			this.context = context;
 		}
 
-		public static CustomFragment newInstance(Context context, int position) {
+		public void setTopicIndex(int topic_index) { this.topic_index = topic_index; }
+
+		public static CustomFragment newInstance(Context context, int topic_index, int position) {
 			CustomFragment fragment = new CustomFragment();
 
 			/* Manually set the context, since we're forced to use default constructors on fragments */
 			fragment.setContext(context);
+			fragment.setTopicIndex(topic_index);
 
 			Bundle args = new Bundle();
 			args.putInt(ARG_POSITION, position);
@@ -96,13 +98,37 @@ public class ScorecardActivity extends AppCompatActivity {
 			LinearLayout linearLayout = new LinearLayout(scrollView.getContext());
 			linearLayout.setOrientation(LinearLayout.VERTICAL);
 
-			/* Load scores from stored user data and show them in a list */
+			Topic topic = MainActivity.getTopics().get(topic_index);
 
-			if(scoreData == null) {
-				TextView t = new TextView(linearLayout.getContext());
-				t.setText("No user data found");
-				linearLayout.addView(t);
+			TextView textView_topic = new TextView(linearLayout.getContext());
+			textView_topic.setText("Topic: " + topic.get("name"));
+			textView_topic.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+			textView_topic.setTextSize(25);
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+			params.setMargins(0, 50, 0, 50);
+			textView_topic.setLayoutParams(params);
+			linearLayout.addView(textView_topic);
+
+			/* Check if the user already played this topic before */
+			int scoreEntriesFound = 0;
+
+			try {
+				for (int i = 0; i < scoreData.length(); i++) {
+					/* Check if this entry belongs to the currently opened topic */
+					if (this.topic_index == Integer.parseInt(scoreData.getJSONObject(i).getString("topic_index")))
+						scoreEntriesFound++;
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+
+			if(scoreData == null || scoreEntriesFound == 0) {
+				TextView textView = new TextView(linearLayout.getContext());
+				textView.setText("No user data found");
+				textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+				linearLayout.addView(textView);
 			} else {
+				/* Load scores from stored user data and show them in a list */
 
 				Button button_clearUserData = new Button(linearLayout.getContext());
 				button_clearUserData.setText("Clear score data");
@@ -115,8 +141,12 @@ public class ScorecardActivity extends AppCompatActivity {
 				});
 
 				try {
-					for (int i = 0; i < scoreData.length(); i++) {
+					for (int i = 0, j = 0; i < scoreData.length(); i++) {
 						JSONObject scoreEntry = scoreData.getJSONObject(i);
+						int topic_index = Integer.parseInt(scoreEntry.getString("topic_index"));
+
+						if(this.topic_index != topic_index)
+							continue;
 
 						LinearLayout innerLinearLayout = new LinearLayout(linearLayout.getContext());
 						innerLinearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -125,41 +155,40 @@ public class ScorecardActivity extends AppCompatActivity {
 						innerLevel2LinearLayout.setOrientation(LinearLayout.HORIZONTAL);
 						innerLevel2LinearLayout.setWeightSum(2.0f);
 
-						/* Set topic index and name */
-						int topic_index = Integer.parseInt(scoreEntry.getString("topic_index"));
-						Topic topic = MainActivity.getTopics().get(topic_index);
+						/* Set score text */
+						TextView textView_score = new TextView(innerLinearLayout.getContext());
 
-						TextView textView_topic = new TextView(innerLinearLayout.getContext());
-						textView_topic.setText(Integer.toString(i + 1) +" - Category\n" + topic.get("name"));
-						LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-						params.weight = 1.0f;
-						params.gravity = Gravity.LEFT;
-						textView_topic.setLayoutParams(params);
+						String correct_answers_str = scoreEntry.getString("correct_answers");
+						String total_questions_str = scoreEntry.getString("total_questions");
+						float percentage = (Float.parseFloat(correct_answers_str) / Float.parseFloat(total_questions_str)) * 100.0f;
 
-						innerLevel2LinearLayout.addView(textView_topic);
+						textView_score.setText(Integer.toString(j + 1) + " - Score: " + correct_answers_str + " / " + total_questions_str + " (" + String.format("%.2f", percentage) + "%)");
+						textView_score.setTextSize(17.0f);
+						LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+						params2.weight = 1.0f;
+						params2.gravity = Gravity.LEFT;
+						params2.setMargins(10, 60, 0, 0);
+						textView_score.setLayoutParams(params2);
 
-						/* Set date and time */
+						innerLevel2LinearLayout.addView(textView_score);
+
+						/* Set date and time text */
 						TextView textView_dateAndTime = new TextView(innerLinearLayout.getContext());
 						textView_dateAndTime.setText("(" + scoreEntry.getString("time") + ")");
 						textView_dateAndTime.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
 						textView_dateAndTime.setTextSize(12.0f);
 
-						LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-						params2.weight = 1.0f;
-						params2.gravity = Gravity.RIGHT;
-						textView_dateAndTime.setLayoutParams(params2);
+						LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+						params3.weight = 1.0f;
+						params3.gravity = Gravity.RIGHT;
+						textView_dateAndTime.setLayoutParams(params3);
 						innerLevel2LinearLayout.addView(textView_dateAndTime);
 
 						innerLinearLayout.addView(innerLevel2LinearLayout);
 
-						/* Set score */
-						TextView textView_score = new TextView(innerLinearLayout.getContext());
-						textView_score.setText("Score: " + scoreEntry.getString("correct_answers") + " / " + scoreEntry.getString("total_questions"));
-						textView_score.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-						textView_score.setTextSize(20.0f);
-						innerLinearLayout.addView(textView_score);
-
 						linearLayout.addView(innerLinearLayout);
+
+						j++;
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -175,66 +204,127 @@ public class ScorecardActivity extends AppCompatActivity {
 		private View instantiateScoreGraph(View rootView) {
 			LinearLayout linearLayout = new LinearLayout(rootView.getContext());
 
-			if(scoreData == null) {
-				TextView t = new TextView(linearLayout.getContext());
-				t.setText("No user data found");
-				linearLayout.addView(t);
+			/* Check if the user already played this topic before */
+			int scoreEntriesFound = 0;
+
+			try {
+				for (int i = 0; i < scoreData.length(); i++) {
+					/* Check if this entry belongs to the currently opened topic */
+					if (this.topic_index == Integer.parseInt(scoreData.getJSONObject(i).getString("topic_index")))
+						scoreEntriesFound++;
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+
+			if(scoreData == null || scoreEntriesFound == 0) {
+				TextView textView = new TextView(linearLayout.getContext());
+				textView.setText("No user data found");
+				textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+				linearLayout.addView(textView);
 				return linearLayout;
 			}
 
 			/* Load scores from stored user data and show them in a graph */
-			GraphView graph = new GraphView(rootView.getContext());
-			DataPoint[] dataPoints = new DataPoint[scoreData.length() + 1];
-			dataPoints[0] = new DataPoint(0, 0);
+			DataPoint[] dataPoints = new DataPoint[scoreEntriesFound];
 
 			try {
-				for (int i = 1; i < dataPoints.length; i++) {
-					JSONObject scoreEntry = scoreData.getJSONObject(i - 1);
-					dataPoints[i] = new DataPoint(i, Integer.parseInt(scoreEntry.getString("correct_answers")));
+				for (int i = 0, j = 0; i < scoreData.length() && j < dataPoints.length; i++) {
+					JSONObject scoreEntry = scoreData.getJSONObject(i);
+
+					/* Check if this entry belongs to the currently opened topic */
+					int topic_index = Integer.parseInt(scoreEntry.getString("topic_index"));
+					if(this.topic_index != topic_index)
+						continue;
+
+					dataPoints[j] = new DataPoint(j + 1, Integer.parseInt(scoreEntry.getString("correct_answers")));
+					j++;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
-			LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoints);
-			series.setDrawDataPoints(true);
-			series.setDataPointsRadius(25);
-			series.setThickness(5);
+			BarGraphSeries<DataPoint> series = new BarGraphSeries<>(dataPoints);
+			series.setTitle("Score");
+			series.setDrawValuesOnTop(true);
+			series.setSpacing(5);
+			series.setValuesOnTopColor(Color.BLACK);
+			series.setValuesOnTopSize(50);
+
+			series.setValueDependentColor(new ValueDependentColor<DataPoint>() {
+				@Override
+				public int get(DataPoint data) {
+					return Color.rgb((int) data.getX()*255/4, (int) Math.abs(data.getY()*255/6), 100);
+				}
+			});
 
 			series.setOnDataPointTapListener(new OnDataPointTapListener() {
+
+				private Toast graphToast = null;
+
 				@Override
 				public void onTap(Series series, DataPointInterface dataPoint) {
 					try {
-						if((int)dataPoint.getX() < 1)
-							return;
+						JSONObject scoreEntry = null;
 
-						JSONObject scoreEntry = scoreData.getJSONObject((int) dataPoint.getX() - 1);
-						Topic topic = MainActivity.getTopics().get(Integer.parseInt(scoreEntry.getString("topic_index")));
+						/* Search for the right score entry in between all the 'topic-mixed' score entries */
+						int dataPointIndex = (int)dataPoint.getX() - 1;
+
+						for(int i = 0, j = 0; i < scoreData.length(); i++) {
+							scoreEntry = scoreData.getJSONObject(dataPointIndex);
+
+							if(Integer.parseInt(scoreEntry.getString("topic_index")) == topic_index) {
+								if(++j == dataPointIndex) {
+									/* Found the score entry for this topic in specific! */
+									break;
+								}
+							}
+						}
+
+						Topic topic            = MainActivity.getTopics().get(Integer.parseInt(scoreEntry.getString("topic_index")));
 						String correct_answers = scoreEntry.getString("correct_answers");
 						String total_questions = scoreEntry.getString("total_questions");
-						Toast.makeText(getActivity(),  topic.get("name") + " | Score: " + correct_answers + " / " + total_questions, Toast.LENGTH_SHORT).show();
+						String time            = scoreEntry.getString("time");
+
+						graphToast = Toast.makeText(getActivity(),  topic.get("name") + " | Score: " + correct_answers + " / " + total_questions + "\nPlayed at: " + time, Toast.LENGTH_SHORT);
+						graphToast.show();
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
 			});
 
-			graph.getViewport().setYAxisBoundsManual(true);
-			graph.getViewport().setMinY(0);
-			graph.getViewport().setMaxY(QuestionActivity.QUESTIONS_PER_TOPIC);
+			GraphView graph = new GraphView(linearLayout.getContext());
+			graph.setTitle("Score vs Attempt");
+			graph.setTitleTextSize(50);
 
-			graph.getViewport().setXAxisBoundsManual(true);
-			graph.getViewport().setMinX(1);
-			graph.getViewport().setMaxX(dataPoints.length - 1);
+			GridLabelRenderer gridLabelRenderer = graph.getGridLabelRenderer();
+			gridLabelRenderer.setHorizontalAxisTitle("Attempt");
+			gridLabelRenderer.setHorizontalAxisTitleTextSize(50);
+			gridLabelRenderer.setVerticalAxisTitle("Score");
+			gridLabelRenderer.setVerticalAxisTitleTextSize(50);
+			gridLabelRenderer.setNumHorizontalLabels(dataPoints.length + 1);
 
-			// enable scaling and scrolling
-			graph.getViewport().setScalable(false);
-			graph.getViewport().setScalableY(false);
-			graph.getGridLabelRenderer().setNumHorizontalLabels(dataPoints.length);
+			Viewport viewport = graph.getViewport();
+			viewport.setScalable(true);
+			viewport.setScalableY(false);
+
+			viewport.setYAxisBoundsManual(true);
+			viewport.setMinY(0);
+			viewport.setMaxY(QuestionActivity.QUESTIONS_PER_TOPIC);
+
+			viewport.setXAxisBoundsManual(true);
+			viewport.setMinX(1);
+			viewport.setMaxX(dataPoints.length + 1);
 
 			graph.addSeries(series);
 
 			linearLayout.addView(graph);
+
+			TextView t = new TextView(linearLayout.getContext());
+			t.setText("test");
+			linearLayout.addView(t);
+
 			return linearLayout;
 		}
 
@@ -255,16 +345,18 @@ public class ScorecardActivity extends AppCompatActivity {
 
 	public class CustomFragmentPagerAdapter extends FragmentPagerAdapter {
 
-		Context context;
+		private Context context;
+		private int topic_index;
 
-		public CustomFragmentPagerAdapter(Context context, FragmentManager fm) {
+		public CustomFragmentPagerAdapter(Context context, FragmentManager fm, int topic_index) {
 			super(fm);
-			this.context = context;
+			this.context     = context;
+			this.topic_index = topic_index;
 		}
 
 		@Override
 		public Fragment getItem(int position) {
-			return CustomFragment.newInstance(context, position);
+			return CustomFragment.newInstance(context, topic_index, position);
 		}
 
 		@Override
