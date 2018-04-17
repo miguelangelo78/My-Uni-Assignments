@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView_topicName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="Topic - Undefined"
+            android:textAlignment="center"
+            android:textSize="18sp" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager_question"
+            android:layout_width="wrap_content"
+            android:layout_height="250dp"
+            android:layout_marginTop="50dp">
+
+        </android.support.v4.view.ViewPager>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_prevQuestion"
+                android:layout_width="wrap_content"
+                android:layout_height="75dp"
+                android:layout_weight="1"
+                android:text="Previous question"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/button_nextQuestion"
+                android:layout_width="wrap_content"
+                android:layout_height="75dp"
+                android:layout_weight="1"
+                android:text="Next question"
+                android:visibility="invisible" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom|center_horizontal"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/button_finish"
+                android:layout_width="300dp"
+                android:layout_height="70dp"
+                android:text="Finish"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/button_goback"
+                android:layout_marginBottom="25dp"
+                android:layout_width="300dp"
+                android:layout_height="70dp"
+                android:text="Back to menu" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

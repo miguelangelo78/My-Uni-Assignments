@@ -1,0 +1,82 @@
+[
+  { /* Topic 1 */
+    "name": "Android App Lifecycle",
+    "desc": "From execution until termination",
+    "questions": [
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]}
+    ]
+  },
+  { /* Topic 2 */
+    "name": "MVC",
+    "desc": "Model-view-controller",
+    "questions": [
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]}
+    ]
+  },
+  { /* Topic 3 */
+    "name": "Layouts",
+    "desc": "View structures",
+    "questions": [
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]}
+    ]
+  },
+  { /* Topic 4 */
+    "name": "Widgets",
+    "desc": "App extensions",
+    "questions": [
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]}
+    ]
+  },
+  { /* Topic 5 */
+    "name": "Interface Controls",
+    "desc": "UI controls",
+    "questions": [
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
+      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]}
+    ]
+  }
+]
