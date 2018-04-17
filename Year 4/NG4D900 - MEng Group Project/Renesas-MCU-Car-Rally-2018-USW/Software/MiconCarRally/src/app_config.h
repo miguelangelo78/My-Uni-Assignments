@@ -85,9 +85,9 @@
 
 /********* PID CONTROLLER DEFINITIONS ***************************/
 #if CAR_YEAR == 2018
-#define PID_KP       1.2  //1.22 /* Normal operation P coefficient */
-#define PID_KI       0.00  /* Normal operation I coefficient */
-#define PID_KD       -90  //-110 /* Normal operation D coefficient */
+#define PID_KP       1.2    /* Normal operation P coefficient */
+#define PID_KI       0.00   /* Normal operation I coefficient */
+#define PID_KD       -90    /* Normal operation D coefficient */
 #else
 #define PID_KP       1.1    /* Normal operation P coefficient */
 #define PID_KI       0.0012 /* Normal operation I coefficient */

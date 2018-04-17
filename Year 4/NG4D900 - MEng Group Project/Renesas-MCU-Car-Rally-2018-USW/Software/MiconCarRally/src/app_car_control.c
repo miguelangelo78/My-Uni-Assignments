@@ -14,9 +14,7 @@ servo_t * module_servo       = NULL; /* Servo module          */
 accel_t * module_accel       = NULL; /* Accelerometer module  */
 piezo_t * module_piezo       = NULL; /* Piezo buzzer module   */
 
-pid_t * pid_controller    = NULL; /* PID for controlling the servo angle and the DC motor differential */
-
-#define READ_LINE(sensor_var) ((sensor_var = ltracker_read(MASK4_4, NULL)) || 1)
+pid_t * pid_controller = NULL; /* PID for controlling the servo angle and the DC motor differential */
 
 ///////////////////////////////////////////////////////////////////////////////
 uint8_t car_update_control(void)
