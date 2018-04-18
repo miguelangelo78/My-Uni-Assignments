@@ -1,7 +1,9 @@
 package com.learnandroid;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -36,6 +38,9 @@ import com.jjoe64.graphview.series.Series;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ScorecardActivity extends AppCompatActivity {
 
@@ -98,7 +103,7 @@ public class ScorecardActivity extends AppCompatActivity {
 			LinearLayout linearLayout = new LinearLayout(scrollView.getContext());
 			linearLayout.setOrientation(LinearLayout.VERTICAL);
 
-			Topic topic = MainActivity.getTopics().get(topic_index);
+			final Topic topic = MainActivity.getTopics().get(topic_index);
 
 			TextView textView_topic = new TextView(linearLayout.getContext());
 			textView_topic.setText("Topic: " + topic.get("name"));
@@ -134,9 +139,56 @@ public class ScorecardActivity extends AppCompatActivity {
 				button_clearUserData.setText("Clear score data");
 				button_clearUserData.setOnClickListener(new View.OnClickListener() {
 					@Override
-					public void onClick(View v) {
-						FileHandler.delete(v.getContext(), getResources().getString(R.string.quiz_user_dbfile));
-						((Activity)context).finish();
+					public void onClick(final View v) {
+						AlertDialog.Builder alertBuilder = new AlertDialog.Builder(v.getContext());
+						alertBuilder.setCancelable(true);
+						alertBuilder.setTitle("Confirm");
+						alertBuilder.setMessage("Are you sure you want to delete the user data?");
+						alertBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								String fileName = getResources().getString(R.string.quiz_user_dbfile);
+
+								/* Use regex to remove the score entries for this topic only */
+								String newScoreDataStr = "";
+								String scoreDataStr = FileHandler.load(v.getContext(), fileName);
+
+								String patt = "\\{\\n(?:\\n|.)+?\"topic_index\"     : \"[0-9]+?(?:\\n|.)+?\\]\\n.+?\\},?";
+								Matcher m = Pattern.compile(patt).matcher(scoreDataStr);
+
+								for(int i = 0; m.find(); i++) {
+									String match = scoreDataStr.substring(m.start(), m.end());
+									if(!match.contains("\"topic_index\"     : \"" + Integer.toString(topic_index) + "\""))
+										newScoreDataStr += "\t" + match + "\n";
+								}
+
+								/* Delete save file so we can rewrite it without the scores for this topic */
+								FileHandler.delete(getContext(), fileName);
+
+								if(newScoreDataStr.length() > 0) {
+									/* Replace the trailing ",\n" with just "\n" */
+									if (newScoreDataStr.charAt(newScoreDataStr.length() - 2) == ',')
+										newScoreDataStr = newScoreDataStr.substring(0, newScoreDataStr.length() - 2) + "\n";
+
+									newScoreDataStr = "[\n" + newScoreDataStr + "]";
+
+									/* Rewrite data with the scores for this specific topic deleted */
+									FileHandler.save(getContext(), fileName, newScoreDataStr);
+								}
+
+								/* Close this activity and go back to the main activity */
+								((Activity)context).finish();
+							}
+						});
+
+						alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+
+							}
+						});
+
+						alertBuilder.create().show();
 					}
 				});
 
@@ -268,10 +320,10 @@ public class ScorecardActivity extends AppCompatActivity {
 						JSONObject scoreEntry = null;
 
 						/* Search for the right score entry in between all the 'topic-mixed' score entries */
-						int dataPointIndex = (int)dataPoint.getX() - 1;
+						int dataPointIndex = (int)dataPoint.getX();
 
 						for(int i = 0, j = 0; i < scoreData.length(); i++) {
-							scoreEntry = scoreData.getJSONObject(dataPointIndex);
+							scoreEntry = scoreData.getJSONObject(i);
 
 							if(Integer.parseInt(scoreEntry.getString("topic_index")) == topic_index) {
 								if(++j == dataPointIndex) {
@@ -281,12 +333,12 @@ public class ScorecardActivity extends AppCompatActivity {
 							}
 						}
 
-						Topic topic            = MainActivity.getTopics().get(Integer.parseInt(scoreEntry.getString("topic_index")));
+						Topic topic            = MainActivity.getTopics().get(topic_index);
 						String correct_answers = scoreEntry.getString("correct_answers");
 						String total_questions = scoreEntry.getString("total_questions");
 						String time            = scoreEntry.getString("time");
 
-						graphToast = Toast.makeText(getActivity(),  topic.get("name") + " | Score: " + correct_answers + " / " + total_questions + "\nPlayed at: " + time, Toast.LENGTH_SHORT);
+						graphToast = Toast.makeText(getActivity(),  topic.get("name") + " | Score: " + correct_answers + " / " + total_questions + "\nPlayed: " + time, Toast.LENGTH_SHORT);
 						graphToast.show();
 					} catch (Exception e) {
 						e.printStackTrace();

@@ -3,7 +3,11 @@ package com.learnandroid;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 
@@ -23,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
 		topicsArray = Topic.parseTopics(getAssets(), getString(R.string.quiz_dbfile));
 
-		((ViewPager)findViewById(R.id.viewpager)).setAdapter(new SlideAdapter(this));
+		ViewPager viewpager = ((ViewPager)findViewById(R.id.viewpager));
+		viewpager.setAdapter(new SlideAdapter(this, viewpager));
 	}
 }

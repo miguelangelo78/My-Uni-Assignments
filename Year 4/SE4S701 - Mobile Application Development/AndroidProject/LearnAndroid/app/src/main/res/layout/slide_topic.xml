@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/slidelinearlayout"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -33,5 +34,26 @@
         android:layout_width="311dp"
         android:layout_height="80dp"
         android:text="Scoreboard" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
+
+        <ImageView
+            android:id="@+id/imageView_arrowLeft"
+            android:layout_width="139dp"
+            android:layout_height="38dp"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/arrow_left" />
+
+        <ImageView
+            android:id="@+id/imageView_arrowRight"
+            android:layout_width="139dp"
+            android:layout_height="38dp"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/arrow_right" />
+    </LinearLayout>
 
 </LinearLayout>

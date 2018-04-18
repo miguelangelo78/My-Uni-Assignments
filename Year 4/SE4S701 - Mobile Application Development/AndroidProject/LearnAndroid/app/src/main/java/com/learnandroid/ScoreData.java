@@ -38,7 +38,7 @@ public class ScoreData {
 		}
 
 		/* Fetch current date and time */
-		String dateAndTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+		String dateAndTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(Calendar.getInstance().getTime());
 
 		/* Add topic index, user score, question count and all the answered questions to the JSON array object */
 		newData +=
