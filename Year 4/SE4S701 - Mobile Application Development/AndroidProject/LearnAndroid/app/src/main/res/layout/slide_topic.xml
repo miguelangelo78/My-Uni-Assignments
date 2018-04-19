@@ -7,20 +7,22 @@
     android:gravity="center">
 
     <TextView
-        android:id="@+id/txttitle"
+        android:id="@+id/textView_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Title"
         android:textSize="30sp"
         android:textStyle="bold"
-        android:layout_marginTop="0dp"/>
+        android:layout_marginTop="0dp"
+        android:textColor="#c4c4c4"/>
 
     <TextView
-        android:id="@+id/txtdescription"
+        android:id="@+id/textview_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="17sp"
-        android:text="Description"/>
+        android:text="Description"
+        android:textColor="#c4c4c4"/>
 
     <Button
         android:id="@+id/button_play"

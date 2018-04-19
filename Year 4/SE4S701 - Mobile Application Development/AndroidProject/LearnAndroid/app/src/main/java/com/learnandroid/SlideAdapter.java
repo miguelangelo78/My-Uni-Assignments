@@ -1,12 +1,17 @@
 package com.learnandroid;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.transition.Slide;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,19 +28,53 @@ import android.widget.TextView;
  */
 
 public class SlideAdapter extends PagerAdapter {
-	Context        context;
-	LayoutInflater inflater;
-	ViewPager      viewPager_parentContainer;
-	View           innerView;
+	private Context        context;
+	private LayoutInflater inflater;
+	private ViewPager      viewPager_parentContainer;
+	private View           innerView;
+	private ArgbEvaluator  argbEvaluator;
 
-	public SlideAdapter(final Context context, ViewPager viewPager) {
+	public SlideAdapter(final Context context, final ViewPager viewPager) {
 		this.context = context;
 		viewPager_parentContainer = viewPager;
 
+		argbEvaluator = new ArgbEvaluator();
+
+		final SlideAdapter obj = this;
+
 		viewPager_parentContainer.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+			Integer [] colors = {
+					Color.parseColor("#616a77"),
+					Color.parseColor("#6c7684"),
+					Color.parseColor("#434c59"),
+					Color.parseColor("#294670"),
+					Color.parseColor("#2a3544")
+			};
+
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+				if(position < obj.getCount() - 1 && position < colors.length - 1) {
+					viewPager.setBackgroundColor((Integer)argbEvaluator.evaluate(positionOffset, colors[position], colors[position + 1]));
+				} else {
+					viewPager.setBackgroundColor(colors[colors.length - 1]);
+				}
+			}
 
+			private void navArrowsFadeOut(int position) {
+				/* Animate the left and right arrows by fading them out */
+				AlphaAnimation animation = new AlphaAnimation(1.0f, 0.0f);
+				animation.setDuration(1500);
+				animation.setRepeatCount(0);
+
+				ImageView imageView_arrowLeft = innerView.findViewById(R.id.imageView_arrowLeft);
+				imageView_arrowLeft.setVisibility(View.INVISIBLE);
+
+				if(position > 0)
+					imageView_arrowLeft.startAnimation(animation);
+
+				ImageView imageView_arrowRight = innerView.findViewById(R.id.imageView_arrowRight);
+				imageView_arrowRight.startAnimation(animation);
+				imageView_arrowRight.setVisibility(View.INVISIBLE);
 			}
 
 			@Override
@@ -43,18 +82,7 @@ public class SlideAdapter extends PagerAdapter {
 				if(innerView == null)
 					return;
 
-				/* Animate the splash animation */
-				AlphaAnimation animation = new AlphaAnimation(1.0f, 0.0f);
-				animation.setDuration(3500);
-				animation.setRepeatCount(0);
-
-				ImageView imageView_arrowLeft = innerView.findViewById(R.id.imageView_arrowLeft);
-				imageView_arrowLeft.startAnimation(animation);
-				imageView_arrowLeft.setVisibility(View.INVISIBLE);
-
-				ImageView imageView_arrowRight = innerView.findViewById(R.id.imageView_arrowRight);
-				imageView_arrowRight.startAnimation(animation);
-				imageView_arrowRight.setVisibility(View.INVISIBLE);
+				navArrowsFadeOut(position);
 			}
 
 			@Override
@@ -80,11 +108,32 @@ public class SlideAdapter extends PagerAdapter {
 		innerView = inflater.inflate(R.layout.slide_topic, container, false);
 		LinearLayout layoutSlide = innerView.findViewById(R.id.slidelinearlayout);
 
+		ImageView imageView_arrowLeft = innerView.findViewById(R.id.imageView_arrowLeft);
+		imageView_arrowLeft.setColorFilter(Color.parseColor("#585859"), PorterDuff.Mode.SRC_ATOP);
+		imageView_arrowLeft.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				viewPager_parentContainer.arrowScroll(View.FOCUS_LEFT);
+			}
+		});
+
+		ImageView imageView_arrowRight = innerView.findViewById(R.id.imageView_arrowRight);
+		imageView_arrowRight.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				viewPager_parentContainer.arrowScroll(View.FOCUS_RIGHT);
+			}
+		});
+		imageView_arrowRight.setColorFilter(Color.parseColor("#585859"), PorterDuff.Mode.SRC_ATOP);
+
+		if(position == 0)
+			imageView_arrowLeft.setVisibility(View.INVISIBLE);
+
 		Topic topic = MainActivity.getTopics().get(position);
-		TextView title = innerView.findViewById(R.id.txttitle);
+		TextView title = innerView.findViewById(R.id.textView_title);
 		title.setText(Integer.toString(position + 1) + ": " + topic.get("name"));
 
-		TextView desc = innerView.findViewById(R.id.txtdescription);
+		TextView desc = innerView.findViewById(R.id.textview_description);
 		desc.setText(topic.get("desc"));
 
 		Button button_play = innerView.findViewById(R.id.button_play);

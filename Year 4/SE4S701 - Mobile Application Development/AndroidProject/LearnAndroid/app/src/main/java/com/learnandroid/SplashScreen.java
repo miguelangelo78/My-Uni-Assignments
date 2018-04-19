@@ -21,7 +21,7 @@ public class SplashScreen extends AppCompatActivity {
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_splash_screen);
 
-		/* Create new scale animation */
+		/* Animate the splash animation by scaling it up on startup */
 		ImageView imageView = ((ImageView)findViewById(R.id.imageView));
 		ObjectAnimator scaleX = ObjectAnimator.ofFloat(imageView, "scaleX", 2.0f);
 		ObjectAnimator scaleY = ObjectAnimator.ofFloat(imageView, "scaleY", 2.0f);
