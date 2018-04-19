@@ -1,7 +1,7 @@
 [
   { /* Topic 1 */
-    "name": "Android App Lifecycle",
-    "desc": "From execution until termination",
+    "name": "Android Activity Lifecycle",
+    "desc": "From activity execution until termination",
     "questions": [
       {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
       {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},

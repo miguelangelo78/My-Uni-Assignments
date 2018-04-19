@@ -43,8 +43,9 @@ public class SlideAdapter extends PagerAdapter {
 				if(innerView == null)
 					return;
 
+				/* Animate the splash animation */
 				AlphaAnimation animation = new AlphaAnimation(1.0f, 0.0f);
-				animation.setDuration(1500);
+				animation.setDuration(3500);
 				animation.setRepeatCount(0);
 
 				ImageView imageView_arrowLeft = innerView.findViewById(R.id.imageView_arrowLeft);
