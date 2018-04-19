@@ -25,8 +25,8 @@ public class SplashScreen extends AppCompatActivity {
 		ImageView imageView = ((ImageView)findViewById(R.id.imageView));
 		ObjectAnimator scaleX = ObjectAnimator.ofFloat(imageView, "scaleX", 2.0f);
 		ObjectAnimator scaleY = ObjectAnimator.ofFloat(imageView, "scaleY", 2.0f);
-		scaleX.setDuration(2000);
-		scaleY.setDuration(2000);
+		scaleX.setDuration(5000);
+		scaleY.setDuration(5000);
 
 		AnimatorSet animator = new AnimatorSet();
 		animator.play(scaleX).with(scaleY);

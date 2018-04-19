@@ -24,10 +24,12 @@
 
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/imageview_quizImg"
         android:layout_width="match_parent"
         android:layout_height="95dp"
-        app:srcCompat="?android:attr/fingerprintAuthDrawable" />
+        app:srcCompat="?android:attr/fingerprintAuthDrawable"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"/>
 
     <LinearLayout
         android:id="@+id/linearLayout_questions"

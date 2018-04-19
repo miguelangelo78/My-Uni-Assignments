@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -82,7 +84,7 @@ public class SlideQuestionAdapter extends PagerAdapter {
 	}
 
 	private View instantiateQuestionSlide(ViewGroup container, final int position) {
-		View view = inflater.inflate(R.layout.slide_question, container, false);;
+		View view = inflater.inflate(R.layout.slide_question, container, false);
 		allocatedViews.add(view);
 
 		/* Fetch question */
@@ -94,14 +96,34 @@ public class SlideQuestionAdapter extends PagerAdapter {
 		/* Set question query */
 		((TextView)view.findViewById(R.id.textView_question)).setText(currentQuestion.get("query"));
 
+		/* Set question image */
+		String imageName = currentQuestion.get("img");
+
+		if(imageName != null) {
+			ImageView imageview_quizImg = view.findViewById(R.id.imageview_quizImg);
+			int imageID = context.getResources().getIdentifier(imageName, "drawable", context.getPackageName());
+			imageview_quizImg.setImageResource(imageID);
+
+			/* Resize image to a fixed size so it can fit the quiz slide properly */
+			ViewGroup.LayoutParams imageView_layoutParams = imageview_quizImg.getLayoutParams();
+			imageView_layoutParams.width  = ViewGroup.LayoutParams.MATCH_PARENT;
+			imageView_layoutParams.height = 300;
+			imageview_quizImg.setLayoutParams(imageView_layoutParams);
+		}
+
 		/* Set all possible answers for this question */
 		RadioGroup radioGroup_possibleAnswers = new RadioGroup(context);
 		ArrayList<String> currentAnswers = currentQuestion.getAnswers();
+
+		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		layoutParams.setMargins(0, 10, 0, 10);
 
 		for (int i = 0; i < currentAnswers.size(); i++) {
 			/* Create radio button with possible answer in it */
 			int possibleAnswerIdx = answerIndices.get(position).get(i);
 			RadioButton radioButton_possibleAnswer = new RadioButton(context);
+			radioButton_possibleAnswer.setLayoutParams(layoutParams);
+
 			radioButton_possibleAnswer.setText(Integer.toString(i + 1) + " - " + currentAnswers.get(possibleAnswerIdx));
 			radioGroup_possibleAnswers.addView(radioButton_possibleAnswer);
 		}

@@ -3,80 +3,480 @@
     "name": "Android Activity Lifecycle",
     "desc": "From activity execution until termination",
     "questions": [
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]}
+      {
+        "query"   : "How to pass the data from activity to services in android?",
+        "img"     : "img1",
+        "answers" : [
+          "Using putExtra() method in intent, we can pass the data using setResult()",
+          "We can store the data in a common database and access the data on services as well as in Activity",
+          "We can't pass data from activity to services."
+        ]
+      },
+      {
+        "query"   : "What is the life cycle of foreground activity in android?",
+        "img"     : "img2",
+        "answers" : [
+          "onCreate() −> onStart() −> onResume() −> onStop() −> onRestart()",
+          "onCreate() −> onStart() −> onResume() −> onStop()",
+          "onCreate() −> onStart() −> onResume()"
+        ]
+      },
+      {
+        "query"   : "How to kill an activity in Android?",
+        "img"     : "img3",
+        "answers" : [
+          "finish()",
+          "finishActivity(int requestCode)",
+          "None of the Above"
+        ]
+      },
+      {
+        "query"   : "What is the application class in android?",
+        "img"     : "img4",
+        "answers" : [
+          "Base class for all classes",
+          "A class that can create only an object",
+          "Anonymous class"
+        ]
+      },
+      {
+        "query"   : "What is a fragment in android?",
+        "img"     : "img5",
+        "answers" : [
+          "Layout",
+          "JSON",
+          "A portion of an Activity"
+        ]
+      },
+      {
+        "query"   : "Which specific characteristic does not differentiate the Dalvik Virtual Machine (DVM) from other standard VMs?",
+        "img"     : "img6",
+        "answers" : [
+          "It uses Java Virtual Machine compatible .class without conversion",
+          "It uses a register-based architecture",
+          "It is just a Just-In-Time (JIT) compiler"
+        ]
+      },
+      {
+        "query"   : "Which of the following is not a method of the Activity class that user can override while implementing his/her ownActivity?",
+        "img"     : "img7",
+        "answers" : [
+          "onKill()",
+          "onPause()",
+          "onCreate()"
+        ]
+      },
+      {
+        "query"   : "Which layer is not included in the architecture diagram of an Android Platform?",
+        "img"     : "img8",
+        "answers" : [
+          "Data interchange",
+          "Application Framework",
+          "Linux Kernel"
+        ]
+      },
+      {
+        "query"   : "During the initialization of your Activity, ______ might be used to set the layout resources to define the UI of your Activity.",
+        "img"     : "img9",
+        "answers" : [
+          "setContentView(int layoutResID)",
+          "getInflater()",
+          "startActivity(Intent intent)"
+        ]
+      },
+      {
+        "query"   : "Components of the underlying OS are written in ___, while user and built-in applications are built for Android in ____?",
+        "img"     : "img10",
+        "answers" : [
+          "C/C++, Java",
+          "Java, Java",
+          "Java, C/C++"
+        ]
+      }
     ]
   },
   { /* Topic 2 */
     "name": "MVC",
     "desc": "Model-view-controller",
     "questions": [
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]}
+      {
+        "query"   : "How to pass the data from activity to services in android?",
+        "img"     : "img1",
+        "answers" : [
+          "Using putExtra() method in intent, we can pass the data using setResult()",
+          "We can store the data in a common database and access the data on services as well as in Activity",
+          "We can't pass data from activity to services."
+        ]
+      },
+      {
+        "query"   : "What is the life cycle of foreground activity in android?",
+        "img"     : "img2",
+        "answers" : [
+          "onCreate() −> onStart() −> onResume() −> onStop() −> onRestart()",
+          "onCreate() −> onStart() −> onResume() −> onStop()",
+          "onCreate() −> onStart() −> onResume()"
+        ]
+      },
+      {
+        "query"   : "How to kill an activity in Android?",
+        "img"     : "img3",
+        "answers" : [
+          "finish()",
+          "finishActivity(int requestCode)",
+          "None of the Above"
+        ]
+      },
+      {
+        "query"   : "What is the application class in android?",
+        "img"     : "img4",
+        "answers" : [
+          "Base class for all classes",
+          "A class that can create only an object",
+          "Anonymous class"
+        ]
+      },
+      {
+        "query"   : "What is a fragment in android?",
+        "img"     : "img5",
+        "answers" : [
+          "Layout",
+          "JSON",
+          "A portion of an Activity"
+        ]
+      },
+      {
+        "query"   : "Which specific characteristic does not differentiate the Dalvik Virtual Machine (DVM) from other standard VMs?",
+        "img"     : "img6",
+        "answers" : [
+          "It uses Java Virtual Machine compatible .class without conversion",
+          "It uses a register-based architecture",
+          "It is just a Just-In-Time (JIT) compiler"
+        ]
+      },
+      {
+        "query"   : "Which of the following is not a method of the Activity class that user can override while implementing his/her ownActivity?",
+        "img"     : "img7",
+        "answers" : [
+          "onKill()",
+          "onPause()",
+          "onCreate()"
+        ]
+      },
+      {
+        "query"   : "Which layer is not included in the architecture diagram of an Android Platform?",
+        "img"     : "img8",
+        "answers" : [
+          "Data interchange",
+          "Application Framework",
+          "Linux Kernel"
+        ]
+      },
+      {
+        "query"   : "During the initialization of your Activity, ______ might be used to set the layout resources to define the UI of your Activity.",
+        "img"     : "img9",
+        "answers" : [
+          "setContentView(int layoutResID)",
+          "getInflater()",
+          "startActivity(Intent intent)"
+        ]
+      },
+      {
+        "query"   : "Components of the underlying OS are written in ___, while user and built-in applications are built for Android in ____?",
+        "img"     : "img10",
+        "answers" : [
+          "C/C++, Java",
+          "Java, Java",
+          "Java, C/C++"
+        ]
+      }
     ]
   },
   { /* Topic 3 */
     "name": "Layouts",
     "desc": "View structures",
     "questions": [
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]}
+      {
+        "query"   : "How to pass the data from activity to services in android?",
+        "img"     : "img1",
+        "answers" : [
+          "Using putExtra() method in intent, we can pass the data using setResult()",
+          "We can store the data in a common database and access the data on services as well as in Activity",
+          "We can't pass data from activity to services."
+        ]
+      },
+      {
+        "query"   : "What is the life cycle of foreground activity in android?",
+        "img"     : "img2",
+        "answers" : [
+          "onCreate() −> onStart() −> onResume() −> onStop() −> onRestart()",
+          "onCreate() −> onStart() −> onResume() −> onStop()",
+          "onCreate() −> onStart() −> onResume()"
+        ]
+      },
+      {
+        "query"   : "How to kill an activity in Android?",
+        "img"     : "img3",
+        "answers" : [
+          "finish()",
+          "finishActivity(int requestCode)",
+          "None of the Above"
+        ]
+      },
+      {
+        "query"   : "What is the application class in android?",
+        "img"     : "img4",
+        "answers" : [
+          "Base class for all classes",
+          "A class that can create only an object",
+          "Anonymous class"
+        ]
+      },
+      {
+        "query"   : "What is a fragment in android?",
+        "img"     : "img5",
+        "answers" : [
+          "Layout",
+          "JSON",
+          "A portion of an Activity"
+        ]
+      },
+      {
+        "query"   : "Which specific characteristic does not differentiate the Dalvik Virtual Machine (DVM) from other standard VMs?",
+        "img"     : "img6",
+        "answers" : [
+          "It uses Java Virtual Machine compatible .class without conversion",
+          "It uses a register-based architecture",
+          "It is just a Just-In-Time (JIT) compiler"
+        ]
+      },
+      {
+        "query"   : "Which of the following is not a method of the Activity class that user can override while implementing his/her ownActivity?",
+        "img"     : "img7",
+        "answers" : [
+          "onKill()",
+          "onPause()",
+          "onCreate()"
+        ]
+      },
+      {
+        "query"   : "Which layer is not included in the architecture diagram of an Android Platform?",
+        "img"     : "img8",
+        "answers" : [
+          "Data interchange",
+          "Application Framework",
+          "Linux Kernel"
+        ]
+      },
+      {
+        "query"   : "During the initialization of your Activity, ______ might be used to set the layout resources to define the UI of your Activity.",
+        "img"     : "img9",
+        "answers" : [
+          "setContentView(int layoutResID)",
+          "getInflater()",
+          "startActivity(Intent intent)"
+        ]
+      },
+      {
+        "query"   : "Components of the underlying OS are written in ___, while user and built-in applications are built for Android in ____?",
+        "img"     : "img10",
+        "answers" : [
+          "C/C++, Java",
+          "Java, Java",
+          "Java, C/C++"
+        ]
+      }
     ]
   },
   { /* Topic 4 */
     "name": "Widgets",
     "desc": "App extensions",
     "questions": [
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]}
+      {
+        "query"   : "How to pass the data from activity to services in android?",
+        "img"     : "img1",
+        "answers" : [
+          "Using putExtra() method in intent, we can pass the data using setResult()",
+          "We can store the data in a common database and access the data on services as well as in Activity",
+          "We can't pass data from activity to services."
+        ]
+      },
+      {
+        "query"   : "What is the life cycle of foreground activity in android?",
+        "img"     : "img2",
+        "answers" : [
+          "onCreate() −> onStart() −> onResume() −> onStop() −> onRestart()",
+          "onCreate() −> onStart() −> onResume() −> onStop()",
+          "onCreate() −> onStart() −> onResume()"
+        ]
+      },
+      {
+        "query"   : "How to kill an activity in Android?",
+        "img"     : "img3",
+        "answers" : [
+          "finish()",
+          "finishActivity(int requestCode)",
+          "None of the Above"
+        ]
+      },
+      {
+        "query"   : "What is the application class in android?",
+        "img"     : "img4",
+        "answers" : [
+          "Base class for all classes",
+          "A class that can create only an object",
+          "Anonymous class"
+        ]
+      },
+      {
+        "query"   : "What is a fragment in android?",
+        "img"     : "img5",
+        "answers" : [
+          "Layout",
+          "JSON",
+          "A portion of an Activity"
+        ]
+      },
+      {
+        "query"   : "Which specific characteristic does not differentiate the Dalvik Virtual Machine (DVM) from other standard VMs?",
+        "img"     : "img6",
+        "answers" : [
+          "It uses Java Virtual Machine compatible .class without conversion",
+          "It uses a register-based architecture",
+          "It is just a Just-In-Time (JIT) compiler"
+        ]
+      },
+      {
+        "query"   : "Which of the following is not a method of the Activity class that user can override while implementing his/her ownActivity?",
+        "img"     : "img7",
+        "answers" : [
+          "onKill()",
+          "onPause()",
+          "onCreate()"
+        ]
+      },
+      {
+        "query"   : "Which layer is not included in the architecture diagram of an Android Platform?",
+        "img"     : "img8",
+        "answers" : [
+          "Data interchange",
+          "Application Framework",
+          "Linux Kernel"
+        ]
+      },
+      {
+        "query"   : "During the initialization of your Activity, ______ might be used to set the layout resources to define the UI of your Activity.",
+        "img"     : "img9",
+        "answers" : [
+          "setContentView(int layoutResID)",
+          "getInflater()",
+          "startActivity(Intent intent)"
+        ]
+      },
+      {
+        "query"   : "Components of the underlying OS are written in ___, while user and built-in applications are built for Android in ____?",
+        "img"     : "img10",
+        "answers" : [
+          "C/C++, Java",
+          "Java, Java",
+          "Java, C/C++"
+        ]
+      }
     ]
   },
   { /* Topic 5 */
     "name": "Interface Controls",
     "desc": "UI controls",
     "questions": [
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]},
-      {"query" : "What is...", "answers": ["Answer 1", "Answer 2", "Answer 3"]}
+      {
+        "query"   : "How to pass the data from activity to services in android?",
+        "img"     : "img1",
+        "answers" : [
+          "Using putExtra() method in intent, we can pass the data using setResult()",
+          "We can store the data in a common database and access the data on services as well as in Activity",
+          "We can't pass data from activity to services."
+        ]
+      },
+      {
+        "query"   : "What is the life cycle of foreground activity in android?",
+        "img"     : "img2",
+        "answers" : [
+          "onCreate() −> onStart() −> onResume() −> onStop() −> onRestart()",
+          "onCreate() −> onStart() −> onResume() −> onStop()",
+          "onCreate() −> onStart() −> onResume()"
+        ]
+      },
+      {
+        "query"   : "How to kill an activity in Android?",
+        "img"     : "img3",
+        "answers" : [
+          "finish()",
+          "finishActivity(int requestCode)",
+          "None of the Above"
+        ]
+      },
+      {
+        "query"   : "What is the application class in android?",
+        "img"     : "img4",
+        "answers" : [
+          "Base class for all classes",
+          "A class that can create only an object",
+          "Anonymous class"
+        ]
+      },
+      {
+        "query"   : "What is a fragment in android?",
+        "img"     : "img5",
+        "answers" : [
+          "Layout",
+          "JSON",
+          "A portion of an Activity"
+        ]
+      },
+      {
+        "query"   : "Which specific characteristic does not differentiate the Dalvik Virtual Machine (DVM) from other standard VMs?",
+        "img"     : "img6",
+        "answers" : [
+          "It uses Java Virtual Machine compatible .class without conversion",
+          "It uses a register-based architecture",
+          "It is just a Just-In-Time (JIT) compiler"
+        ]
+      },
+      {
+        "query"   : "Which of the following is not a method of the Activity class that user can override while implementing his/her ownActivity?",
+        "img"     : "img7",
+        "answers" : [
+          "onKill()",
+          "onPause()",
+          "onCreate()"
+        ]
+      },
+      {
+        "query"   : "Which layer is not included in the architecture diagram of an Android Platform?",
+        "img"     : "img8",
+        "answers" : [
+          "Data interchange",
+          "Application Framework",
+          "Linux Kernel"
+        ]
+      },
+      {
+        "query"   : "During the initialization of your Activity, ______ might be used to set the layout resources to define the UI of your Activity.",
+        "img"     : "img9",
+        "answers" : [
+          "setContentView(int layoutResID)",
+          "getInflater()",
+          "startActivity(Intent intent)"
+        ]
+      },
+      {
+        "query"   : "Components of the underlying OS are written in ___, while user and built-in applications are built for Android in ____?",
+        "img"     : "img10",
+        "answers" : [
+          "C/C++, Java",
+          "Java, Java",
+          "Java, C/C++"
+        ]
+      }
     ]
   }
 ]
