@@ -9,7 +9,7 @@
         "answers" : [
           "Using putExtra() method in intent, we can pass the data using setResult()",
           "We can store the data in a common database and access the data on services as well as in Activity",
-          "We can't pass data from activity to services."
+          "We can't pass data from activity to services"
         ]
       },
       {
@@ -58,7 +58,7 @@
         ]
       },
       {
-        "query"   : "Which of the following is not a method of the Activity class that user can override while implementing his/her ownActivity?",
+        "query"   : "Which of the following is not a method of the Activity class that user can override while implementing his/her own Activity?",
         "img"     : "img7",
         "answers" : [
           "onKill()",
