@@ -21,15 +21,7 @@ import android.widget.TextView;
  * Created by Miguel on 07/04/2018.
  */
 
-public class SlideAdapter extends PagerAdapter {
-
-	private final static Integer [] viewPager_backgroundColors = {
-			Color.parseColor("#6f7d91"),
-			Color.parseColor("#6c7684"),
-			Color.parseColor("#434c59"),
-			Color.parseColor("#294670"),
-			Color.parseColor("#2a3544")
-	};
+public class SlideTopicAdapter extends PagerAdapter {
 
 	private Context        context;
 	private LayoutInflater inflater;
@@ -37,25 +29,25 @@ public class SlideAdapter extends PagerAdapter {
 	private View           innerView;
 	private ArgbEvaluator  argbEvaluator;
 
-	public SlideAdapter(final Context context, final ViewPager viewPager) {
+	public SlideTopicAdapter(final Context context, final ViewPager viewPager) {
 		this.context = context;
 		viewPager_parentContainer = viewPager;
 
 		argbEvaluator = new ArgbEvaluator();
 
-		final SlideAdapter obj = this;
+		final SlideTopicAdapter obj = this;
 
 		viewPager_parentContainer.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-				if(position < obj.getCount() - 1 && position < viewPager_backgroundColors.length - 1) {
+				if(position < obj.getCount() - 1 && position < Constants.viewPager_backgroundColors.length - 1) {
 					viewPager.setBackgroundColor(
 							(Integer)argbEvaluator.evaluate(positionOffset,
-									viewPager_backgroundColors[position],
-									viewPager_backgroundColors[position + 1]));
+									Constants.viewPager_backgroundColors[position],
+									Constants.viewPager_backgroundColors[position + 1]));
 				} else {
-					viewPager.setBackgroundColor(viewPager_backgroundColors[viewPager_backgroundColors.length - 1]);
+					viewPager.setBackgroundColor(Constants.viewPager_backgroundColors[Constants.viewPager_backgroundColors.length - 1]);
 				}
 			}
 

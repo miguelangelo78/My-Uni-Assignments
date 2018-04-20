@@ -24,6 +24,7 @@ import java.util.ArrayList;
  */
 
 public class SlideQuestionAdapter extends PagerAdapter {
+
 	private Context        context;
 	private LayoutInflater inflater;
 

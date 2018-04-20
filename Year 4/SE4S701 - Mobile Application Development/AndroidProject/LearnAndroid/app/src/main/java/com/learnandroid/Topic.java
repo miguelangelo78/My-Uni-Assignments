@@ -17,7 +17,6 @@ import java.util.Iterator;
  */
 
 public class Topic {
-	final static private String RESERVED_FIELDS[] = {"questions" , "answers"};
 
 	private HashMap<String, String> fields;
 	private ArrayList<Question> questions;
@@ -64,14 +63,14 @@ public class Topic {
 				Iterator<String> it = nthTopic.keys();
 				while(it.hasNext()) {
 					String key = it.next();
-					if(key.equals(RESERVED_FIELDS[0]))
+					if(key.equals(Constants.RESERVED_JSON_FIELDS[0]))
 						continue;
 					topic.set(key, nthTopic.getString(key));
 				}
 
 				/* Fetch all the questions inside */
 				ArrayList<Question> questionsArray = new ArrayList<Question>();
-				JSONArray questionsJSONArray = nthTopic.getJSONArray(RESERVED_FIELDS[0]);
+				JSONArray questionsJSONArray = nthTopic.getJSONArray(Constants.RESERVED_JSON_FIELDS[0]);
 
 				/* For every question ... */
 				for (int j = 0; j < questionsJSONArray.length(); j++) {
@@ -82,14 +81,14 @@ public class Topic {
 					Iterator<String> it2 = nthQuestion.keys();
 					while(it2.hasNext()) {
 						String key = it2.next();
-						if(key.equals(RESERVED_FIELDS[1]))
+						if(key.equals(Constants.RESERVED_JSON_FIELDS[1]))
 							continue;
 						question.set(key, nthQuestion.getString(key));
 					}
 
 					/* And all the answers inside */
 					ArrayList<String> answersArray = new ArrayList<String>();
-					JSONArray answersJSONArray = nthQuestion.getJSONArray(RESERVED_FIELDS[1]);
+					JSONArray answersJSONArray = nthQuestion.getJSONArray(Constants.RESERVED_JSON_FIELDS[1]);
 
 					/* For every answer ... */
 					for (int k = 0; k < answersJSONArray.length(); k++)

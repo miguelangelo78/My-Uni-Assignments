@@ -59,7 +59,5 @@ public class ScoreData {
 
 		/* Finally, save file to internal storage */
 		FileHandler.save(context, fileName, saveData + newData);
-
-		Log.i("Data", saveData + newData);
 	}
 }

@@ -140,10 +140,12 @@ public class ScorecardActivity extends AppCompatActivity {
 				button_clearUserData.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(final View v) {
+						/* Ask user for confirmation before deleting the score from the permanent storage */
 						AlertDialog.Builder alertBuilder = new AlertDialog.Builder(v.getContext());
 						alertBuilder.setCancelable(true);
 						alertBuilder.setTitle("Confirm");
 						alertBuilder.setMessage("Are you sure you want to delete the user data?");
+
 						alertBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
@@ -363,7 +365,7 @@ public class ScorecardActivity extends AppCompatActivity {
 
 			viewport.setYAxisBoundsManual(true);
 			viewport.setMinY(0);
-			viewport.setMaxY(QuestionActivity.QUESTIONS_PER_TOPIC);
+			viewport.setMaxY(Constants.QUESTIONS_PER_TOPIC);
 
 			viewport.setXAxisBoundsManual(true);
 			viewport.setMinX(1);
@@ -372,11 +374,6 @@ public class ScorecardActivity extends AppCompatActivity {
 			graph.addSeries(series);
 
 			linearLayout.addView(graph);
-
-			TextView t = new TextView(linearLayout.getContext());
-			t.setText("test");
-			linearLayout.addView(t);
-
 			return linearLayout;
 		}
 

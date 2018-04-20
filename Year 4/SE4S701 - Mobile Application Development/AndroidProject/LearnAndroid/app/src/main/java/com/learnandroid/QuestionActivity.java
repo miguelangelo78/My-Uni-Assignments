@@ -22,11 +22,6 @@ import java.util.Random;
 
 public class QuestionActivity extends AppCompatActivity {
 
-	public final static int    QUESTIONS_PER_TOPIC      = 5;
-	public final static int    QUESTION_BANK_SIZE       = 10;
-	public final static String QUESTION_CORRECT_COLOR   = "#ccffd2";
-	public final static String QUESTION_INCORRECT_COLOR = "#ffc3ba";
-	
 	private ViewPager            viewpager_question;
 	private SlideQuestionAdapter slideQuestionAdapter;
 
@@ -51,13 +46,13 @@ public class QuestionActivity extends AppCompatActivity {
 		final ArrayList<Integer>      answerCorrectIndices = new ArrayList<Integer>();
 		ArrayList<ArrayList<Integer>> answerIndices        = new ArrayList<ArrayList<Integer> >();
 
-		for(int j = 0; j < QUESTIONS_PER_TOPIC; j++) {
+		for(int j = 0; j < Constants.QUESTIONS_PER_TOPIC; j++) {
 			/* Pick a random question from this topic */
 			Question currentQuestion;
 
 			do {
 				/* Must be unique */
-				currentQuestion = currentTopic.getQuestions().get(rand.nextInt(QUESTION_BANK_SIZE));
+				currentQuestion = currentTopic.getQuestions().get(rand.nextInt(Constants.QUESTION_BANK_SIZE));
 			} while(questionsChosen.contains(currentQuestion));
 
 			/* Reset the user answer index */
@@ -115,7 +110,7 @@ public class QuestionActivity extends AppCompatActivity {
 				button_nextQuestion.setVisibility(questionAnswered && position < questionsChosen.size() - 1 ? View.VISIBLE : View.INVISIBLE);
 
 				/* Set button 'button_finish' visibility */
-				button_finish.setVisibility((position == (QUESTIONS_PER_TOPIC - 1) && questionAnswered) || slideQuestionAdapter.isFinished() ? View.VISIBLE : View.INVISIBLE);
+				button_finish.setVisibility((position == (Constants.QUESTIONS_PER_TOPIC - 1) && questionAnswered) || slideQuestionAdapter.isFinished() ? View.VISIBLE : View.INVISIBLE);
 			}
 
 			@Override
@@ -157,10 +152,11 @@ public class QuestionActivity extends AppCompatActivity {
 							continue;
 
 						int userAnswerIndex = Integer.parseInt(questionsChosen.get(i).get("answer_index"));
-						int correctAnswer = answerCorrectIndices.get(i);
+						int correctAnswer   = answerCorrectIndices.get(i);
 
-						if(userAnswerIndex != correctAnswer)
-							((RadioButton)radioGroup_possibleAnswers.getChildAt(correctAnswer)).setBackgroundColor(Color.parseColor(QUESTION_CORRECT_COLOR));
+						if(userAnswerIndex != correctAnswer) {
+							((RadioButton)radioGroup_possibleAnswers.getChildAt(correctAnswer)).setBackgroundColor(Color.parseColor(Constants.QUESTION_CORRECT_COLOR));
+						}
 
 						for (int j = 0; j < radioGroup_possibleAnswers.getChildCount(); j++) {
 							RadioButton radioButton_possibleAnswer = (RadioButton)radioGroup_possibleAnswers.getChildAt(j);
@@ -168,7 +164,10 @@ public class QuestionActivity extends AppCompatActivity {
 							radioButton_possibleAnswer.setLayoutParams(new RadioGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
 							if(j == userAnswerIndex) {
-								radioButton_possibleAnswer.setBackgroundColor(Color.parseColor(userAnswerIndex == correctAnswer ? QUESTION_CORRECT_COLOR : QUESTION_INCORRECT_COLOR));
+								radioButton_possibleAnswer.setBackgroundColor(
+										Color.parseColor(userAnswerIndex == correctAnswer ?
+											Constants.QUESTION_CORRECT_COLOR :
+											Constants.QUESTION_INCORRECT_COLOR));
 							}
 						}
 					}
